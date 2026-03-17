@@ -1,0 +1,22 @@
+{
+	"name": "laxiriir-expert-monorepo",
+	"private": true,
+	"scripts": {
+		"build": "turbo run build",
+		"dev": "turbo run dev",
+		"lint": "turbo run lint",
+		"test": "turbo run test",
+		"typecheck": "turbo run typecheck",
+		"check": "biome check --write .",
+		"clean": "turbo run clean && node -e \"require('node:fs').rmSync('node_modules', { recursive: true, force: true })\""
+	},
+	"devDependencies": {
+		"@biomejs/biome": "catalog:",
+		"turbo": "^2.4.0",
+		"typescript": "catalog:"
+	},
+	"packageManager": "pnpm@9.15.5",
+	"engines": {
+		"node": ">=20.0.0"
+	}
+}

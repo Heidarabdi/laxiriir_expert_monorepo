@@ -1,0 +1,63 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# Dependencies
+node_modules
+.pnp
+.pnp.js
+
+# Local env files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Testing
+coverage
+
+# Turbo
+.turbo
+
+# Vercel
+.vercel
+
+# Build Outputs
+.next/
+.nuxt/
+.output/
+.expo/
+out/
+build
+dist
+bin/
+tmp/
+coverage/
+*.tsbuildinfo
+*.log
+*.tmp
+*.bak
+package.json.*
+
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Misc
+.DS_Store
+*.pem
+
+
+# IDE
+.idea
+.vscode/
+
+# agent
+.agent/
+.agents/
+.claude/
+.cursor/
+opencode.json
+.mcp.json
+skills-lock.json

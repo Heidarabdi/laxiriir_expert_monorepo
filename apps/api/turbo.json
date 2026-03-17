@@ -1,0 +1,18 @@
+{
+	"extends": ["//"],
+	"tasks": {
+		"build": {
+			"env": ["DATABASE_URL", "GO_ENV", "PORT"],
+			"inputs": ["$TURBO_DEFAULT$", ".env*"],
+			"outputs": ["bin/**"]
+		},
+		"test": {
+			"env": ["DATABASE_URL", "GO_ENV", "PORT"],
+			"inputs": ["$TURBO_DEFAULT$", ".env*"]
+		},
+		"typecheck": {
+			"env": ["DATABASE_URL", "GO_ENV", "PORT"],
+			"inputs": ["$TURBO_DEFAULT$", ".env*"]
+		}
+	}
+}

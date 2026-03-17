@@ -1,0 +1,20 @@
+{
+	"name": "@repo/tailwind-config",
+	"version": "1.0.0",
+	"private": true,
+	"scripts": {
+		"build": "node -e \"process.exit(0)\"",
+		"clean": "node -e \"require('node:fs').rmSync('.turbo', { recursive: true, force: true })\"",
+		"lint": "biome lint package.json",
+		"test": "node -e \"process.exit(0)\"",
+		"typecheck": "node -e \"process.exit(0)\""
+	},
+	"license": "MIT",
+	"publishConfig": {
+		"access": "public"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "catalog:",
+		"tailwindcss": "catalog:"
+	}
+}

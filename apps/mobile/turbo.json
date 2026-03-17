@@ -1,0 +1,19 @@
+{
+	"extends": ["//"],
+	"tasks": {
+		"build": {
+			"env": ["EXPO_PUBLIC_API_BASE_URL"],
+			"inputs": ["$TURBO_DEFAULT$", ".env*"],
+			"outputs": []
+		},
+		"test": {
+			"env": ["EXPO_PUBLIC_API_BASE_URL"],
+			"inputs": ["$TURBO_DEFAULT$", ".env*"]
+		},
+		"typecheck": {
+			"env": ["EXPO_PUBLIC_API_BASE_URL"],
+			"inputs": ["$TURBO_DEFAULT$", ".env*"],
+			"outputs": []
+		}
+	}
+}

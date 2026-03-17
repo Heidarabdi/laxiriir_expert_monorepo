@@ -1,0 +1,26 @@
+{
+	"name": "@repo/env",
+	"version": "1.0.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"build": "tsc --noEmit",
+		"clean": "node -e \"require('node:fs').rmSync('.turbo', { recursive: true, force: true })\"",
+		"lint": "biome lint src package.json tsconfig.json",
+		"test": "node -e \"process.exit(0)\"",
+		"typecheck": "tsc --noEmit"
+	},
+	"exports": {
+		"./web": "./src/web.ts",
+		"./native": "./src/native.ts"
+	},
+	"dependencies": {
+		"dotenv": "catalog:",
+		"zod": "catalog:"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "catalog:",
+		"@repo/typescript-config": "workspace:*",
+		"typescript": "catalog:"
+	}
+}

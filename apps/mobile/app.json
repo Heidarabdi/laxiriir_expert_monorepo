@@ -1,0 +1,34 @@
+{
+	"expo": {
+		"name": "Laxiriir Expert",
+		"slug": "laxiriir-expert",
+		"scheme": "laxiriir-expert",
+		"version": "1.0.0",
+		"orientation": "portrait",
+		"icon": "./assets/icon.png",
+		"userInterfaceStyle": "light",
+		"splash": {
+			"image": "./assets/splash-icon.png",
+			"resizeMode": "contain",
+			"backgroundColor": "#ffffff"
+		},
+		"ios": {
+			"bundleIdentifier": "com.laxiriir.expert",
+			"supportsTablet": true
+		},
+		"android": {
+			"package": "com.laxiriir.expert",
+			"adaptiveIcon": {
+				"backgroundColor": "#E6F4FE",
+				"foregroundImage": "./assets/android-icon-foreground.png",
+				"backgroundImage": "./assets/android-icon-background.png",
+				"monochromeImage": "./assets/android-icon-monochrome.png"
+			},
+			"predictiveBackGestureEnabled": false
+		},
+		"web": {
+			"favicon": "./assets/favicon.png"
+		},
+		"plugins": ["expo-dev-client"]
+	}
+}

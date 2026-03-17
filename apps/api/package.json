@@ -1,0 +1,13 @@
+{
+	"name": "api",
+	"version": "1.0.0",
+	"private": true,
+	"scripts": {
+		"build": "go build -o bin/api cmd/api/main.go",
+		"dev": "go run cmd/api/main.go",
+		"lint": "go vet ./...",
+		"test": "go test ./...",
+		"typecheck": "go test ./...",
+		"clean": "node -e \"require('node:fs').rmSync('bin', { recursive: true, force: true }); require('node:fs').rmSync('tmp', { recursive: true, force: true })\""
+	}
+}

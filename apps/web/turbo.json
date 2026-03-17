@@ -1,0 +1,18 @@
+{
+	"extends": ["//"],
+	"tasks": {
+		"build": {
+			"env": ["NUXT_PUBLIC_API_BASE_URL"],
+			"inputs": ["$TURBO_DEFAULT$", ".env*"],
+			"outputs": [".nuxt/**", ".output/**"]
+		},
+		"test": {
+			"env": ["NUXT_PUBLIC_API_BASE_URL"],
+			"inputs": ["$TURBO_DEFAULT$", ".env*"]
+		},
+		"typecheck": {
+			"env": ["NUXT_PUBLIC_API_BASE_URL"],
+			"inputs": ["$TURBO_DEFAULT$", ".env*"]
+		}
+	}
+}

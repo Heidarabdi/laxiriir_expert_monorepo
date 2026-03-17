@@ -1,0 +1,47 @@
+{
+	"$schema": "https://turbo.build/schema.json",
+	"ui": "tui",
+	"globalDependencies": ["pnpm-workspace.yaml"],
+	"globalPassThroughEnv": [
+		"LocalAppData",
+		"LOCALAPPDATA",
+		"GOCACHE",
+		"GOPATH",
+		"APPDATA"
+	],
+	"tasks": {
+		"build": {
+			"dependsOn": ["^build"],
+			"inputs": ["$TURBO_DEFAULT$"],
+			"outputs": [
+				"dist/**",
+				".next/**",
+				"!.next/cache/**",
+				".nuxt/**",
+				".output/**",
+				"bin/**"
+			]
+		},
+		"test": {
+			"dependsOn": ["^build"],
+			"inputs": ["$TURBO_DEFAULT$"],
+			"outputs": []
+		},
+		"lint": {
+			"inputs": ["$TURBO_DEFAULT$"],
+			"outputs": []
+		},
+		"typecheck": {
+			"dependsOn": ["^build"],
+			"inputs": ["$TURBO_DEFAULT$"],
+			"outputs": []
+		},
+		"dev": {
+			"cache": false,
+			"persistent": true
+		},
+		"clean": {
+			"cache": false
+		}
+	}
+}

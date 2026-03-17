@@ -1,0 +1,33 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+  - "packages/config/*"
+
+catalog:
+  # Base Shared Types & Tooling
+  typescript: ^5.9.2
+  "@types/node": ^20.17.16
+  "@types/react": ~19.2.2
+
+  # Validation / Env
+  zod: ^3.24.2
+  dotenv: ^16.4.7
+  vitest: ^3.2.4
+
+  # Linter / Formatter
+  "@biomejs/biome": ^2.2.0
+  prettier: ^3.8.1
+
+  # Tailwind CSS V4
+  tailwindcss: ^4.2.1
+  "@tailwindcss/vite": ^4.2.1
+
+  # Vue / Nuxt
+  vue: ^3.5.30
+  nuxt: ^4.4.2
+
+  # React / Expo
+  react: 19.2.0
+  react-dom: 19.2.0
+  react-native: 0.83.2
+  expo: ~55.0.4
