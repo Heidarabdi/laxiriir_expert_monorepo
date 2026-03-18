@@ -14,9 +14,10 @@
 		"typecheck": "nuxt typecheck"
 	},
 	"dependencies": {
+		"@pinia/nuxt": "^0.11.3",
 		"@repo/env": "workspace:*",
 		"@repo/platform": "workspace:*",
-		"@pinia/nuxt": "^0.11.3",
+		"@tanstack/vue-table": "^8.21.3",
 		"@vueuse/core": "^14.2.1",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
@@ -24,6 +25,8 @@
 		"nuxt": "catalog:",
 		"pinia": "^3.0.4",
 		"radix-vue": "^1.9.17",
+		"reka-ui": "^2.9.2",
+		"shadcn-nuxt": "2.4.3",
 		"tailwind-merge": "^3.5.0",
 		"vue": "catalog:",
 		"vue-router": "^4.6.4"
