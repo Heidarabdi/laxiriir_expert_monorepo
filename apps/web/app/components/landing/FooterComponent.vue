@@ -37,17 +37,17 @@
 			<div>
 				<h4 class="text-foreground font-bold mb-6 font-display">Company</h4>
 				<ul class="space-y-4">
-					<li><a class="font-sans text-sm text-muted-foreground hover:text-primary transition-all hover:translate-x-1 inline-block" href="#">About Us</a></li>
+					<li><NuxtLink class="font-sans text-sm text-muted-foreground hover:text-primary transition-all hover:translate-x-1 inline-block" to="/about">About Us</NuxtLink></li>
+					<li><NuxtLink class="font-sans text-sm text-muted-foreground hover:text-primary transition-all hover:translate-x-1 inline-block" to="/contact">Contact Us</NuxtLink></li>
 					<li><a class="font-sans text-sm text-muted-foreground hover:text-primary transition-all hover:translate-x-1 inline-block" href="#">Careers</a></li>
-					<li><a class="font-sans text-sm text-muted-foreground hover:text-primary transition-all hover:translate-x-1 inline-block" href="#">Press</a></li>
 				</ul>
 			</div>
 
 			<div>
 				<h4 class="text-foreground font-bold mb-6 font-display">Legal</h4>
 				<ul class="space-y-4">
-					<li><a class="font-sans text-sm text-muted-foreground hover:text-primary transition-all hover:translate-x-1 inline-block" href="#">Privacy Policy</a></li>
-					<li><a class="font-sans text-sm text-muted-foreground hover:text-primary transition-all hover:translate-x-1 inline-block" href="#">Terms of Service</a></li>
+					<li><NuxtLink class="font-sans text-sm text-muted-foreground hover:text-primary transition-all hover:translate-x-1 inline-block" to="/privacy">Privacy Policy</NuxtLink></li>
+					<li><NuxtLink class="font-sans text-sm text-muted-foreground hover:text-primary transition-all hover:translate-x-1 inline-block" to="/terms">Terms of Service</NuxtLink></li>
 					<li><a class="font-sans text-sm text-muted-foreground hover:text-primary transition-all hover:translate-x-1 inline-block" href="#">Compliance</a></li>
 				</ul>
 			</div>

@@ -22,24 +22,30 @@ const isMobileMenuOpen = ref(false)
 			</NuxtLink>
 
 			<!-- Desktop Nav -->
-			<div class="hidden md:flex items-center gap-8">
+			<div class="hidden md:flex items-center gap-4 lg:gap-8">
 				<NuxtLink
-					to="/experts"
+					to="/about"
 					class="text-muted-foreground hover:text-foreground transition-colors font-display tracking-tight"
 				>
-					Experts Directory
+					About
 				</NuxtLink>
 				<NuxtLink
-					to="/#disciplines"
-					class="text-muted-foreground hover:text-foreground transition-colors font-display tracking-tight"
+					to="/experts"
+					class="text-muted-foreground hover:text-foreground transition-colors font-display tracking-tight whitespace-nowrap"
 				>
-					Disciplines
+					Experts Directory
 				</NuxtLink>
 				<NuxtLink
 					to="/pricing"
 					class="text-muted-foreground hover:text-foreground transition-colors font-display tracking-tight"
 				>
 					Pricing
+				</NuxtLink>
+				<NuxtLink
+					to="/contact"
+					class="text-muted-foreground hover:text-foreground transition-colors font-display tracking-tight"
+				>
+					Contact
 				</NuxtLink>
 			</div>
 
@@ -69,9 +75,10 @@ const isMobileMenuOpen = ref(false)
 
 		<!-- Mobile Menu Drawer -->
 		<div v-if="isMobileMenuOpen" class="md:hidden absolute top-20 left-0 w-full bg-background border-b border-border/40 shadow-lg py-6 px-6 flex flex-col gap-6 backdrop-blur-xl">
+			<NuxtLink to="/about" @click="isMobileMenuOpen = false" class="text-foreground font-display font-medium text-lg">About</NuxtLink>
 			<NuxtLink to="/experts" @click="isMobileMenuOpen = false" class="text-foreground font-display font-medium text-lg">Experts Directory</NuxtLink>
-			<NuxtLink to="/#disciplines" @click="isMobileMenuOpen = false" class="text-foreground font-display font-medium text-lg">Disciplines</NuxtLink>
 			<NuxtLink to="/pricing" @click="isMobileMenuOpen = false" class="text-foreground font-display font-medium text-lg">Pricing</NuxtLink>
+			<NuxtLink to="/contact" @click="isMobileMenuOpen = false" class="text-foreground font-display font-medium text-lg">Contact Us</NuxtLink>
 			<hr class="border-border/30" />
 			<div class="flex flex-col gap-4">
 				<NuxtLink to="/login" @click="isMobileMenuOpen = false" class="text-foreground font-medium text-lg text-center py-2 border border-border/50 rounded-xl">Log In</NuxtLink>

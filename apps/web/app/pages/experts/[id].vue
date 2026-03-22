@@ -2,13 +2,13 @@
   <div class="bg-background text-foreground font-body selection:bg-primary selection:text-primary-foreground min-h-screen flex flex-col">
     <NavBar />
 
-    <main class="grow pt-32 pb-24 max-w-7xl mx-auto px-8 w-full">
+    <main class="grow pt-32 pb-24 max-w-7xl mx-auto px-6 md:px-8 w-full">
       <ProfileHeader :expert="expertData" />
 
       <!-- Main Content Grid -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-16">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
         <!-- Content Left Column -->
-        <div class="lg:col-span-8 space-y-20">
+        <div class="lg:col-span-8 space-y-12 lg:space-y-20">
           <ProfileAbout :expert="expertData" />
           <ProfileAvailability />
           <ProfileExperience :experience="expertData.experience" />
