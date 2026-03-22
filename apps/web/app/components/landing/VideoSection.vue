@@ -3,12 +3,12 @@
 </script>
 
 <template>
-	<section class="py-24 px-8 bg-secondary/50">
+	<section class="py-16 md:py-24 px-6 md:px-8 bg-secondary/50">
 		<div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
 			
 			<!-- Video Player Mockup -->
 			<div class="order-2 lg:order-1">
-				<div class="aspect-video bg-muted rounded-2xl overflow-hidden relative shadow-2xl group border border-border/20">
+				<div class="aspect-video bg-muted rounded-2xl overflow-hidden relative shadow-xl shadow-black/5 group border border-border/20">
 					<img
 						alt="Professional video conferencing interface"
 						class="w-full h-full object-cover opacity-60"
@@ -38,7 +38,7 @@
 
 			<!-- Text Content -->
 			<div class="order-1 lg:order-2">
-				<h2 class="font-display text-4xl md:text-5xl font-extrabold tracking-tight mb-8 text-foreground">
+				<h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-8 text-foreground">
 					Crystal clear video. <br />
 					<span class="text-primary">Built-in.</span>
 				</h2>

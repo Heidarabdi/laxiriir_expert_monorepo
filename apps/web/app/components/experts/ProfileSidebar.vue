@@ -1,7 +1,7 @@
 <template>
   <aside class="lg:col-span-4 space-y-8">
     <!-- Quick Info Card -->
-    <div class="bg-card/60 backdrop-blur-xl p-8 rounded-2xl border border-border/50 sticky top-32">
+    <div class="bg-card/60 backdrop-blur-xl p-6 md:p-8 rounded-2xl border border-border/50 sticky top-32">
       <h3 class="text-xs uppercase tracking-[0.3em] text-primary font-bold mb-8">Quick Intelligence</h3>
       <div class="space-y-10">
         <div class="flex items-start gap-4">
@@ -29,7 +29,7 @@
           <span class="material-symbols-outlined text-primary mt-1">verified_user</span>
           <div>
             <p class="text-[10px] uppercase tracking-wider text-muted-foreground font-bold mb-1">Verification</p>
-            <p class="text-lg font-medium text-secondary">Identity &amp; Credentials Verified</p>
+            <p class="text-lg font-medium text-foreground">Identity &amp; Credentials Verified</p>
           </div>
         </div>
       </div>
@@ -45,7 +45,7 @@
     </div>
     
     <!-- Trusted Badge -->
-    <div class="p-6 rounded-2xl bg-surface-container-high border border-border/30 text-center">
+    <div class="p-6 rounded-2xl bg-secondary border border-border/30 text-center">
       <span class="material-symbols-outlined text-4xl text-tertiary mb-3">shield_person</span>
       <p class="text-xs text-muted-foreground px-4">All sessions are end-to-end encrypted and HIPAA compliant.</p>
     </div>

@@ -6,9 +6,9 @@
       <PricingSection />
       
       <!-- FAQ or Additional info block could go here -->
-      <section class="max-w-4xl mx-auto px-8 pb-32">
+      <section class="max-w-4xl mx-auto px-6 md:px-8 pb-16 md:pb-32">
         <div class="text-center mb-16">
-          <h2 class="text-3xl font-display font-bold mb-4">Frequently Asked Questions</h2>
+          <h2 class="text-2xl sm:text-3xl font-display font-bold mb-4">Frequently Asked Questions</h2>
           <p class="text-muted-foreground">Everything you need to know about billing and subscriptions.</p>
         </div>
         

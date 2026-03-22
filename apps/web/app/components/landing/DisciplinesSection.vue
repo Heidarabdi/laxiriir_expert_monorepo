@@ -7,9 +7,9 @@ const tabs = ['Healthcare', 'Spiritual', 'Business', 'Legal']
 </script>
 
 <template>
-	<section class="py-24 px-8 max-w-7xl mx-auto" id="disciplines">
+	<section class="py-16 md:py-24 px-6 md:px-8 max-w-7xl mx-auto" id="disciplines">
 		<div class="text-center mb-16">
-			<h2 class="font-display text-4xl font-bold mb-6 text-foreground">
+			<h2 class="font-display text-3xl sm:text-4xl font-bold mb-6 text-foreground">
 				A platform for every discipline
 			</h2>
 			<div class="flex justify-center gap-4 flex-wrap">
@@ -27,7 +27,7 @@ const tabs = ['Healthcare', 'Spiritual', 'Business', 'Legal']
 
 		<!-- Dynamic content area -->
 		<div
-			class="bg-secondary/50 rounded-3xl p-12 grid md:grid-cols-2 gap-12 items-center border border-border/10"
+			class="bg-secondary/50 rounded-3xl p-6 sm:p-8 md:p-12 grid md:grid-cols-2 gap-8 md:gap-12 items-center border border-border/10"
 		>
 			<div class="space-y-6">
 				<div
@@ -38,7 +38,7 @@ const tabs = ['Healthcare', 'Spiritual', 'Business', 'Legal']
 					<span v-else-if="activeTab === 'Business'">Strategy & Advising</span>
 					<span v-else-if="activeTab === 'Legal'">Law & Contracts</span>
 				</div>
-				<h3 class="text-4xl font-display font-bold text-foreground">
+				<h3 class="text-3xl sm:text-4xl font-display font-bold text-foreground">
 					<span v-if="activeTab === 'Healthcare'">Confidential Medical consultations.</span>
 					<span v-else-if="activeTab === 'Spiritual'">Meaningful spiritual connections.</span>
 					<span v-else-if="activeTab === 'Business'">High-definition strategy rooms.</span>
@@ -66,14 +66,14 @@ const tabs = ['Healthcare', 'Spiritual', 'Business', 'Legal']
 			</div>
 			
 			<div class="grid grid-cols-2 gap-4">
-				<div class="aspect-square rounded-2xl bg-muted overflow-hidden shadow-xl border border-border/20">
+				<div class="aspect-square rounded-2xl bg-muted overflow-hidden shadow-lg shadow-black/5 border border-border/20">
 					<img
 						alt="Expert working"
 						class="w-full h-full object-cover grayscale"
 						src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=500"
 					/>
 				</div>
-				<div class="aspect-square rounded-2xl bg-muted overflow-hidden mt-8 shadow-xl border border-border/20">
+				<div class="aspect-square rounded-2xl bg-muted overflow-hidden mt-8 shadow-lg shadow-black/5 border border-border/20">
 					<img
 						alt="Virtual session"
 						class="w-full h-full object-cover grayscale"

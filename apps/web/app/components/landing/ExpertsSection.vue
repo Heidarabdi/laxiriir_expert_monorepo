@@ -3,11 +3,11 @@
 </script>
 
 <template>
-	<section class="py-24 px-8 bg-background">
+	<section class="py-16 md:py-24 px-6 md:px-8 bg-background">
 		<div class="max-w-7xl mx-auto">
-			<div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
+			<div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 md:mb-16 gap-6 md:gap-8">
 				<div class="max-w-xl">
-					<h2 class="font-display text-4xl font-bold mb-4 text-foreground">Verified Experts</h2>
+					<h2 class="font-display text-3xl sm:text-4xl font-bold mb-4 text-foreground">Verified Experts</h2>
 					<p class="text-muted-foreground font-sans">
 						Access the top 1% of practitioners. Every expert undergoes a rigorous vetting process including identity
 						verification and credential auditing.

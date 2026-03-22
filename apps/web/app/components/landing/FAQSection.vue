@@ -27,9 +27,9 @@ const faqs = ref([
 </script>
 
 <template>
-	<section class="py-24 px-8 bg-background border-t border-border/10">
+	<section class="py-16 md:py-24 px-6 md:px-8 bg-background border-t border-border/10">
 		<div class="max-w-3xl mx-auto">
-			<h2 class="font-display text-4xl font-bold mb-12 text-center text-foreground">Frequently Asked Questions</h2>
+			<h2 class="font-display text-3xl sm:text-4xl font-bold mb-8 md:mb-12 text-center text-foreground">Frequently Asked Questions</h2>
 			<div class="space-y-4">
 				<div
 					v-for="(faq, index) in faqs"

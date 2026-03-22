@@ -1,9 +1,9 @@
 <template>
   <div class="min-h-screen bg-background text-foreground flex flex-col items-center justify-center p-4 relative overflow-hidden">
     <!-- Background Glow -->
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[120px] opacity-70 pointer-events-none"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] md:w-[600px] md:h-[600px] bg-primary/10 rounded-full blur-[120px] opacity-70 pointer-events-none"></div>
 
-    <div class="w-full max-w-md bg-card border border-border/50 rounded-2xl p-8 shadow-2xl relative z-10 backdrop-blur-3xl">
+    <div class="w-full max-w-md bg-card border border-border/50 rounded-2xl p-6 md:p-8 shadow-xl shadow-black/5 relative z-10 backdrop-blur-3xl">
       <div class="text-center mb-8 flex flex-col items-center">
         <NuxtLink to="/" class="flex items-center gap-3 font-display text-2xl font-bold tracking-tighter text-foreground group cursor-pointer mb-6">
             <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-primary transform group-hover:-translate-y-1 transition-all duration-300 drop-shadow-[0_0_8px_rgba(var(--primary),0.3)]">
@@ -21,15 +21,15 @@
       <form class="space-y-4" @submit.prevent>
         <div>
           <label class="block text-sm font-medium text-foreground mb-1.5">Full Name</label>
-          <Input type="text" placeholder="John Doe" class="bg-secondary/30 border-white/10 text-foreground h-11 focus-visible:border-primary focus-visible:ring-primary/20" />
+          <Input type="text" placeholder="John Doe" class="bg-secondary/50 border-border/50 text-foreground h-11 focus-visible:border-primary focus-visible:ring-primary/20" />
         </div>
         <div>
           <label class="block text-sm font-medium text-foreground mb-1.5">Email Address</label>
-          <Input type="email" placeholder="you@example.com" class="bg-secondary/30 border-white/10 text-foreground h-11 focus-visible:border-primary focus-visible:ring-primary/20" />
+          <Input type="email" placeholder="you@example.com" class="bg-secondary/50 border-border/50 text-foreground h-11 focus-visible:border-primary focus-visible:ring-primary/20" />
         </div>
         <div>
           <label class="block text-sm font-medium text-foreground mb-1.5">Password</label>
-          <Input type="password" placeholder="••••••••" class="bg-secondary/30 border-white/10 text-foreground h-11 focus-visible:border-primary focus-visible:ring-primary/20" />
+          <Input type="password" placeholder="••••••••" class="bg-secondary/50 border-border/50 text-foreground h-11 focus-visible:border-primary focus-visible:ring-primary/20" />
         </div>
         
         <Button class="w-full mt-6 shadow-[0_0_20px_rgba(var(--color-primary),0.2)]" size="lg">

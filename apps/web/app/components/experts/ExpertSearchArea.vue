@@ -1,9 +1,9 @@
 <template>
   <section class="mb-12 bg-card p-2 rounded-2xl flex flex-col md:flex-row items-center gap-2 border border-border/30">
-    <div class="flex-1 w-full flex items-center px-4 bg-surface-container rounded-xl">
+    <div class="flex-1 w-full flex items-center px-4 bg-secondary/50 rounded-xl">
       <span class="material-symbols-outlined text-muted-foreground" data-icon="search">search</span>
       <input
-        class="bg-transparent border-none focus:ring-0 text-foreground w-full py-4 px-3 placeholder:text-muted-foreground-variant text-sm"
+        class="bg-transparent border-none focus:ring-0 text-foreground w-full py-4 px-3 placeholder:text-muted-foreground text-sm"
         placeholder="Search for experts, skills, or industries..."
         type="text"
       />

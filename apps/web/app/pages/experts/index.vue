@@ -3,11 +3,11 @@
     <NavBar />
 
     <main class="grow pt-28 pb-12">
-      <div class="max-w-7xl mx-auto px-8">
+      <div class="max-w-7xl mx-auto px-6 md:px-8">
         
         <!-- Header Section -->
         <header class="mb-12">
-           <h1 class="text-5xl md:text-6xl font-black font-headline tracking-tighter mb-4 text-foreground">Discover Expertise.</h1>
+           <h1 class="text-4xl sm:text-5xl md:text-6xl font-black font-headline tracking-tighter mb-4 text-foreground">Discover Expertise.</h1>
            <p class="text-muted-foreground max-w-2xl text-lg leading-relaxed">
              Connect with high-performance consultants across medical, tech, and strategy domains. Frictionless execution starts with the right perspective.
            </p>

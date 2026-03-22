@@ -3,8 +3,8 @@
 </script>
 
 <template>
-	<section class="py-24 px-8 max-w-7xl mx-auto">
-		<h2 class="font-display text-4xl font-bold mb-16 text-center text-foreground">Intelligence built-in</h2>
+	<section class="py-16 md:py-24 px-6 md:px-8 max-w-7xl mx-auto">
+		<h2 class="font-display text-3xl sm:text-4xl font-bold mb-12 md:mb-16 text-center text-foreground">Intelligence built-in</h2>
 		<div class="grid md:grid-cols-4 grid-rows-2 gap-6 h-auto md:h-[600px]">
 			
 			<div class="md:col-span-2 md:row-span-2 bg-secondary/50 rounded-3xl p-10 border border-border/10 relative overflow-hidden group">
