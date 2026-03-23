@@ -16,7 +16,7 @@
 			
 			<div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
 				<!-- Client Card -->
-				<div class="bg-card p-6 sm:p-8 md:p-10 rounded-3xl border border-border/50 hover:border-primary/30 hover:shadow-[0_0_30px_rgba(var(--color-primary),0.1)] transition-all">
+				<div class="bg-card p-6 sm:p-8 md:p-10 rounded-3xl border border-border/50 hover:border-primary/30 hover:shadow-[0_0_30px_rgb(var(--primary-rgb)_/_0.1)] transition-all">
 					<h3 class="text-2xl font-bold mb-2 font-display text-foreground">For Clients</h3>
 					<div class="flex items-baseline gap-1 mb-6">
 						<span class="text-5xl font-extrabold text-foreground">Free</span>
@@ -41,7 +41,7 @@
 				</div>
 				
 				<!-- Expert Card -->
-				<div class="bg-card p-6 sm:p-8 md:p-10 rounded-3xl border-2 border-primary relative hover:shadow-[0_0_40px_rgba(var(--color-primary),0.15)] transition-all">
+				<div class="bg-card p-6 sm:p-8 md:p-10 rounded-3xl border-2 border-primary relative hover:shadow-[0_0_40px_rgb(var(--primary-rgb)_/_0.15)] transition-all">
 					<div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest">
 						Recommended
 					</div>

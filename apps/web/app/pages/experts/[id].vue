@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-background text-foreground font-body selection:bg-primary selection:text-primary-foreground min-h-screen flex flex-col">
+  <div class="bg-background text-foreground font-sans selection:bg-primary selection:text-primary-foreground min-h-screen flex flex-col">
     <NavBar />
 
     <main class="grow pt-32 pb-24 max-w-7xl mx-auto px-6 md:px-8 w-full">

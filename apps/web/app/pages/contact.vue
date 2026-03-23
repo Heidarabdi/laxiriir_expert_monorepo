@@ -51,7 +51,7 @@
             ></textarea>
           </div>
           
-          <Button type="submit" class="w-full h-12 shadow-[0_0_20px_rgba(var(--color-primary),0.2)]" size="lg" :disabled="isSubmitting">
+          <Button type="submit" class="w-full h-12 shadow-[0_0_20px_rgb(var(--primary-rgb)_/_0.2)]" size="lg" :disabled="isSubmitting">
             <span v-if="isSubmitting">Sending...</span>
             <span v-else>Send Message</span>
           </Button>

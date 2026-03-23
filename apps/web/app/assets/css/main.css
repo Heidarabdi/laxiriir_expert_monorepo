@@ -45,6 +45,7 @@
 
 :root {
 	--app-radius: 0.5rem;
+	--primary-rgb: 109 254 156;
 	--background: #0e0e0e;
 	--foreground: #ffffff;
 	--card: #1a1919;
@@ -79,6 +80,7 @@
 }
 
 .light {
+	--primary-rgb: 25 190 100;
 	--background: #fdfdfd;
 	--foreground: #0a0a0a;
 	--card: #f8f8f8;

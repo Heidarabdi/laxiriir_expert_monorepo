@@ -16,8 +16,8 @@
         <div class="aspect-square flex items-center justify-center rounded-lg text-muted-foreground opacity-20">29</div>
         <div class="aspect-square flex items-center justify-center rounded-lg text-muted-foreground opacity-20">30</div>
         
-        <div class="aspect-square flex items-center justify-center rounded-lg border border-border/60 hover:bg-surface-variant cursor-pointer transition-colors">1</div>
-        <div class="aspect-square flex items-center justify-center rounded-lg border border-border/60 hover:bg-surface-variant cursor-pointer transition-colors">2</div>
+        <div class="aspect-square flex items-center justify-center rounded-lg border border-border/60 hover:bg-muted cursor-pointer transition-colors">1</div>
+        <div class="aspect-square flex items-center justify-center rounded-lg border border-border/60 hover:bg-muted cursor-pointer transition-colors">2</div>
         <div class="aspect-square flex items-center justify-center rounded-lg text-muted-foreground opacity-20">3</div>
         <div class="aspect-square flex items-center justify-center rounded-lg text-muted-foreground opacity-20">4</div>
         
@@ -30,9 +30,9 @@
           <span class="w-1 h-1 bg-primary rounded-full mt-1"></span>
         </div>
         
-        <div class="aspect-square flex items-center justify-center rounded-lg border border-border/60 hover:bg-surface-variant cursor-pointer transition-colors">7</div>
-        <div class="aspect-square flex items-center justify-center rounded-lg border border-border/60 hover:bg-surface-variant cursor-pointer transition-colors">8</div>
-        <div class="aspect-square flex items-center justify-center rounded-lg border border-border/60 hover:bg-surface-variant cursor-pointer transition-colors">9</div>
+        <div class="aspect-square flex items-center justify-center rounded-lg border border-border/60 hover:bg-muted cursor-pointer transition-colors">7</div>
+        <div class="aspect-square flex items-center justify-center rounded-lg border border-border/60 hover:bg-muted cursor-pointer transition-colors">8</div>
+        <div class="aspect-square flex items-center justify-center rounded-lg border border-border/60 hover:bg-muted cursor-pointer transition-colors">9</div>
         
         <div class="aspect-square flex items-center justify-center rounded-lg text-muted-foreground opacity-20">10</div>
         <div class="aspect-square flex items-center justify-center rounded-lg text-muted-foreground opacity-20">11</div>
@@ -40,9 +40,9 @@
       
       <div class="flex gap-4 overflow-x-auto pb-2 scrollbar-none">
         <button class="shrink-0 px-6 py-3 bg-primary text-primary-foreground rounded-full font-bold text-sm hover:brightness-110 active:scale-95 transition-all">09:00 AM</button>
-        <button class="shrink-0 px-6 py-3 bg-surface-container-high border border-border/60 rounded-full font-bold text-sm hover:border-primary transition-colors">11:30 AM</button>
-        <button class="shrink-0 px-6 py-3 bg-surface-container-high border border-border/60 rounded-full font-bold text-sm hover:border-primary transition-colors">02:00 PM</button>
-        <button class="shrink-0 px-6 py-3 bg-surface-container-high border border-border/60 rounded-full font-bold text-sm hover:border-primary transition-colors">04:30 PM</button>
+        <button class="shrink-0 px-6 py-3 bg-secondary border border-border/60 rounded-full font-bold text-sm hover:border-primary transition-colors">11:30 AM</button>
+        <button class="shrink-0 px-6 py-3 bg-secondary border border-border/60 rounded-full font-bold text-sm hover:border-primary transition-colors">02:00 PM</button>
+        <button class="shrink-0 px-6 py-3 bg-secondary border border-border/60 rounded-full font-bold text-sm hover:border-primary transition-colors">04:30 PM</button>
       </div>
     </div>
   </section>

@@ -11,8 +11,8 @@ const isMobileMenuOpen = ref(false)
 	>
 		<div class="flex justify-between items-center max-w-7xl mx-auto px-6 md:px-8 h-20">
 			<!-- Logo -->
-			<NuxtLink to="/" class="flex items-center gap-3 font-display text-2xl font-bold tracking-tighter text-foreground group cursor-pointer">
-				<svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-primary transform group-hover:-translate-y-1 transition-all duration-300 drop-shadow-[0_0_8px_rgba(var(--primary),0.3)]">
+				<NuxtLink to="/" class="flex items-center gap-3 font-display text-2xl font-bold tracking-tighter text-foreground group cursor-pointer">
+					<svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-primary transform group-hover:-translate-y-1 transition-all duration-300 drop-shadow-[0_0_8px_rgb(var(--primary-rgb)_/_0.3)]">
 					<path d="M16 2L2 9L16 16L30 9L16 2Z" fill="currentColor" fill-opacity="0.2" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
 					<path d="M2 23L16 30L30 23" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 					<path d="M2 16L16 23L30 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>

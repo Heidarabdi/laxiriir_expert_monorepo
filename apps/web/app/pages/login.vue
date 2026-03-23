@@ -6,7 +6,7 @@
     <div class="w-full max-w-md bg-card border border-border/50 rounded-2xl p-6 md:p-8 shadow-xl shadow-black/5 relative z-10 backdrop-blur-3xl">
       <div class="text-center mb-8 flex flex-col items-center">
         <NuxtLink to="/" class="flex items-center gap-3 font-display text-2xl font-bold tracking-tighter text-foreground group cursor-pointer mb-6">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-primary transform group-hover:-translate-y-1 transition-all duration-300 drop-shadow-[0_0_8px_rgba(var(--primary),0.3)]">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-primary transform group-hover:-translate-y-1 transition-all duration-300 drop-shadow-[0_0_8px_rgb(var(--primary-rgb)_/_0.3)]">
                 <path d="M16 2L2 9L16 16L30 9L16 2Z" fill="currentColor" fill-opacity="0.2" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
                 <path d="M2 23L16 30L30 23" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M2 16L16 23L30 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -31,7 +31,7 @@
           <Input type="password" placeholder="••••••••" class="bg-secondary/50 border-border/50 text-foreground h-11 focus-visible:border-primary focus-visible:ring-primary/20" />
         </div>
         
-        <Button class="w-full mt-6 shadow-[0_0_20px_rgba(var(--color-primary),0.2)]" size="lg">
+        <Button class="w-full mt-6 shadow-[0_0_20px_rgb(var(--primary-rgb)_/_0.2)]" size="lg">
           Sign In
         </Button>
       </form>

@@ -8,7 +8,7 @@
           <span class="material-symbols-outlined text-primary mt-1">payments</span>
           <div>
             <p class="text-[10px] uppercase tracking-wider text-muted-foreground font-bold mb-1">Session Price</p>
-            <p class="text-2xl font-bold font-headline">${{ expert.price }} <span class="text-sm font-normal text-muted-foreground">/ 50 min</span></p>
+            <p class="text-2xl font-bold font-display">${{ expert.price }} <span class="text-sm font-normal text-muted-foreground">/ 50 min</span></p>
           </div>
         </div>
         <div class="flex items-start gap-4">
@@ -38,7 +38,7 @@
         <button class="w-full bg-primary text-primary-foreground font-extrabold py-4 rounded-xl shadow-lg shadow-primary/10 hover:brightness-110 transition-all">Instant Booking</button>
         <button class="w-full bg-transparent border border-border/80 text-foreground font-bold py-4 rounded-xl hover:bg-white/5 transition-all">Schedule Discovery Call</button>
       </div>
-      <div class="mt-8 p-4 bg-cardest/40 rounded-lg text-center">
+      <div class="mt-8 rounded-lg bg-secondary/70 p-4 text-center">
         <p class="text-[10px] text-muted-foreground uppercase tracking-widest">Next available slot</p>
         <p class="text-sm font-bold text-primary">{{ expert.nextSlot }}</p>
       </div>
@@ -46,7 +46,7 @@
     
     <!-- Trusted Badge -->
     <div class="p-6 rounded-2xl bg-secondary border border-border/30 text-center">
-      <span class="material-symbols-outlined text-4xl text-tertiary mb-3">shield_person</span>
+      <span class="material-symbols-outlined text-chart-3 mb-3 text-4xl">shield_person</span>
       <p class="text-xs text-muted-foreground px-4">All sessions are end-to-end encrypted and HIPAA compliant.</p>
     </div>
   </aside>

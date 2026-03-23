@@ -5,7 +5,7 @@
       <p v-for="(paragraph, index) in expert.bio" :key="index">{{ paragraph }}</p>
     </div>
     <div class="mt-12 flex flex-wrap gap-3">
-      <span v-for="tag in expert.tags" :key="tag" class="px-5 py-2 bg-surface-container-high rounded-full border border-border/30 text-sm font-medium">
+      <span v-for="tag in expert.tags" :key="tag" class="px-5 py-2 bg-secondary rounded-full border border-border/30 text-sm font-medium">
         {{ tag }}
       </span>
     </div>

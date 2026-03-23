@@ -62,7 +62,7 @@
 			<!-- CTAs -->
 			<div class="flex flex-col sm:flex-row gap-4">
 				<button
-					class="px-8 py-4 bg-primary text-primary-foreground rounded-full font-bold text-lg hover:shadow-[0_0_30px_-5px_rgba(var(--color-primary),0.4)] transition-all"
+					class="px-8 py-4 bg-primary text-primary-foreground rounded-full font-bold text-lg hover:shadow-[0_0_30px_-5px_rgb(var(--primary-rgb)_/_0.4)] transition-all"
 				>
 					Join as Client
 				</button>

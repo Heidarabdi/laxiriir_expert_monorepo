@@ -7,7 +7,7 @@
         
         <!-- Header Section -->
         <header class="mb-12">
-           <h1 class="text-4xl sm:text-5xl md:text-6xl font-black font-headline tracking-tighter mb-4 text-foreground">Discover Expertise.</h1>
+           <h1 class="text-4xl sm:text-5xl md:text-6xl font-black font-display tracking-tighter mb-4 text-foreground">Discover Expertise.</h1>
            <p class="text-muted-foreground max-w-2xl text-lg leading-relaxed">
              Connect with high-performance consultants across medical, tech, and strategy domains. Frictionless execution starts with the right perspective.
            </p>
@@ -25,7 +25,7 @@
 
              <!-- Pagination Placeholder -->
              <div class="mt-16 flex justify-center gap-2">
-                <button class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center text-primary bg-card hover:bg-primary/10 transition-colors">1</button>
+                <button class="w-10 h-10 rounded-full border border-border/60 flex items-center justify-center text-primary bg-card hover:bg-primary/10 transition-colors">1</button>
                 <button class="w-10 h-10 rounded-full border border-border/80 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors">2</button>
                 <button class="w-10 h-10 rounded-full border border-border/80 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors">3</button>
                 <span class="flex items-center justify-center px-2 text-muted-foreground">...</span>

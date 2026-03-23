@@ -13,7 +13,7 @@
     <div class="p-6">
       <div class="flex justify-between items-start mb-2">
         <div>
-          <h3 class="text-xl font-bold font-headline group-hover:text-primary transition-colors">{{ expert.name }}</h3>
+          <h3 class="text-xl font-bold font-display group-hover:text-primary transition-colors">{{ expert.name }}</h3>
           <p class="text-sm text-muted-foreground">{{ expert.title }}</p>
         </div>
         <div class="flex items-center gap-1 text-primary">
@@ -31,7 +31,7 @@
         <NuxtLink :to="`/experts/${expert.id}`" class="py-3 bg-muted text-foreground text-center flex items-center justify-center text-xs font-bold rounded-xl hover:bg-accent transition-colors">
           View Profile
         </NuxtLink>
-        <Button class="w-full py-6 rounded-xl font-bold text-xs shadow-[0_0_20px_rgba(var(--color-primary),0.3)]">
+        <Button class="w-full py-6 rounded-xl font-bold text-xs shadow-[0_0_20px_rgb(var(--primary-rgb)_/_0.3)]">
           Book Now
         </Button>
       </div>
