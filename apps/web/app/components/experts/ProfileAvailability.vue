@@ -2,54 +2,94 @@
   <section>
     <div class="flex justify-between items-end mb-8">
       <h2 class="text-xs uppercase tracking-[0.3em] text-primary font-bold">Session Availability</h2>
-      <span class="text-muted-foreground text-sm">{{ currentMonth }}</span>
+      <span class="text-muted-foreground text-sm">{{ availabilityMonth }}</span>
     </div>
     
     <div class="bg-card p-8 rounded-xl border border-border/50">
-      <div class="grid grid-cols-7 gap-4 text-center mb-6">
-        <div v-for="day in ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']" :key="day" class="text-[10px] uppercase font-bold text-muted-foreground">
-          {{ day }}
-        </div>
-        
-        <!-- Simplified Calendar Grid - Static for Visual Matching -->
-        <div class="aspect-square flex items-center justify-center rounded-lg text-muted-foreground opacity-20">28</div>
-        <div class="aspect-square flex items-center justify-center rounded-lg text-muted-foreground opacity-20">29</div>
-        <div class="aspect-square flex items-center justify-center rounded-lg text-muted-foreground opacity-20">30</div>
-        
-        <div class="aspect-square flex items-center justify-center rounded-lg border border-border/60 hover:bg-muted cursor-pointer transition-colors">1</div>
-        <div class="aspect-square flex items-center justify-center rounded-lg border border-border/60 hover:bg-muted cursor-pointer transition-colors">2</div>
-        <div class="aspect-square flex items-center justify-center rounded-lg text-muted-foreground opacity-20">3</div>
-        <div class="aspect-square flex items-center justify-center rounded-lg text-muted-foreground opacity-20">4</div>
-        
-        <div class="aspect-square flex flex-col items-center justify-center rounded-lg bg-primary/10 border border-primary/30 relative">
-          <span class="font-bold">5</span>
-          <span class="w-1 h-1 bg-primary rounded-full mt-1"></span>
-        </div>
-        <div class="aspect-square flex flex-col items-center justify-center rounded-lg bg-primary/10 border border-primary/30 relative">
-          <span class="font-bold">6</span>
-          <span class="w-1 h-1 bg-primary rounded-full mt-1"></span>
-        </div>
-        
-        <div class="aspect-square flex items-center justify-center rounded-lg border border-border/60 hover:bg-muted cursor-pointer transition-colors">7</div>
-        <div class="aspect-square flex items-center justify-center rounded-lg border border-border/60 hover:bg-muted cursor-pointer transition-colors">8</div>
-        <div class="aspect-square flex items-center justify-center rounded-lg border border-border/60 hover:bg-muted cursor-pointer transition-colors">9</div>
-        
-        <div class="aspect-square flex items-center justify-center rounded-lg text-muted-foreground opacity-20">10</div>
-        <div class="aspect-square flex items-center justify-center rounded-lg text-muted-foreground opacity-20">11</div>
+      <div class="grid gap-4 md:grid-cols-3">
+        <button
+          v-for="day in bookingDays"
+          :key="day.id"
+          :class="[
+            'rounded-2xl border p-5 text-left transition-all',
+            selectedDayId === day.id
+              ? 'border-primary bg-primary/10'
+              : 'border-border/60 bg-secondary hover:border-primary/40',
+          ]"
+          type="button"
+          @click="emit('update:selectedDayId', day.id)"
+        >
+          <p class="text-[10px] uppercase font-bold tracking-[0.3em] text-muted-foreground">
+            {{ day.dayLabel }}
+          </p>
+          <p class="mt-3 text-lg font-bold text-foreground">{{ day.dateLabel }}</p>
+          <p class="mt-2 text-sm text-muted-foreground">
+            {{ day.slots.filter((slot) => slot.available).length }} open slots
+          </p>
+        </button>
       </div>
       
-      <div class="flex gap-4 overflow-x-auto pb-2 scrollbar-none">
-        <button class="shrink-0 px-6 py-3 bg-primary text-primary-foreground rounded-full font-bold text-sm hover:brightness-110 active:scale-95 transition-all">09:00 AM</button>
-        <button class="shrink-0 px-6 py-3 bg-secondary border border-border/60 rounded-full font-bold text-sm hover:border-primary transition-colors">11:30 AM</button>
-        <button class="shrink-0 px-6 py-3 bg-secondary border border-border/60 rounded-full font-bold text-sm hover:border-primary transition-colors">02:00 PM</button>
-        <button class="shrink-0 px-6 py-3 bg-secondary border border-border/60 rounded-full font-bold text-sm hover:border-primary transition-colors">04:30 PM</button>
+      <div class="mt-8">
+        <div class="flex items-center justify-between gap-4">
+          <div>
+            <p class="text-[10px] uppercase font-bold tracking-[0.3em] text-muted-foreground">
+              Available slots
+            </p>
+            <p class="mt-2 text-lg font-bold text-foreground">
+              {{ selectedDay?.dateLabel ?? "Select a day" }}
+            </p>
+          </div>
+          <p class="text-sm text-muted-foreground">
+            {{ availableSlots.length }} slot{{ availableSlots.length === 1 ? "" : "s" }}
+          </p>
+        </div>
+
+        <div v-if="availableSlots.length > 0" class="mt-6 flex gap-4 overflow-x-auto pb-2 scrollbar-none">
+          <button
+            v-for="slot in availableSlots"
+            :key="slot.id"
+            :class="[
+              'shrink-0 rounded-full px-6 py-3 text-sm font-bold transition-all',
+              selectedSlotId === slot.id
+                ? 'bg-primary text-primary-foreground shadow-[0_0_20px_rgb(var(--primary-rgb)_/_0.18)]'
+                : 'bg-secondary border border-border/60 hover:border-primary',
+            ]"
+            type="button"
+            @click="emit('update:selectedSlotId', slot.id)"
+          >
+            {{ slot.timeLabel }}
+          </button>
+        </div>
+
+        <p v-else class="mt-6 rounded-2xl border border-border/50 bg-secondary px-5 py-4 text-sm text-muted-foreground">
+          No bookable slots are open for the selected day yet. Try another day.
+        </p>
       </div>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed } from 'vue'
+import type { BookingDay } from '~/types/experts'
 
-const currentMonth = ref('October 2024')
+const props = defineProps<{
+  availabilityMonth: string
+  bookingDays: BookingDay[]
+  selectedDayId: string
+  selectedSlotId: string
+}>()
+
+const emit = defineEmits<{
+  (e: "update:selectedDayId", value: string): void
+  (e: "update:selectedSlotId", value: string): void
+}>()
+
+const selectedDay = computed(
+  () => props.bookingDays.find((day) => day.id === props.selectedDayId) ?? props.bookingDays[0],
+)
+
+const availableSlots = computed(
+  () => selectedDay.value?.slots.filter((slot) => slot.available) ?? [],
+)
 </script>

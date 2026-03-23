@@ -1,59 +1,143 @@
 <template>
-  <div class="min-h-screen bg-background text-foreground flex flex-col items-center justify-center p-4 relative overflow-hidden">
-    <!-- Background Glow -->
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] md:w-[600px] md:h-[600px] bg-primary/10 rounded-full blur-[120px] opacity-70 pointer-events-none"></div>
+	<AuthCardLayout
+		description="Create a secure account to book consultations as a client or join the platform as an expert."
+		eyebrow="Create account"
+		title="Get started"
+	>
+		<form class="space-y-4" @submit.prevent="submitForm">
+			<div>
+				<label class="mb-1.5 block text-sm font-medium text-foreground"
+					>Full name</label
+				>
+				<Input
+					v-model="form.fullName"
+					class="h-11 border-border/50 bg-secondary/50 text-foreground focus-visible:border-primary focus-visible:ring-primary/20"
+					placeholder="Amina Yusuf"
+					type="text"
+				/>
+			</div>
 
-    <div class="w-full max-w-md bg-card border border-border/50 rounded-2xl p-6 md:p-8 shadow-xl shadow-black/5 relative z-10 backdrop-blur-3xl">
-      <div class="text-center mb-8 flex flex-col items-center">
-        <NuxtLink to="/" class="flex items-center gap-3 font-display text-2xl font-bold tracking-tighter text-foreground group cursor-pointer mb-6">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-primary transform group-hover:-translate-y-1 transition-all duration-300 drop-shadow-[0_0_8px_rgb(var(--primary-rgb)_/_0.3)]">
-                <path d="M16 2L2 9L16 16L30 9L16 2Z" fill="currentColor" fill-opacity="0.2" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-                <path d="M2 23L16 30L30 23" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M2 16L16 23L30 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M16 16V30" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <span>Laxiriir<span class="text-muted-foreground font-normal">.expert</span></span>
-        </NuxtLink>
-        <h1 class="text-2xl font-bold font-display mb-2">Create an Account</h1>
-        <p class="text-sm text-muted-foreground">Get started as a client or expert today</p>
-      </div>
+			<div>
+				<label class="mb-1.5 block text-sm font-medium text-foreground"
+					>Email address</label
+				>
+				<Input
+					v-model="form.email"
+					class="h-11 border-border/50 bg-secondary/50 text-foreground focus-visible:border-primary focus-visible:ring-primary/20"
+					placeholder="you@example.com"
+					type="email"
+				/>
+			</div>
 
-      <form class="space-y-4" @submit.prevent>
-        <div>
-          <label class="block text-sm font-medium text-foreground mb-1.5">Full Name</label>
-          <Input type="text" placeholder="John Doe" class="bg-secondary/50 border-border/50 text-foreground h-11 focus-visible:border-primary focus-visible:ring-primary/20" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-foreground mb-1.5">Email Address</label>
-          <Input type="email" placeholder="you@example.com" class="bg-secondary/50 border-border/50 text-foreground h-11 focus-visible:border-primary focus-visible:ring-primary/20" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-foreground mb-1.5">Password</label>
-          <Input type="password" placeholder="••••••••" class="bg-secondary/50 border-border/50 text-foreground h-11 focus-visible:border-primary focus-visible:ring-primary/20" />
-        </div>
-        
-        <Button class="w-full mt-6 shadow-[0_0_20px_rgb(var(--primary-rgb)_/_0.2)]" size="lg">
-          Sign Up
-        </Button>
-      </form>
+			<div>
+				<label class="mb-1.5 block text-sm font-medium text-foreground"
+					>Password</label
+				>
+				<Input
+					v-model="form.password"
+					class="h-11 border-border/50 bg-secondary/50 text-foreground focus-visible:border-primary focus-visible:ring-primary/20"
+					placeholder="••••••••"
+					type="password"
+				/>
+			</div>
 
-      <div class="mt-8 flex items-center justify-center gap-2 text-sm text-muted-foreground pt-6 border-t border-border/50">
-        <span>Already have an account?</span>
-        <NuxtLink to="/login" class="text-primary font-bold hover:underline transition-all">Sign in</NuxtLink>
-      </div>
-    </div>
-  </div>
+			<div>
+				<p class="mb-2 text-sm font-medium text-foreground">Account type</p>
+				<div class="grid gap-3 sm:grid-cols-2">
+					<button
+						v-for="option in accountTypes"
+						:key="option.value"
+						:class="[
+							'rounded-2xl border px-4 py-4 text-left transition-all',
+							form.accountType === option.value
+								? 'border-primary bg-primary/10'
+								: 'border-border/50 bg-secondary/60 hover:border-primary/40',
+						]"
+						type="button"
+						@click="form.accountType = option.value"
+					>
+						<p class="font-semibold text-foreground">{{ option.label }}</p>
+						<p class="mt-1 text-xs leading-5 text-muted-foreground">
+							{{ option.description }}
+						</p>
+					</button>
+				</div>
+			</div>
+
+			<Button
+				:disabled="isSubmitting"
+				class="mt-6 w-full shadow-[0_0_20px_rgb(var(--primary-rgb)_/_0.2)]"
+				size="lg"
+				type="submit"
+			>
+				{{ isSubmitting ? "Creating account..." : submitLabel }}
+			</Button>
+		</form>
+
+		<template #footer>
+			<div class="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+				<span>Already have an account?</span>
+				<NuxtLink class="font-bold text-primary hover:underline" to="/login">
+					Sign in
+				</NuxtLink>
+			</div>
+		</template>
+	</AuthCardLayout>
 </template>
 
 <script setup lang="ts">
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { computed, ref } from "vue";
+import AuthCardLayout from "~/components/auth/AuthCardLayout.vue";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 definePageMeta({
-  layout: false
-})
+	layout: false,
+});
 
-useHead({
-  title: 'Sign Up | Laxiriir Expert'
-})
+useSeoMeta({
+	description: "Create a client or expert account on Laxiriir Expert.",
+	title: "Sign Up | Laxiriir Expert",
+});
+
+const accountTypes = [
+	{
+		description: "Book sessions, manage appointments, and attend consultations.",
+		label: "Client account",
+		value: "client",
+	},
+	{
+		description: "Offer consultations, manage availability, and handle payouts.",
+		label: "Expert account",
+		value: "expert",
+	},
+] as const;
+
+const form = ref({
+	accountType: "client",
+	email: "",
+	fullName: "",
+	password: "",
+});
+
+const isSubmitting = ref(false);
+
+const submitLabel = computed(() =>
+	form.value.accountType === "expert"
+		? "Create expert account"
+		: "Create client account",
+);
+
+async function submitForm() {
+	isSubmitting.value = true;
+	await new Promise((resolve) => setTimeout(resolve, 900));
+	isSubmitting.value = false;
+	await navigateTo({
+		path: "/verify-email",
+		query: {
+			email: form.value.email || "you@example.com",
+			role: form.value.accountType,
+		},
+	});
+}
 </script>

@@ -1,29 +1,13 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref } from "vue";
+import { faqs } from "~/data/faqs";
 
-// FAQSection component
-const faqs = ref([
-	{
-		question: 'How do I know the experts are legitimate?',
-		answer: 'Every professional on our platform undergoes a rigorous 4-step verification process including credential verification, identity checks, and peer reviews.',
-		isOpen: false
-	},
-	{
-		question: 'Is my consultation completely private?',
-		answer: 'Yes. We use military-grade end-to-end encryption. Sessions are not recorded unless explicitly requested by both parties, and no data is sold to third parties.',
-		isOpen: false
-	},
-	{
-		question: 'How does the escrow payment system work?',
-		answer: 'Your payment is held securely in escrow before the session begins. Funds are only released to the expert once the session is successfully completed.',
-		isOpen: false
-	},
-	{
-		question: 'Can I reschedule a session?',
-		answer: 'Yes, you can reschedule up to 24 hours before your session without any penalty. Late reschedules may be subject to a fee depending on the expert\'s policy.',
-		isOpen: false
-	}
-])
+const featuredFaqs = ref(
+	faqs.slice(0, 4).map((faq) => ({
+		...faq,
+		isOpen: false,
+	})),
+);
 </script>
 
 <template>
@@ -32,7 +16,7 @@ const faqs = ref([
 			<h2 class="font-display text-3xl sm:text-4xl font-bold mb-8 md:mb-12 text-center text-foreground">Frequently Asked Questions</h2>
 			<div class="space-y-4">
 				<div
-					v-for="(faq, index) in faqs"
+					v-for="(faq, index) in featuredFaqs"
 					:key="index"
 					class="bg-secondary/30 border border-border/10 rounded-2xl overflow-hidden transition-all duration-300"
 				>
@@ -53,6 +37,14 @@ const faqs = ref([
 						{{ faq.answer }}
 					</div>
 				</div>
+			</div>
+			<div class="mt-8 text-center">
+				<NuxtLink
+					class="inline-flex items-center justify-center rounded-full border border-border bg-card px-6 py-3 text-sm font-bold text-foreground transition hover:bg-muted"
+					to="/faq"
+				>
+					View full FAQ
+				</NuxtLink>
 			</div>
 		</div>
 	</section>

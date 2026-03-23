@@ -42,6 +42,12 @@ const isMobileMenuOpen = ref(false)
 					Pricing
 				</NuxtLink>
 				<NuxtLink
+					to="/faq"
+					class="text-muted-foreground hover:text-foreground transition-colors font-display tracking-tight"
+				>
+					FAQ
+				</NuxtLink>
+				<NuxtLink
 					to="/contact"
 					class="text-muted-foreground hover:text-foreground transition-colors font-display tracking-tight"
 				>
@@ -78,6 +84,7 @@ const isMobileMenuOpen = ref(false)
 			<NuxtLink to="/about" @click="isMobileMenuOpen = false" class="text-foreground font-display font-medium text-lg">About</NuxtLink>
 			<NuxtLink to="/experts" @click="isMobileMenuOpen = false" class="text-foreground font-display font-medium text-lg">Experts Directory</NuxtLink>
 			<NuxtLink to="/pricing" @click="isMobileMenuOpen = false" class="text-foreground font-display font-medium text-lg">Pricing</NuxtLink>
+			<NuxtLink to="/faq" @click="isMobileMenuOpen = false" class="text-foreground font-display font-medium text-lg">FAQ</NuxtLink>
 			<NuxtLink to="/contact" @click="isMobileMenuOpen = false" class="text-foreground font-display font-medium text-lg">Contact Us</NuxtLink>
 			<hr class="border-border/30" />
 			<div class="flex flex-col gap-4">

@@ -19,7 +19,7 @@ const { id, config } = useChart()
 const payload = computed(() => Object.entries(config.value).map(([key, value]) => {
   return {
     key: props.nameKey || key,
-    itemConfig: config.value[key],
+    itemConfig: value,
   }
 }))
 
@@ -39,22 +39,22 @@ onMounted(() => {
     )"
   >
     <div
-      v-for="{ key, itemConfig } in payload"
-      :key="key"
+      v-for="item in payload"
+      :key="item.key"
       :class="cn(
         '[&>svg]:text-muted-foreground flex items-center gap-1.5 [&>svg]:h-3 [&>svg]:w-3',
       )"
     >
-      <component :is="itemConfig.icon" v-if="itemConfig?.icon" />
+      <component :is="item.itemConfig.icon" v-if="item.itemConfig.icon" />
       <div
         v-else
         class="h-2 w-2 shrink-0 rounded-[2px]"
         :style="{
-          backgroundColor: itemConfig.color,
+          backgroundColor: item.itemConfig.color,
         }"
       />
 
-      {{ itemConfig?.label }}
+      {{ item.itemConfig.label }}
     </div>
   </div>
 </template>

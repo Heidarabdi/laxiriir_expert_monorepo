@@ -30,6 +30,7 @@
 				<ul class="space-y-4">
 					<li><NuxtLink class="font-sans text-sm text-muted-foreground hover:text-primary transition-all hover:translate-x-1 inline-block" to="/experts">Experts Directory</NuxtLink></li>
 					<li><NuxtLink class="font-sans text-sm text-muted-foreground hover:text-primary transition-all hover:translate-x-1 inline-block" to="/pricing">Pricing</NuxtLink></li>
+					<li><NuxtLink class="font-sans text-sm text-muted-foreground hover:text-primary transition-all hover:translate-x-1 inline-block" to="/faq">FAQ</NuxtLink></li>
 					<li><NuxtLink class="font-sans text-sm text-muted-foreground hover:text-primary transition-all hover:translate-x-1 inline-block" to="/login">Sign In</NuxtLink></li>
 				</ul>
 			</div>
@@ -39,7 +40,7 @@
 				<ul class="space-y-4">
 					<li><NuxtLink class="font-sans text-sm text-muted-foreground hover:text-primary transition-all hover:translate-x-1 inline-block" to="/about">About Us</NuxtLink></li>
 					<li><NuxtLink class="font-sans text-sm text-muted-foreground hover:text-primary transition-all hover:translate-x-1 inline-block" to="/contact">Contact Us</NuxtLink></li>
-					<li><a class="font-sans text-sm text-muted-foreground hover:text-primary transition-all hover:translate-x-1 inline-block" href="#">Careers</a></li>
+					<li><NuxtLink class="font-sans text-sm text-muted-foreground hover:text-primary transition-all hover:translate-x-1 inline-block" to="/register">Create Account</NuxtLink></li>
 				</ul>
 			</div>
 
@@ -48,7 +49,7 @@
 				<ul class="space-y-4">
 					<li><NuxtLink class="font-sans text-sm text-muted-foreground hover:text-primary transition-all hover:translate-x-1 inline-block" to="/privacy">Privacy Policy</NuxtLink></li>
 					<li><NuxtLink class="font-sans text-sm text-muted-foreground hover:text-primary transition-all hover:translate-x-1 inline-block" to="/terms">Terms of Service</NuxtLink></li>
-					<li><a class="font-sans text-sm text-muted-foreground hover:text-primary transition-all hover:translate-x-1 inline-block" href="#">Compliance</a></li>
+					<li><NuxtLink class="font-sans text-sm text-muted-foreground hover:text-primary transition-all hover:translate-x-1 inline-block" to="/forgot-password">Password Help</NuxtLink></li>
 				</ul>
 			</div>
 		</div>

@@ -4,6 +4,10 @@ import type { ChartConfig } from "."
 import { computed } from "vue"
 import { cn } from "@/lib/utils"
 
+type TooltipPayload = Record<string, string | number | Date | undefined> & {
+  fill?: string
+}
+
 const props = withDefaults(defineProps<{
   hideLabel?: boolean
   hideIndicator?: boolean
@@ -11,7 +15,7 @@ const props = withDefaults(defineProps<{
   nameKey?: string
   labelKey?: string
   labelFormatter?: (d: number | Date) => string
-  payload?: Record<string, any>
+  payload?: TooltipPayload
   config?: ChartConfig
   class?: HTMLAttributes["class"]
   color?: string

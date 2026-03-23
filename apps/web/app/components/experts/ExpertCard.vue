@@ -23,17 +23,17 @@
       </div>
       
       <div class="flex items-center gap-2 mb-6">
-        <span class="text-lg font-black text-foreground">${{ expert.price }}</span>
-        <span class="text-xs text-muted-foreground uppercase tracking-tighter">per hour</span>
+        <span class="text-lg font-black text-foreground">From ${{ startingPrice }}</span>
+        <span class="text-xs text-muted-foreground uppercase tracking-tighter">per session</span>
       </div>
       
       <div class="grid grid-cols-2 gap-3">
         <NuxtLink :to="`/experts/${expert.id}`" class="py-3 bg-muted text-foreground text-center flex items-center justify-center text-xs font-bold rounded-xl hover:bg-accent transition-colors">
           View Profile
         </NuxtLink>
-        <Button class="w-full py-6 rounded-xl font-bold text-xs shadow-[0_0_20px_rgb(var(--primary-rgb)_/_0.3)]">
+        <NuxtLink :to="{ hash: '#booking-panel', path: `/experts/${expert.id}` }" class="w-full py-3 bg-primary text-primary-foreground text-center rounded-xl font-bold text-xs shadow-[0_0_20px_rgb(var(--primary-rgb)_/_0.3)] hover:brightness-110 transition-all">
           Book Now
-        </Button>
+        </NuxtLink>
       </div>
     </div>
   </div>
@@ -41,21 +41,14 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { Button } from '@/components/ui/button';
-
-interface Expert {
-  id: string;
-  name: string;
-  title: string;
-  category: string;
-  rating: number;
-  price: number;
-  image: string;
-}
+import { getStartingPrice } from '~/data/experts'
+import type { ExpertProfile } from '~/types/experts'
 
 const props = defineProps<{
-  expert: Expert
+  expert: ExpertProfile
 }>();
+
+const startingPrice = computed(() => getStartingPrice(props.expert))
 
 const badgeClass = computed(() => {
   switch (props.expert.category.toLowerCase()) {

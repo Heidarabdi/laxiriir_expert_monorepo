@@ -1,58 +1,104 @@
 <template>
-  <div class="min-h-screen bg-background text-foreground flex flex-col items-center justify-center p-4 relative overflow-hidden">
-    <!-- Background Glow -->
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] md:w-[600px] md:h-[600px] bg-primary/10 rounded-full blur-[120px] opacity-70 pointer-events-none"></div>
+	<AuthCardLayout
+		description="Sign in to manage bookings, join live sessions, and continue your consultation workflow."
+		eyebrow="Secure access"
+		title="Welcome back"
+	>
+		<form class="space-y-4" @submit.prevent="submitForm">
+			<div>
+				<label class="mb-1.5 block text-sm font-medium text-foreground"
+					>Email address</label
+				>
+				<Input
+					v-model="form.email"
+					class="h-11 border-border/50 bg-secondary/50 text-foreground focus-visible:border-primary focus-visible:ring-primary/20"
+					placeholder="you@example.com"
+					type="email"
+				/>
+			</div>
 
-    <div class="w-full max-w-md bg-card border border-border/50 rounded-2xl p-6 md:p-8 shadow-xl shadow-black/5 relative z-10 backdrop-blur-3xl">
-      <div class="text-center mb-8 flex flex-col items-center">
-        <NuxtLink to="/" class="flex items-center gap-3 font-display text-2xl font-bold tracking-tighter text-foreground group cursor-pointer mb-6">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-primary transform group-hover:-translate-y-1 transition-all duration-300 drop-shadow-[0_0_8px_rgb(var(--primary-rgb)_/_0.3)]">
-                <path d="M16 2L2 9L16 16L30 9L16 2Z" fill="currentColor" fill-opacity="0.2" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-                <path d="M2 23L16 30L30 23" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M2 16L16 23L30 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M16 16V30" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <span>Laxiriir<span class="text-muted-foreground font-normal">.expert</span></span>
-        </NuxtLink>
-        <h1 class="text-2xl font-bold font-display mb-2">Welcome Back</h1>
-        <p class="text-sm text-muted-foreground">Sign in to your account to continue</p>
-      </div>
+			<div>
+				<div class="mb-1.5 flex items-center justify-between gap-4">
+					<label class="block text-sm font-medium text-foreground">Password</label>
+					<NuxtLink
+						class="text-xs text-primary transition-colors hover:text-primary/80"
+						to="/forgot-password"
+					>
+						Forgot password?
+					</NuxtLink>
+				</div>
+				<Input
+					v-model="form.password"
+					class="h-11 border-border/50 bg-secondary/50 text-foreground focus-visible:border-primary focus-visible:ring-primary/20"
+					placeholder="••••••••"
+					type="password"
+				/>
+			</div>
 
-      <form class="space-y-4" @submit.prevent>
-        <div>
-          <label class="block text-sm font-medium text-foreground mb-1.5">Email address</label>
-          <Input type="email" placeholder="you@example.com" class="bg-secondary/50 border-border/50 text-foreground h-11 focus-visible:border-primary focus-visible:ring-primary/20" />
-        </div>
-        <div>
-          <div class="flex items-center justify-between mb-1.5">
-            <label class="block text-sm font-medium text-foreground">Password</label>
-            <a href="#" class="text-xs text-primary hover:text-primary/80 transition-colors">Forgot password?</a>
-          </div>
-          <Input type="password" placeholder="••••••••" class="bg-secondary/50 border-border/50 text-foreground h-11 focus-visible:border-primary focus-visible:ring-primary/20" />
-        </div>
-        
-        <Button class="w-full mt-6 shadow-[0_0_20px_rgb(var(--primary-rgb)_/_0.2)]" size="lg">
-          Sign In
-        </Button>
-      </form>
+			<div class="rounded-2xl border border-border/50 bg-secondary/60 px-4 py-3">
+				<p class="text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground">
+					Role access
+				</p>
+				<p class="mt-2 text-sm leading-6 text-muted-foreground">
+					Clients and experts use the same secure sign-in flow. Your account role controls which dashboard and actions are available after login.
+				</p>
+			</div>
 
-      <div class="mt-8 flex items-center justify-center gap-2 text-sm text-muted-foreground pt-6 border-t border-border/50">
-        <span>Don't have an account?</span>
-        <NuxtLink to="/register" class="text-primary font-bold hover:underline transition-all">Create one</NuxtLink>
-      </div>
-    </div>
-  </div>
+			<Button
+				:disabled="isSubmitting"
+				class="mt-6 w-full shadow-[0_0_20px_rgb(var(--primary-rgb)_/_0.2)]"
+				size="lg"
+				type="submit"
+			>
+				{{ isSubmitting ? "Signing in..." : "Sign in" }}
+			</Button>
+
+			<p
+				v-if="successMsg"
+				class="rounded-xl border border-primary/20 bg-primary/10 px-4 py-3 text-sm text-primary"
+			>
+				Sign-in UI is ready. Connect this form to the auth backend to complete the flow.
+			</p>
+		</form>
+
+		<template #footer>
+			<div class="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+				<span>Don't have an account?</span>
+				<NuxtLink class="font-bold text-primary hover:underline" to="/register">
+					Create one
+				</NuxtLink>
+			</div>
+		</template>
+	</AuthCardLayout>
 </template>
 
 <script setup lang="ts">
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { ref } from "vue";
+import AuthCardLayout from "~/components/auth/AuthCardLayout.vue";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 definePageMeta({
-  layout: false
-})
+	layout: false,
+});
 
-useHead({
-  title: 'Log In | Laxiriir Expert'
-})
+useSeoMeta({
+	description: "Secure sign in for clients and experts on Laxiriir Expert.",
+	title: "Log In | Laxiriir Expert",
+});
+
+const form = ref({
+	email: "",
+	password: "",
+});
+
+const isSubmitting = ref(false);
+const successMsg = ref(false);
+
+async function submitForm() {
+	isSubmitting.value = true;
+	await new Promise((resolve) => setTimeout(resolve, 900));
+	isSubmitting.value = false;
+	successMsg.value = true;
+}
 </script>
