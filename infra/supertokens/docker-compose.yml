@@ -1,0 +1,38 @@
+services:
+  supertokens-postgres:
+    image: postgres:16-alpine
+    container_name: laxiriir-supertokens-postgres
+    environment:
+      POSTGRES_DB: supertokens
+      POSTGRES_PASSWORD: supertokens
+      POSTGRES_USER: supertokens
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U supertokens -d supertokens"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    ports:
+      - "5433:5432"
+    volumes:
+      - supertokens_postgres_data:/var/lib/postgresql/data
+
+  supertokens-core:
+    image: supertokens/supertokens-postgresql:latest
+    container_name: laxiriir-supertokens-core
+    depends_on:
+      supertokens-postgres:
+        condition: service_healthy
+    environment:
+      POSTGRESQL_CONNECTION_URI: postgresql://supertokens:supertokens@supertokens-postgres:5432/supertokens
+    ports:
+      - "3567:3567"
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: laxiriir-mailpit
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+volumes:
+  supertokens_postgres_data:

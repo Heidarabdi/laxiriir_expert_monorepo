@@ -54,6 +54,7 @@ Laxiriir Expert is designed as an end-to-end consultation platform where clients
 - `packages/env`: shared environment parsing and defaults
 - `packages/platform`: shared API contracts and URL helpers
 - `packages/config/*`: shared repository configuration packages
+- `infra/supertokens`: local SuperTokens Core scaffolding for development and CI
 
 ## Monorepo Tooling
 
@@ -181,10 +182,10 @@ What still needs product work:
 
 ## Before First Commit
 
-This repo is in a good baseline state, but production readiness still depends on product decisions you have not locked yet:
+This repo is in a good baseline state, but production readiness still depends on product decisions you have not fully completed yet:
 
 - choose the real Git remote and then set the final Go module path to match it
-- choose authentication strategy
+- complete the migration from the temporary Authula spike to SuperTokens
 - choose database and migration tooling
 - choose payment provider
 - choose reminder providers
@@ -193,7 +194,7 @@ This repo is in a good baseline state, but production readiness still depends on
 
 ## Next Build Targets
 
-1. Model the first real domain in `packages/platform`, likely experts, availability, and bookings.
-2. Add persistent storage and authentication.
+1. Move the shared auth contracts into `packages/platform` and complete the SuperTokens migration.
+2. Model the first real product domain in `packages/platform`, likely experts, availability, and bookings.
 3. Replace local API defaults with environment-specific deployment values.
 4. Expand tests from smoke coverage to core booking and session flows.

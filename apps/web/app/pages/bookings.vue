@@ -2,9 +2,13 @@
 	<div
 		class="min-h-screen bg-background text-foreground font-sans selection:bg-primary selection:text-primary-foreground flex flex-col"
 	>
-		<main class="grow pt-12 pb-24 md:pt-16">
-			<div class="mx-auto w-full max-w-7xl px-6 md:px-8">
-				<section class="rounded-[2rem] border border-border/50 bg-card/65 px-6 py-8 backdrop-blur-xl md:px-8 md:py-10">
+		<NavBar />
+		<main class="grow pt-32 pb-24 md:pt-40 relative">
+			<!-- Global glow for dashboard context -->
+			<div class="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[150px] pointer-events-none mix-blend-screen -z-10"></div>
+			<div class="mx-auto w-full max-w-7xl px-6 md:px-8 z-10 relative">
+				<section class="rounded-4xl border border-border/50 bg-secondary/50 px-6 py-8 backdrop-blur-3xl md:px-8 md:py-10 shadow-xl shadow-black/5 relative overflow-hidden">
+					<div class="absolute -bottom-24 -left-24 w-64 h-64 bg-primary/10 rounded-full blur-[80px] pointer-events-none mix-blend-screen"></div>
 					<div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
 						<div class="max-w-3xl">
 							<p class="text-[10px] font-bold uppercase tracking-[0.35em] text-primary">
@@ -29,8 +33,8 @@
 						</div>
 					</div>
 
-					<div class="mt-8 grid gap-4 md:grid-cols-3">
-						<div class="rounded-2xl border border-border/50 bg-secondary/70 p-5">
+					<div class="mt-8 grid gap-4 md:grid-cols-3 relative z-10">
+						<div class="rounded-2xl border border-border/50 bg-card/50 p-5 backdrop-blur-sm transition-all hover:bg-card/80 hover:border-border/80">
 							<p class="text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground">
 								Upcoming
 							</p>
@@ -39,7 +43,7 @@
 								Confirmed sessions still ahead on the calendar.
 							</p>
 						</div>
-						<div class="rounded-2xl border border-border/50 bg-secondary/70 p-5">
+						<div class="rounded-2xl border border-border/50 bg-card/50 p-5 backdrop-blur-sm transition-all hover:bg-card/80 hover:border-border/80">
 							<p class="text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground">
 								This week
 							</p>
@@ -48,7 +52,7 @@
 								Sessions booked in the next seven days.
 							</p>
 						</div>
-						<div class="rounded-2xl border border-border/50 bg-secondary/70 p-5">
+						<div class="rounded-2xl border border-border/50 bg-card/50 p-5 backdrop-blur-sm transition-all hover:bg-card/80 hover:border-border/80">
 							<p class="text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground">
 								Booked value
 							</p>
@@ -60,8 +64,9 @@
 					</div>
 				</section>
 
-				<section v-if="nextBooking" class="mt-8 rounded-[2rem] border border-primary/20 bg-primary/10 px-6 py-6 md:px-8">
-					<div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+				<section v-if="nextBooking" class="mt-8 rounded-4xl border border-primary/20 bg-primary/5 px-6 py-6 md:px-8 relative overflow-hidden shadow-xl shadow-black/5 backdrop-blur-sm">
+					<div class="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(var(--color-primary),0.12),transparent_60%)] pointer-events-none"></div>
+					<div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between relative z-10">
 						<div>
 							<p class="text-[10px] font-bold uppercase tracking-[0.35em] text-primary">
 								Next session
@@ -93,7 +98,7 @@
 					</div>
 				</section>
 
-				<section v-if="allBookings.length === 0" class="mt-8 rounded-[2rem] border border-dashed border-border/60 bg-card/50 px-6 py-14 text-center">
+				<section v-if="allBookings.length === 0" class="mt-8 rounded-4xl border border-dashed border-border/60 bg-card/50 px-6 py-14 text-center">
 					<p class="text-[10px] font-bold uppercase tracking-[0.35em] text-muted-foreground">
 						No bookings yet
 					</p>
@@ -111,7 +116,7 @@
 
 				<section v-else class="mt-8 grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
 					<div class="space-y-6">
-						<div class="rounded-[2rem] border border-border/50 bg-card/60 p-6 backdrop-blur-xl md:p-8">
+						<div class="rounded-4xl border border-border/50 bg-secondary/50 p-6 backdrop-blur-3xl shadow-xl shadow-black/5 md:p-8">
 							<div class="flex items-center justify-between gap-4">
 								<div>
 									<p class="text-[10px] font-bold uppercase tracking-[0.35em] text-primary">
@@ -186,7 +191,7 @@
 					</div>
 
 					<div class="space-y-6">
-						<div class="rounded-[2rem] border border-border/50 bg-card/60 p-6 backdrop-blur-xl md:p-8">
+						<div class="rounded-4xl border border-border/50 bg-secondary/50 p-6 backdrop-blur-3xl shadow-xl shadow-black/5 md:p-8">
 							<p class="text-[10px] font-bold uppercase tracking-[0.35em] text-primary">
 								Booking history
 							</p>
@@ -242,6 +247,7 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
+import NavBar from "~/components/landing/NavBar.vue";
 import FooterComponent from "~/components/landing/FooterComponent.vue";
 import { useBookings } from "~/composables/useBookings";
 

@@ -10,8 +10,12 @@ export interface PingResponse {
 export const HEALTH_PATH = "/health";
 export const API_V1_PING_PATH = "/api/v1/ping";
 
+export function normalizeApiBaseUrl(baseUrl: string) {
+	return baseUrl.replace(/\/+$/, "");
+}
+
 export function joinApiUrl(baseUrl: string, path: string) {
-	const normalizedBaseUrl = baseUrl.replace(/\/+$/, "");
+	const normalizedBaseUrl = normalizeApiBaseUrl(baseUrl);
 	const normalizedPath = path.startsWith("/") ? path : `/${path}`;
 
 	return `${normalizedBaseUrl}${normalizedPath}`;

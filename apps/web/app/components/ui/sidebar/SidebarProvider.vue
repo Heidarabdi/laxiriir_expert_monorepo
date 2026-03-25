@@ -31,6 +31,17 @@ function setOpen(value: boolean) {
   open.value = value // emits('update:open', value)
 
   // This sets the cookie to keep the sidebar state.
+  if ("cookieStore" in window && typeof window.cookieStore?.set === "function") {
+    void window.cookieStore.set({
+      name: SIDEBAR_COOKIE_NAME,
+      value: String(open.value),
+      path: "/",
+      expires: Date.now() + SIDEBAR_COOKIE_MAX_AGE * 1000,
+    })
+    return
+  }
+
+  // biome-ignore lint/suspicious/noDocumentCookie: Cookie Store API fallback for browsers without support.
   document.cookie = `${SIDEBAR_COOKIE_NAME}=${open.value}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
 }
 

@@ -54,10 +54,10 @@
 			</Button>
 
 			<p
-				v-if="successMsg"
-				class="rounded-xl border border-primary/20 bg-primary/10 px-4 py-3 text-sm text-primary"
+				v-if="errorMessage"
+				class="rounded-xl border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive"
 			>
-				Sign-in UI is ready. Connect this form to the auth backend to complete the flow.
+				{{ errorMessage }}
 			</p>
 		</form>
 
@@ -73,13 +73,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
+import { getAuthRedirectPath } from "~/lib/auth";
 import AuthCardLayout from "~/components/auth/AuthCardLayout.vue";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 definePageMeta({
 	layout: false,
+	middleware: "guest-only",
 });
 
 useSeoMeta({
@@ -92,13 +94,21 @@ const form = ref({
 	password: "",
 });
 
-const isSubmitting = ref(false);
-const successMsg = ref(false);
+const auth = useAuthStore();
+const isSubmitting = computed(() => auth.loading);
+const errorMessage = computed(() => auth.errorMessage);
 
 async function submitForm() {
-	isSubmitting.value = true;
-	await new Promise((resolve) => setTimeout(resolve, 900));
-	isSubmitting.value = false;
-	successMsg.value = true;
+	try {
+		const user = await auth.signIn({
+			email: form.value.email,
+			password: form.value.password,
+		});
+		if (user) {
+			await navigateTo(getAuthRedirectPath(user));
+		}
+	} catch {
+		// Error state is stored in Pinia for inline rendering.
+	}
 }
 </script>

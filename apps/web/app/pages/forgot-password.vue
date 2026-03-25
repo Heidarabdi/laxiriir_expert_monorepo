@@ -54,6 +54,7 @@ import { Input } from "@/components/ui/input";
 
 definePageMeta({
 	layout: false,
+	middleware: "guest-only",
 });
 
 useSeoMeta({
@@ -67,8 +68,11 @@ const submitted = ref(false);
 
 async function submitForm() {
 	isSubmitting.value = true;
-	await new Promise((resolve) => setTimeout(resolve, 900));
-	isSubmitting.value = false;
-	submitted.value = true;
+	try {
+		await useAuthStore().requestPasswordReset(email.value);
+		submitted.value = true;
+	} finally {
+		isSubmitting.value = false;
+	}
 }
 </script>

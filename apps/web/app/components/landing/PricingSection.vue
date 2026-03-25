@@ -1,5 +1,6 @@
 <script setup lang="ts">
 // PricingSection component
+import { Button } from "@/components/ui/button";
 </script>
 
 <template>

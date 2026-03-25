@@ -1,9 +1,48 @@
 <script setup lang="ts">
 import ThemeToggle from './ThemeToggle.vue'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { Menu, X } from 'lucide-vue-next'
 
 const isMobileMenuOpen = ref(false)
+const auth = useAuthStore()
+
+await auth.ensureLoaded()
+
+const dashboardLink = computed(() => {
+	if (!auth.user) {
+		return "/login"
+	}
+
+	switch (auth.user.primaryRole) {
+		case "admin":
+			return "/admin"
+		case "expert":
+			return auth.user.expertStatus === "approved" ? "/expert" : "/expert/pending"
+		default:
+			return "/bookings"
+	}
+})
+
+const dashboardLabel = computed(() => {
+	if (!auth.user) {
+		return "Log In"
+	}
+
+	switch (auth.user.primaryRole) {
+		case "admin":
+			return "Admin"
+		case "expert":
+			return auth.user.expertStatus === "approved" ? "Expert Dashboard" : "Expert Review"
+		default:
+			return "My Bookings"
+	}
+})
+
+async function handleSignOut() {
+	await auth.signOut()
+	isMobileMenuOpen.value = false
+	await navigateTo("/")
+}
 </script>
 <template>
 	<nav
@@ -58,15 +97,32 @@ const isMobileMenuOpen = ref(false)
 			<!-- Desktop Actions -->
 			<div class="hidden md:flex items-center gap-6">
 				<ThemeToggle />
-				<NuxtLink to="/login" class="text-muted-foreground hover:text-foreground font-medium transition-all">
-					Log In
-				</NuxtLink>
-				<NuxtLink
-					to="/register"
-					class="bg-primary text-primary-foreground px-6 py-2.5 rounded-full font-bold hover:scale-105 transition-transform inline-block"
-				>
-					Get Started
-				</NuxtLink>
+				<template v-if="auth.user">
+					<NuxtLink
+						:to="dashboardLink"
+						class="text-muted-foreground hover:text-foreground font-medium transition-all"
+					>
+						{{ dashboardLabel }}
+					</NuxtLink>
+					<button
+						class="bg-primary text-primary-foreground px-6 py-2.5 rounded-full font-bold hover:scale-105 transition-transform inline-block"
+						type="button"
+						@click="handleSignOut"
+					>
+						Sign Out
+					</button>
+				</template>
+				<template v-else>
+					<NuxtLink to="/login" class="text-muted-foreground hover:text-foreground font-medium transition-all">
+						Log In
+					</NuxtLink>
+					<NuxtLink
+						to="/register"
+						class="bg-primary text-primary-foreground px-6 py-2.5 rounded-full font-bold hover:scale-105 transition-transform inline-block"
+					>
+						Get Started
+					</NuxtLink>
+				</template>
 			</div>
 
 			<!-- Mobile Actions -->
@@ -88,8 +144,14 @@ const isMobileMenuOpen = ref(false)
 			<NuxtLink to="/contact" @click="isMobileMenuOpen = false" class="text-foreground font-display font-medium text-lg">Contact Us</NuxtLink>
 			<hr class="border-border/30" />
 			<div class="flex flex-col gap-4">
-				<NuxtLink to="/login" @click="isMobileMenuOpen = false" class="text-foreground font-medium text-lg text-center py-2 border border-border/50 rounded-xl">Log In</NuxtLink>
-				<NuxtLink to="/register" @click="isMobileMenuOpen = false" class="bg-primary text-primary-foreground font-bold text-lg text-center py-3 rounded-xl">Get Started</NuxtLink>
+				<template v-if="auth.user">
+					<NuxtLink :to="dashboardLink" @click="isMobileMenuOpen = false" class="text-foreground font-medium text-lg text-center py-2 border border-border/50 rounded-xl">{{ dashboardLabel }}</NuxtLink>
+					<button type="button" @click="handleSignOut" class="bg-primary text-primary-foreground font-bold text-lg text-center py-3 rounded-xl">Sign Out</button>
+				</template>
+				<template v-else>
+					<NuxtLink to="/login" @click="isMobileMenuOpen = false" class="text-foreground font-medium text-lg text-center py-2 border border-border/50 rounded-xl">Log In</NuxtLink>
+					<NuxtLink to="/register" @click="isMobileMenuOpen = false" class="bg-primary text-primary-foreground font-bold text-lg text-center py-3 rounded-xl">Get Started</NuxtLink>
+				</template>
 			</div>
 		</div>
 	</nav>

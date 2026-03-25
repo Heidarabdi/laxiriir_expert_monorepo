@@ -1,18 +1,18 @@
 <template>
 	<AuthCardLayout
-		description="Enter your reset code and choose a new password to regain access to your account."
+		description="Enter your reset token and choose a new password to regain access to your account."
 		eyebrow="Password reset"
 		title="Set a new password"
 	>
 		<form v-if="!saved" class="space-y-4" @submit.prevent="submitForm">
 			<div>
 				<label class="mb-1.5 block text-sm font-medium text-foreground"
-					>Reset code</label
+					>Reset token</label
 				>
 				<Input
 					v-model="form.code"
 					class="h-11 border-border/50 bg-secondary/50 text-foreground focus-visible:border-primary focus-visible:ring-primary/20"
-					placeholder="Enter your reset code"
+					placeholder="Enter your reset token"
 					type="text"
 				/>
 			</div>
@@ -49,6 +49,13 @@
 			>
 				{{ isSubmitting ? "Saving..." : "Save new password" }}
 			</Button>
+
+			<p
+				v-if="errorMessage"
+				class="rounded-xl border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive"
+			>
+				{{ errorMessage }}
+			</p>
 		</form>
 
 		<div
@@ -73,13 +80,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import AuthCardLayout from "~/components/auth/AuthCardLayout.vue";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 definePageMeta({
 	layout: false,
+	middleware: "guest-only",
 });
 
 useSeoMeta({
@@ -90,18 +98,39 @@ useSeoMeta({
 const route = useRoute();
 
 const form = ref({
-	code: typeof route.query.code === "string" ? route.query.code : "",
+	code:
+		typeof route.query.token === "string"
+			? route.query.token
+			: typeof route.query.code === "string"
+				? route.query.code
+				: "",
 	confirmPassword: "",
 	password: "",
 });
 
 const isSubmitting = ref(false);
 const saved = ref(false);
+const errorMessage = ref("");
+const passwordsMatch = computed(
+	() => form.value.password !== "" && form.value.password === form.value.confirmPassword,
+);
 
 async function submitForm() {
+	if (!passwordsMatch.value) {
+		errorMessage.value = "Passwords do not match.";
+		return;
+	}
+
 	isSubmitting.value = true;
-	await new Promise((resolve) => setTimeout(resolve, 900));
-	isSubmitting.value = false;
-	saved.value = true;
+	errorMessage.value = "";
+	try {
+		await useAuthStore().resetPassword(form.value.code, form.value.password);
+		saved.value = true;
+	} catch (error) {
+		errorMessage.value =
+			error instanceof Error ? error.message : "Unable to reset your password.";
+	} finally {
+		isSubmitting.value = false;
+	}
 }
 </script>

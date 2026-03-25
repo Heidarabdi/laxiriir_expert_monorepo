@@ -37,6 +37,17 @@ The product must work as one coherent system across:
 - `Expert`
 - `Admin`
 
+## Authentication Direction
+
+- `SuperTokens` is the target identity and session system for the project.
+- The project will keep custom Nuxt auth pages and use SuperTokens for session, email-password, email verification, recovery, and later social login flows.
+- The Go API will own application authorization, app profiles, role enforcement, and expert approval status.
+- `ThirdPartyEmailPassword`, `Session`, and `EmailVerification` are the target MVP recipes.
+- Google sign-in should be prepared through SuperTokens now and enabled later when provider secrets are available.
+- The app database remains the source of truth for `primary_role` and `expert_status`.
+- The current Authula code in the repo should be treated as a temporary spike to be replaced.
+- Local development and CI should use self-hosted SuperTokens Core. Production should support both self-hosted and managed Core, with managed recommended first.
+
 ## Planning Principles
 
 - build by vertical slice, not by frontend-only or backend-only silos
@@ -237,7 +248,7 @@ MVP is one complete web consultation workflow that is real, persistent, and test
 
 - database
 - migrations
-- authentication
+- SuperTokens for authentication and session management
 - authorization
 - payment integration
 - video provider integration
@@ -343,7 +354,7 @@ MVP is one complete web consultation workflow that is real, persistent, and test
 
 - expert directory
 - expert profile
-- authentication baseline
+- SuperTokens authentication baseline
 - booking and schedule flow
 - client bookings list and detail
 
@@ -397,9 +408,11 @@ What exists already:
 - expert directory and profile baseline
 - interim booking list baseline
 - auth UI shells
+- temporary Authula integration spike
 
 What does not exist yet:
 
+- SuperTokens runtime integration
 - real client dashboard
 - expert dashboard
 - admin dashboard
@@ -412,7 +425,7 @@ What does not exist yet:
 
 The next correct implementation step is:
 
-1. finalize the booking routes around the Stitch `Booking & Schedule` rail
-2. define shared backend contracts for experts, availability, and bookings
-3. replace local booking state with real API persistence
-4. then build the real client dashboard on top of that data
+1. complete the first SuperTokens migration slice for web login, registration, verification, recovery, and `/me`
+2. move shared auth and product contracts into `packages/platform`
+3. finalize the booking routes around the Stitch `Booking & Schedule` rail
+4. replace local booking state with real API persistence

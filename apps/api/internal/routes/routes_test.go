@@ -10,7 +10,17 @@ import (
 )
 
 func TestHealthRoute(t *testing.T) {
-	router := SetupRouter(&config.Config{Environment: "test"})
+	router, err := SetupRouter(&config.Config{
+		Environment:              "test",
+		DatabaseURL:              "file::memory:?cache=shared",
+		APIBaseURL:               "http://localhost:8080",
+		SuperTokensConnectionURI: "http://localhost:3567",
+		TrustedOrigins:           []string{"http://localhost:3000"},
+		WebAppOrigin:             "http://localhost:3000",
+	})
+	if err != nil {
+		t.Fatalf("failed to set up router: %v", err)
+	}
 	request := httptest.NewRequest(http.MethodGet, "/health", nil)
 	recorder := httptest.NewRecorder()
 
@@ -35,7 +45,17 @@ func TestHealthRoute(t *testing.T) {
 }
 
 func TestPingRoute(t *testing.T) {
-	router := SetupRouter(&config.Config{Environment: "test"})
+	router, err := SetupRouter(&config.Config{
+		Environment:              "test",
+		DatabaseURL:              "file::memory:?cache=shared",
+		APIBaseURL:               "http://localhost:8080",
+		SuperTokensConnectionURI: "http://localhost:3567",
+		TrustedOrigins:           []string{"http://localhost:3000"},
+		WebAppOrigin:             "http://localhost:3000",
+	})
+	if err != nil {
+		t.Fatalf("failed to set up router: %v", err)
+	}
 	request := httptest.NewRequest(http.MethodGet, "/api/v1/ping", nil)
 	recorder := httptest.NewRecorder()
 
@@ -52,5 +72,28 @@ func TestPingRoute(t *testing.T) {
 
 	if response["message"] != "pong" {
 		t.Fatalf("expected message body to be pong, got %q", response["message"])
+	}
+}
+
+func TestCurrentUserRouteRequiresAuthentication(t *testing.T) {
+	router, err := SetupRouter(&config.Config{
+		Environment:              "test",
+		DatabaseURL:              "file::memory:?cache=shared",
+		APIBaseURL:               "http://localhost:8080",
+		SuperTokensConnectionURI: "http://localhost:3567",
+		TrustedOrigins:           []string{"http://localhost:3000"},
+		WebAppOrigin:             "http://localhost:3000",
+	})
+	if err != nil {
+		t.Fatalf("failed to set up router: %v", err)
+	}
+
+	request := httptest.NewRequest(http.MethodGet, "/api/v1/me", nil)
+	recorder := httptest.NewRecorder()
+
+	router.ServeHTTP(recorder, request)
+
+	if recorder.Code != http.StatusUnauthorized {
+		t.Fatalf("expected status %d, got %d", http.StatusUnauthorized, recorder.Code)
 	}
 }

@@ -83,7 +83,7 @@ Still a valid alternative, but I would keep it as the backup option.
 
 The Go API should own:
 
-- authentication and authorization
+- authorization and application role enforcement
 - user, expert, and admin roles
 - availability and booking rules
 - payment intent and webhook handling
@@ -102,6 +102,7 @@ The Nuxt app should own:
 - admin dashboard
 - booking and payment flows
 - embedded web video experience
+- custom UI for SuperTokens browser flows
 
 ### Mobile
 
@@ -123,7 +124,12 @@ Expected environment variables:
 - `PORT`
 - `GO_ENV`
 - `DATABASE_URL`
-- `JWT_SECRET`
+- `SUPERTOKENS_CONNECTION_URI`
+- `SUPERTOKENS_API_KEY`
+- `SUPERTOKENS_API_BASE_PATH`
+- `SUPERTOKENS_WEBSITE_DOMAIN`
+- `SUPERTOKENS_API_DOMAIN`
+- `AUTH_BOOTSTRAP_ADMIN_EMAILS`
 - `PAYMENT_SECRET_KEY`
 - `PAYMENT_WEBHOOK_SECRET`
 - `LIVEKIT_API_KEY`
@@ -137,6 +143,9 @@ Expected environment variables:
 Expected environment variables:
 
 - `NUXT_PUBLIC_API_BASE_URL`
+- `NUXT_PUBLIC_APP_ORIGIN`
+- `NUXT_PUBLIC_API_BASE_PATH`
+- `NUXT_PUBLIC_AUTH_BASE_PATH`
 - `NUXT_PUBLIC_LIVEKIT_URL` if the client connects directly to video infrastructure
 
 ### Mobile
@@ -144,7 +153,12 @@ Expected environment variables:
 Expected environment variables:
 
 - `EXPO_PUBLIC_API_BASE_URL`
+- `EXPO_PUBLIC_APP_ORIGIN`
 - `EXPO_PUBLIC_LIVEKIT_URL` if the mobile app connects directly to video infrastructure
+
+### Deferred Social Login Configuration
+
+Google and other social providers are intentionally deferred. The MVP should initialize SuperTokens with `ThirdPartyEmailPassword`, but real provider enablement should wait until provider secrets, callback URLs, and the final deployment domains are available.
 
 ## Environment Stages
 
@@ -299,7 +313,7 @@ Still needed before real production work:
 The following decisions are still open and should be confirmed before first deployment:
 
 - final Git remote and canonical Go module path
-- authentication provider or custom auth approach
+- SuperTokens deployment model for first production release: managed Core or self-hosted Core
 - database host and migration tool
 - payment provider
 - email provider

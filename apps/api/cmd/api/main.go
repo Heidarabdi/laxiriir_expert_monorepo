@@ -12,7 +12,10 @@ func main() {
 	cfg := config.Load()
 
 	// Initialize router
-	router := routes.SetupRouter(cfg)
+	router, err := routes.SetupRouter(cfg)
+	if err != nil {
+		log.Fatalf("Failed to initialize router: %v", err)
+	}
 
 	log.Printf("Starting Laxiriir Expert API on port %s", cfg.Port)
 	if err := router.Run(":" + cfg.Port); err != nil {

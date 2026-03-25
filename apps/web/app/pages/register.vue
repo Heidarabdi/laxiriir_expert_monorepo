@@ -72,6 +72,13 @@
 			>
 				{{ isSubmitting ? "Creating account..." : submitLabel }}
 			</Button>
+
+			<p
+				v-if="errorMessage"
+				class="rounded-xl border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive"
+			>
+				{{ errorMessage }}
+			</p>
 		</form>
 
 		<template #footer>
@@ -87,12 +94,14 @@
 
 <script setup lang="ts">
 import { computed, ref } from "vue";
+import { getAuthRedirectPath } from "~/lib/auth";
 import AuthCardLayout from "~/components/auth/AuthCardLayout.vue";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 definePageMeta({
 	layout: false,
+	middleware: "guest-only",
 });
 
 useSeoMeta({
@@ -120,7 +129,9 @@ const form = ref({
 	password: "",
 });
 
-const isSubmitting = ref(false);
+const auth = useAuthStore();
+const isSubmitting = computed(() => auth.loading);
+const errorMessage = computed(() => auth.errorMessage);
 
 const submitLabel = computed(() =>
 	form.value.accountType === "expert"
@@ -129,15 +140,23 @@ const submitLabel = computed(() =>
 );
 
 async function submitForm() {
-	isSubmitting.value = true;
-	await new Promise((resolve) => setTimeout(resolve, 900));
-	isSubmitting.value = false;
-	await navigateTo({
-		path: "/verify-email",
-		query: {
-			email: form.value.email || "you@example.com",
-			role: form.value.accountType,
-		},
-	});
+	try {
+		const user = await auth.signUp({
+			email: form.value.email,
+			name: form.value.fullName,
+			password: form.value.password,
+			role: form.value.accountType as "client" | "expert",
+		});
+
+		await navigateTo({
+			path: user ? getAuthRedirectPath(user) : "/verify-email",
+			query: {
+				email: form.value.email || "you@example.com",
+				role: form.value.accountType,
+			},
+		});
+	} catch {
+		// Error state is stored in Pinia for inline rendering.
+	}
 }
 </script>

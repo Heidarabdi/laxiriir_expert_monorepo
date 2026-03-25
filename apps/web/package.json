@@ -28,6 +28,7 @@
 		"radix-vue": "^1.9.17",
 		"reka-ui": "^2.9.2",
 		"shadcn-nuxt": "2.4.3",
+		"supertokens-web-js": "^0.16.0",
 		"tailwind-merge": "^3.5.0",
 		"vue": "catalog:",
 		"vue-router": "^4.6.4"
