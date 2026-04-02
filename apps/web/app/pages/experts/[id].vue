@@ -138,6 +138,6 @@ async function confirmBooking() {
   })
 
   bookingConfirmed.value = true
-  await navigateTo({ hash: `#booking-${booking.id}`, path: "/bookings" })
+  await navigateTo("/client")
 }
 </script>

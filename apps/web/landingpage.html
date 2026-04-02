@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>laxiriir-expert | Minimalist Premium Platform</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Fonts from your theme -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons (shadcn default) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Tailwind Config for your custom theme -->
+    <script>
+        tailwind.config = {
+            darkMode: ["class"],
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        serif: ['Lora', 'serif'],
+                        mono: ['"IBM Plex Mono"', 'monospace']
+                    },
+                    colors: {
+                        border: "rgb(var(--border) / <alpha-value>)",
+                        input: "rgb(var(--input) / <alpha-value>)",
+                        ring: "rgb(var(--ring) / <alpha-value>)",
+                        background: "rgb(var(--background) / <alpha-value>)",
+                        foreground: "rgb(var(--foreground) / <alpha-value>)",
+                        primary: { DEFAULT: "rgb(var(--primary) / <alpha-value>)", foreground: "rgb(var(--primary-foreground) / <alpha-value>)" },
+                        secondary: { DEFAULT: "rgb(var(--secondary) / <alpha-value>)", foreground: "rgb(var(--secondary-foreground) / <alpha-value>)" },
+                        muted: { DEFAULT: "rgb(var(--muted) / <alpha-value>)", foreground: "rgb(var(--muted-foreground) / <alpha-value>)" },
+                        accent: { DEFAULT: "rgb(var(--accent) / <alpha-value>)", foreground: "rgb(var(--accent-foreground) / <alpha-value>)" },
+                        card: { DEFAULT: "rgb(var(--card) / <alpha-value>)", foreground: "rgb(var(--card-foreground) / <alpha-value>)" },
+                        destructive: { DEFAULT: "rgb(var(--destructive) / <alpha-value>)", foreground: "rgb(var(--destructive-foreground) / <alpha-value>)" },
+                    },
+                    borderRadius: { lg: "var(--radius)", md: "calc(var(--radius) - 2px)", sm: "calc(var(--radius) - 4px)" },
+                    boxShadow: {
+                        sm: "0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 1px 2px -1px hsl(0 0% 0% / 0.10)",
+                        DEFAULT: "0 1px 4px 0px hsl(0 0% 0% / 0.10), 0 1px 2px -1px hsl(0 0% 0% / 0.10)",
+                        md: "0 2px 4px -1px hsl(0 0% 0% / 0.10)",
+                        lg: "0 4px 6px -1px hsl(0 0% 0% / 0.10)",
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* YOUR EXACT THEME VARIABLES (Converted to RGB values for Tailwind Opacity Support) */
+        :root {
+            --background: 253 253 253;
+            --foreground: 0 0 0;
+            --card: 253 253 253;
+            --card-foreground: 0 0 0;
+            --popover: 252 252 252;
+            --popover-foreground: 0 0 0;
+            --primary: 81 240 168;
+            --primary-foreground: 0 0 0;
+            --secondary: 252 253 253;
+            --secondary-foreground: 8 8 8;
+            --muted: 245 245 245;
+            --muted-foreground: 82 82 82;
+            --accent: 249 255 252;
+            --accent-foreground: 13 159 93;
+            --destructive: 245 74 136;
+            --destructive-foreground: 255 255 255;
+            --border: 244 246 248;
+            --input: 235 235 235;
+            --ring: 81 240 168;
+            --radius: 1.4rem;
+        }
+
+        .dark {
+            --background: 0 0 0;
+            --foreground: 240 240 240;
+            --card: 10 10 10;
+            --card-foreground: 240 240 240;
+            --popover: 26 27 27;
+            --popover-foreground: 240 240 240;
+            --primary: 81 240 168;
+            --primary-foreground: 0 0 0;
+            --secondary: 33 106 73;
+            --secondary-foreground: 240 240 240;
+            --muted: 37 37 39;
+            --muted-foreground: 150 150 150;
+            --accent: 9 55 35;
+            --accent-foreground: 254 254 254;
+            --destructive: 255 120 165;
+            --destructive-foreground: 255 255 255;
+            --border: 25 25 26;
+            --input: 59 59 59;
+            --ring: 81 240 168;
+        }
+
+        body {
+            background-color: rgb(var(--background));
+            color: rgb(var(--foreground));
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Shadcn Component Recreations */
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; white-space: nowrap;
+            border-radius: var(--radius); font-size: 0.875rem; font-weight: 600;
+            transition-property: color, background-color, border-color; transition-duration: 0.2s;
+            height: 2.5rem; padding-left: 1rem; padding-right: 1rem;
+        }
+        .btn-primary { background-color: rgb(var(--primary)); color: rgb(var(--primary-foreground)); }
+        .btn-primary:hover { background-color: rgb(var(--primary) / 0.9); }
+        .btn-outline { border: 1px solid rgb(var(--border)); background-color: rgb(var(--background)); color: rgb(var(--foreground)); }
+        .btn-outline:hover { background-color: rgb(var(--accent)); color: rgb(var(--accent-foreground)); }
+        .btn-ghost { background-color: transparent; color: rgb(var(--foreground)); }
+        .btn-ghost:hover { background-color: rgb(var(--accent)); color: rgb(var(--accent-foreground)); }
+
+        .badge {
+            display: inline-flex; align-items: center; border-radius: 9999px; border: 1px solid rgb(var(--border));
+            padding: 0.125rem 0.625rem; font-size: 0.75rem; font-weight: 600; transition: all 0.2s;
+        }
+
+        /* Shadcn Tabs Logic */
+        .tab-content { display: none; animation: fadeIn 0.3s ease; }
+        .tab-content[data-state="active"] { display: block; }
+        .tab-trigger[data-state="active"] { background-color: rgb(var(--background)); color: rgb(var(--foreground)); box-shadow: var(--shadow-sm); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Shadcn Accordion Logic */
+        .accordion-content { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.2s ease-out; }
+        .accordion-content[data-state="open"] { grid-template-rows: 1fr; }
+        .accordion-inner { overflow: hidden; }
+        .accordion-icon { transition: transform 0.2s ease; }
+        .accordion-trigger[data-state="open"] .accordion-icon { transform: rotate(180deg); }
+
+        /* Muted grid background using variables */
+        .bg-grid-slate {
+            background-image: linear-gradient(to right, rgb(var(--border)) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgb(var(--border)) 1px, transparent 1px);
+            background-size: 40px 40px;
+            mask-image: linear-gradient(to bottom, white, transparent);
+            -webkit-mask-image: linear-gradient(to bottom, white, transparent);
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col font-sans">
+
+    <!-- Navbar -->
+    <header class="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 transition-colors">
+        <div class="container mx-auto px-4 md:px-8 h-14 flex items-center justify-between">
+            <div class="flex items-center gap-2 font-bold tracking-tight">
+                <div class="w-6 h-6 rounded-md bg-primary text-primary-foreground flex items-center justify-center text-xs">L</div>
+                laxiriir<span class="text-muted-foreground font-normal">.expert</span>
+            </div>
+            <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-muted-foreground">
+                <a href="#features" class="hover:text-foreground transition-colors">Features</a>
+                <a href="#disciplines" class="hover:text-foreground transition-colors">Disciplines</a>
+                <a href="#pricing" class="hover:text-foreground transition-colors">Pricing</a>
+            </nav>
+            <div class="flex items-center gap-4">
+                <!-- Theme Toggler -->
+                <button id="theme-toggle" class="p-2 rounded-md hover:bg-muted text-muted-foreground hover:text-foreground transition-colors" title="Toggle Theme">
+                    <i data-lucide="sun" id="theme-icon" class="w-4 h-4"></i>
+                </button>
+                <a href="#" class="text-sm font-medium hover:underline underline-offset-4 hidden sm:block">Log in</a>
+                <a href="#" class="btn btn-primary h-9 px-4">Get Started</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1">
+
+        <!-- 1. Minimal Hero with Command Bar -->
+        <section class="relative pt-24 pb-32 overflow-hidden">
+            <div class="absolute inset-0 bg-grid-slate opacity-20 pointer-events-none z-[-1]"></div>
+            <div class="container mx-auto px-4 md:px-8 text-center max-w-4xl relative z-10">
+                <div class="mb-8 inline-flex">
+                    <span class="badge bg-muted text-muted-foreground">
+                        <i data-lucide="sparkles" class="w-3 h-3 mr-1 text-primary"></i> Introducing laxiriir AI
+                    </span>
+                </div>
+
+                <h1 class="text-5xl md:text-7xl font-extrabold tracking-tighter mb-6 text-balance leading-tight font-sans">
+                    Expertise on demand. <br>
+                    <span class="text-muted-foreground">Zero friction.</span>
+                </h1>
+
+                <p class="text-lg text-muted-foreground max-w-2xl mx-auto mb-12 text-balance">
+                    The ultra-minimal, high-performance platform for booking, paying, and holding secure video consultations with world-class professionals.
+                </p>
+
+                <!-- Shadcn Command Mockup -->
+                <div class="max-w-xl mx-auto bg-card border border-border rounded-xl shadow-sm overflow-hidden text-left flex items-center px-4 py-3 ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 transition-all">
+                    <i data-lucide="search" class="w-5 h-5 text-muted-foreground mr-3"></i>
+                    <input type="text" placeholder="Search for a doctor, sheikh, or business advisor..." class="flex-1 bg-transparent outline-none text-sm placeholder:text-muted-foreground text-foreground">
+                    <div class="hidden sm:flex items-center gap-1 text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded border border-border font-mono">
+                        <kbd>⌘</kbd><kbd>K</kbd>
+                    </div>
+                </div>
+
+                <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
+                    <a href="#" class="btn btn-primary"><i data-lucide="video" class="w-4 h-4 mr-2"></i> Join as Client</a>
+                    <a href="#" class="btn btn-outline"><i data-lucide="briefcase" class="w-4 h-4 mr-2"></i> Apply as Expert</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Logo Cloud -->
+        <section class="border-y border-border bg-muted/30 py-10 transition-colors">
+            <div class="container mx-auto px-4 text-center">
+                <p class="text-sm text-muted-foreground font-medium mb-6 tracking-wide">TRUSTED BY PROFESSIONALS AT</p>
+                <div class="flex flex-wrap justify-center gap-8 md:gap-16 items-center text-muted-foreground opacity-60">
+                    <div class="flex items-center gap-2 font-bold text-xl"><i data-lucide="cross" class="w-6 h-6 text-primary"></i> MedCore</div>
+                    <div class="flex items-center gap-2 font-bold text-xl"><i data-lucide="scale" class="w-6 h-6 text-primary"></i> Apex Law</div>
+                    <div class="flex items-center gap-2 font-bold text-xl"><i data-lucide="book-open" class="w-6 h-6 text-primary"></i> Al-Hikmah</div>
+                    <div class="flex items-center gap-2 font-bold text-xl"><i data-lucide="trending-up" class="w-6 h-6 text-primary"></i> FinAdvisors</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Features Grid (Cards) -->
+        <section class="py-24" id="features">
+            <div class="container mx-auto px-4 md:px-8 max-w-6xl">
+                <div class="mb-12">
+                    <h2 class="text-3xl font-bold tracking-tight mb-4">Infrastructure for consultations.</h2>
+                    <p class="text-muted-foreground text-lg max-w-2xl">Everything you need to run a digital consulting business, packaged into a beautifully minimal interface.</p>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-6">
+                    <!-- Card 1 -->
+                    <div class="rounded-xl border border-border bg-card text-card-foreground shadow-sm p-6 hover:shadow-md transition-shadow">
+                        <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-4"><i data-lucide="calendar" class="w-5 h-5 text-primary"></i></div>
+                        <h3 class="font-semibold tracking-tight mb-2">Live Availability</h3>
+                        <p class="text-sm text-muted-foreground">Syncs with Google and Outlook. Clients view your open slots and book instantly in their local timezone.</p>
+                    </div>
+                    <!-- Card 2 -->
+                    <div class="rounded-xl border border-border bg-card text-card-foreground shadow-sm p-6 hover:shadow-md transition-shadow">
+                        <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-4"><i data-lucide="credit-card" class="w-5 h-5 text-primary"></i></div>
+                        <h3 class="font-semibold tracking-tight mb-2">Escrow Payments</h3>
+                        <p class="text-sm text-muted-foreground">Powered by Stripe. Funds are captured at booking and released upon successful completion of the video session.</p>
+                    </div>
+                    <!-- Card 3 -->
+                    <div class="rounded-xl border border-border bg-card text-card-foreground shadow-sm p-6 hover:shadow-md transition-shadow">
+                        <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-4"><i data-lucide="shield-check" class="w-5 h-5 text-primary"></i></div>
+                        <h3 class="font-semibold tracking-tight mb-2">End-to-End Encrypted</h3>
+                        <p class="text-sm text-muted-foreground">Bank-grade WebRTC video rooms built directly into the browser. Fully HIPAA and GDPR compliant.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Product UI Preview -->
+        <section class="py-24 bg-muted/30 border-y border-border transition-colors">
+            <div class="container mx-auto px-4 md:px-8 max-w-6xl flex flex-col md:flex-row gap-16 items-center">
+                <div class="md:w-1/3">
+                    <h2 class="text-3xl font-bold tracking-tight mb-4">Crystal clear video. <br>Built-in.</h2>
+                    <p class="text-muted-foreground mb-6 text-balance">No more sending external Zoom links or asking clients to download apps. Host your sessions in a native, distraction-free environment designed for professional dialogue.</p>
+                    <ul class="space-y-3 text-sm text-foreground font-medium mb-8">
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-primary"></i> Ultra-low latency HD video</li>
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-primary"></i> Secure file and document sharing</li>
+                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-primary"></i> In-session private text chat</li>
+                    </ul>
+                    <a href="#" class="btn btn-outline">View Demo <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i></a>
+                </div>
+
+                <div class="md:w-2/3 w-full rounded-xl border border-border bg-card shadow-lg overflow-hidden">
+                    <div class="h-10 border-b border-border bg-muted/50 flex items-center px-4 gap-2">
+                        <div class="w-3 h-3 rounded-full bg-red-400"></div><div class="w-3 h-3 rounded-full bg-amber-400"></div><div class="w-3 h-3 rounded-full bg-green-400"></div>
+                        <div class="ml-4 text-xs font-mono text-muted-foreground bg-background px-2 py-0.5 rounded border border-border">laxiriir.expert/room/doc-sarah</div>
+                    </div>
+                    <div class="p-4 bg-background relative aspect-video">
+                        <div class="w-full h-full bg-muted rounded-lg border border-border overflow-hidden relative">
+                            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800" class="w-full h-full object-cover grayscale opacity-90">
+                            <div class="absolute top-4 right-4 w-1/4 aspect-video bg-background border-2 border-border rounded shadow-sm overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400" class="w-full h-full object-cover grayscale">
+                            </div>
+                            <div class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-background border border-border rounded-full px-4 py-2 flex items-center gap-4 shadow-sm">
+                                <i data-lucide="mic" class="w-4 h-4 text-foreground cursor-pointer hover:text-primary transition-colors"></i>
+                                <i data-lucide="video" class="w-4 h-4 text-foreground cursor-pointer hover:text-primary transition-colors"></i>
+                                <div class="w-px h-4 bg-border"></div>
+                                <i data-lucide="phone-off" class="w-4 h-4 text-destructive cursor-pointer"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. Interactive Shadcn Tabs (Disciplines) -->
+        <section class="py-24" id="disciplines">
+            <div class="container mx-auto px-4 md:px-8 max-w-4xl text-center">
+                <h2 class="text-3xl font-bold tracking-tight mb-4">A platform for every discipline.</h2>
+                <p class="text-muted-foreground mb-10 max-w-xl mx-auto">Different professions have different needs. Our platform adapts to your specific consulting style.</p>
+
+                <!-- Tabs List -->
+                <div class="inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground mb-8 border border-border">
+                    <button class="tab-trigger inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium transition-all" data-state="active" onclick="switchTab('tab-health')">Healthcare</button>
+                    <button class="tab-trigger inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium transition-all" data-state="inactive" onclick="switchTab('tab-spirit')">Spiritual</button>
+                    <button class="tab-trigger inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium transition-all" data-state="inactive" onclick="switchTab('tab-biz')">Business</button>
+                </div>
+
+                <!-- Tabs Content -->
+                <div class="text-left border border-border rounded-xl bg-card shadow-sm p-8 max-w-2xl mx-auto">
+                    <!-- Content 1 -->
+                    <div id="tab-health" class="tab-content" data-state="active">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="p-2 bg-primary/10 rounded-md border border-primary/20"><i data-lucide="stethoscope" class="w-5 h-5 text-primary"></i></div>
+                            <h3 class="text-xl font-semibold tracking-tight">Medical & Therapy</h3>
+                        </div>
+                        <p class="text-muted-foreground text-sm mb-6 leading-relaxed">Designed for telehealth. Fully HIPAA compliant video rooms ensuring patient confidentiality. Features secure file transfer for medical records, lab results, and prescriptions.</p>
+                        <a href="#" class="text-sm font-medium text-primary hover:underline underline-offset-4">Browse Doctors & Therapists &rarr;</a>
+                    </div>
+                    <!-- Content 2 -->
+                    <div id="tab-spirit" class="tab-content" data-state="inactive">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="p-2 bg-primary/10 rounded-md border border-primary/20"><i data-lucide="book" class="w-5 h-5 text-primary"></i></div>
+                            <h3 class="text-xl font-semibold tracking-tight">Spiritual Guidance</h3>
+                        </div>
+                        <p class="text-muted-foreground text-sm mb-6 leading-relaxed">A dignified, private environment for consulting with verified Sheikhs, scholars, and religious counselors. Perfect for fatwas, family mediation, and private Islamic tutoring.</p>
+                        <a href="#" class="text-sm font-medium text-primary hover:underline underline-offset-4">Browse Scholars & Sheikhs &rarr;</a>
+                    </div>
+                    <!-- Content 3 -->
+                    <div id="tab-biz" class="tab-content" data-state="inactive">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="p-2 bg-primary/10 rounded-md border border-primary/20"><i data-lucide="briefcase" class="w-5 h-5 text-primary"></i></div>
+                            <h3 class="text-xl font-semibold tracking-tight">Advising & Law</h3>
+                        </div>
+                        <p class="text-muted-foreground text-sm mb-6 leading-relaxed">High-definition screen sharing and whiteboarding for business strategy, financial planning, and legal consultations. Sign NDAs and review documents securely.</p>
+                        <a href="#" class="text-sm font-medium text-primary hover:underline underline-offset-4">Browse Advisors & Lawyers &rarr;</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. Expert Showcase (Avatars & Hover Cards) -->
+        <section class="py-24 bg-muted/30 border-y border-border transition-colors">
+            <div class="container mx-auto px-4 md:px-8 max-w-6xl">
+                <div class="flex justify-between items-end mb-8">
+                    <div>
+                        <h2 class="text-3xl font-bold tracking-tight mb-2">Verified Experts.</h2>
+                        <p class="text-muted-foreground">Rigorously vetted professionals ready to help.</p>
+                    </div>
+                    <a href="#" class="btn btn-outline hidden sm:inline-flex">View Directory</a>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- Expert 1 -->
+                    <div class="rounded-xl border border-border bg-card p-4 flex items-start gap-4 hover:border-primary/50 transition-colors cursor-pointer group shadow-sm">
+                        <span class="relative flex h-12 w-12 shrink-0 overflow-hidden rounded-full border border-border bg-muted">
+                            <img class="aspect-square h-full w-full object-cover grayscale group-hover:grayscale-0 transition-all" src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150" />
+                        </span>
+                        <div>
+                            <div class="flex items-center gap-1"><h4 class="text-sm font-semibold">Dr. Sarah J.</h4><i data-lucide="badge-check" class="w-3 h-3 text-primary"></i></div>
+                            <p class="text-xs text-muted-foreground mb-1">Psychologist</p>
+                            <div class="flex items-center text-xs font-medium"><i data-lucide="star" class="w-3 h-3 text-primary mr-1 fill-primary"></i> 4.9 (120)</div>
+                        </div>
+                    </div>
+                    <!-- Expert 2 -->
+                    <div class="rounded-xl border border-border bg-card p-4 flex items-start gap-4 hover:border-primary/50 transition-colors cursor-pointer group shadow-sm">
+                        <span class="relative flex h-12 w-12 shrink-0 overflow-hidden rounded-full border border-border bg-muted">
+                            <img class="aspect-square h-full w-full object-cover grayscale group-hover:grayscale-0 transition-all" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150" />
+                        </span>
+                        <div>
+                            <div class="flex items-center gap-1"><h4 class="text-sm font-semibold">Sheikh Tariq</h4><i data-lucide="badge-check" class="w-3 h-3 text-primary"></i></div>
+                            <p class="text-xs text-muted-foreground mb-1">Islamic Scholar</p>
+                            <div class="flex items-center text-xs font-medium"><i data-lucide="star" class="w-3 h-3 text-primary mr-1 fill-primary"></i> 5.0 (85)</div>
+                        </div>
+                    </div>
+                    <!-- Expert 3 -->
+                    <div class="rounded-xl border border-border bg-card p-4 flex items-start gap-4 hover:border-primary/50 transition-colors cursor-pointer group shadow-sm">
+                        <span class="relative flex h-12 w-12 shrink-0 overflow-hidden rounded-full border border-border bg-muted">
+                            <img class="aspect-square h-full w-full object-cover grayscale group-hover:grayscale-0 transition-all" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150" />
+                        </span>
+                        <div>
+                            <div class="flex items-center gap-1"><h4 class="text-sm font-semibold">Elena Rostova</h4><i data-lucide="badge-check" class="w-3 h-3 text-primary"></i></div>
+                            <p class="text-xs text-muted-foreground mb-1">Legal Advisor</p>
+                            <div class="flex items-center text-xs font-medium"><i data-lucide="star" class="w-3 h-3 text-primary mr-1 fill-primary"></i> 4.8 (42)</div>
+                        </div>
+                    </div>
+                    <!-- Expert 4 -->
+                    <div class="rounded-xl border border-border bg-card p-4 flex items-start gap-4 hover:border-primary/50 transition-colors cursor-pointer group hidden lg:flex shadow-sm">
+                        <span class="relative flex h-12 w-12 shrink-0 overflow-hidden rounded-full border border-border bg-muted">
+                            <img class="aspect-square h-full w-full object-cover grayscale group-hover:grayscale-0 transition-all" src="https://images.unsplash.com/photo-1556761175-5973dc0f32d7?w=150" />
+                        </span>
+                        <div>
+                            <div class="flex items-center gap-1"><h4 class="text-sm font-semibold">Marcus Chen</h4><i data-lucide="badge-check" class="w-3 h-3 text-primary"></i></div>
+                            <p class="text-xs text-muted-foreground mb-1">Financial Strat.</p>
+                            <div class="flex items-center text-xs font-medium"><i data-lucide="star" class="w-3 h-3 text-primary mr-1 fill-primary"></i> 4.9 (210)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. AI Features Minimal List -->
+        <section class="py-24">
+            <div class="container mx-auto px-4 md:px-8 max-w-4xl">
+                <div class="flex items-center gap-2 mb-4"><span class="badge bg-primary/10 text-primary border-primary/20"><i data-lucide="sparkles" class="w-3 h-3 mr-1"></i> Optional Add-ons</span></div>
+                <h2 class="text-3xl font-bold tracking-tight mb-8">Intelligence built-in.</h2>
+
+                <div class="space-y-4">
+                    <div class="flex gap-4 p-4 rounded-lg border border-border bg-card shadow-sm">
+                        <div class="mt-0.5"><i data-lucide="file-text" class="w-5 h-5 text-muted-foreground"></i></div>
+                        <div>
+                            <h4 class="text-sm font-semibold mb-1">Automated Summaries</h4>
+                            <p class="text-sm text-muted-foreground">Secure AI generates private notes and action items immediately after you hang up.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 p-4 rounded-lg border border-border bg-card shadow-sm">
+                        <div class="mt-0.5"><i data-lucide="bot" class="w-5 h-5 text-muted-foreground"></i></div>
+                        <div>
+                            <h4 class="text-sm font-semibold mb-1">24/7 Concierge Chat</h4>
+                            <p class="text-sm text-muted-foreground">Native chat support assists clients with pre-session document uploads and testing.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 p-4 rounded-lg border border-border bg-card shadow-sm">
+                        <div class="mt-0.5"><i data-lucide="clock" class="w-5 h-5 text-muted-foreground"></i></div>
+                        <div>
+                            <h4 class="text-sm font-semibold mb-1">Predictive Scheduling</h4>
+                            <p class="text-sm text-muted-foreground">Analyzes habits to suggest the best times to book, reducing missed appointments.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. Pricing (Shadcn Cards) -->
+        <section class="py-24 bg-muted/30 border-y border-border transition-colors" id="pricing">
+            <div class="container mx-auto px-4 md:px-8 max-w-4xl text-center">
+                <h2 class="text-3xl font-bold tracking-tight mb-4">Simple, transparent pricing.</h2>
+                <p class="text-muted-foreground mb-12">No hidden fees. We align our success with yours.</p>
+
+                <div class="grid md:grid-cols-2 gap-8 text-left">
+                    <!-- Client Pricing -->
+                    <div class="rounded-xl border border-border bg-card p-8 shadow-sm flex flex-col">
+                        <h3 class="text-xl font-semibold tracking-tight mb-2">For Clients</h3>
+                        <p class="text-sm text-muted-foreground mb-6">Find answers and book sessions.</p>
+                        <div class="text-4xl font-extrabold mb-6">Free <span class="text-sm font-normal text-muted-foreground font-sans">/ forever</span></div>
+                        <ul class="space-y-3 text-sm text-muted-foreground mb-8 flex-1">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-primary"></i> Browse all verified experts</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-primary"></i> Only pay the expert's listed rate</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-primary"></i> Secure payment escrow</li>
+                        </ul>
+                        <button class="btn btn-outline w-full">Create Client Account</button>
+                    </div>
+
+                    <!-- Expert Pricing -->
+                    <div class="rounded-xl border-2 border-primary bg-card p-8 shadow-sm flex flex-col relative">
+                        <div class="absolute top-0 right-8 transform -translate-y-1/2 bg-primary text-primary-foreground text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Recommended</div>
+                        <h3 class="text-xl font-semibold tracking-tight mb-2">For Experts</h3>
+                        <p class="text-sm text-muted-foreground mb-6">Monetize your professional time.</p>
+                        <div class="text-4xl font-extrabold mb-6 text-primary">10% <span class="text-sm font-normal text-muted-foreground font-sans">/ per transaction</span></div>
+                        <ul class="space-y-3 text-sm text-muted-foreground mb-8 flex-1">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-primary"></i> Free to list your profile</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-primary"></i> Built-in Video & Calendar</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-primary"></i> Automated global payouts</li>
+                        </ul>
+                        <button class="btn btn-primary w-full">Apply as Expert</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 9. FAQ (Shadcn Accordion) -->
+        <section class="py-24">
+            <div class="container mx-auto px-4 md:px-8 max-w-2xl">
+                <h2 class="text-3xl font-bold tracking-tight mb-8 text-center">Frequently asked questions</h2>
+
+                <div class="border-t border-border">
+                    <!-- FAQ 1 -->
+                    <div class="border-b border-border">
+                        <button class="accordion-trigger flex w-full items-center justify-between py-4 font-medium transition-all hover:text-primary" data-state="closed" onclick="toggleAccordion(this)">
+                            Do I need to download software?
+                            <i data-lucide="chevron-down" class="w-4 h-4 text-muted-foreground accordion-icon"></i>
+                        </button>
+                        <div class="accordion-content text-sm text-muted-foreground" data-state="closed">
+                            <div class="accordion-inner pb-4">No. The entire platform runs natively in your browser. You just need Chrome, Safari, or Edge.</div>
+                        </div>
+                    </div>
+                    <!-- FAQ 2 -->
+                    <div class="border-b border-border">
+                        <button class="accordion-trigger flex w-full items-center justify-between py-4 font-medium transition-all hover:text-primary" data-state="closed" onclick="toggleAccordion(this)">
+                            How are payments secured?
+                            <i data-lucide="chevron-down" class="w-4 h-4 text-muted-foreground accordion-icon"></i>
+                        </button>
+                        <div class="accordion-content text-sm text-muted-foreground" data-state="closed">
+                            <div class="accordion-inner pb-4">We use Stripe. Funds are held in escrow when a booking is made and only transferred to the expert after the session successfully ends.</div>
+                        </div>
+                    </div>
+                    <!-- FAQ 3 -->
+                    <div class="border-b border-border">
+                        <button class="accordion-trigger flex w-full items-center justify-between py-4 font-medium transition-all hover:text-primary" data-state="closed" onclick="toggleAccordion(this)">
+                            Are the video calls recorded?
+                            <i data-lucide="chevron-down" class="w-4 h-4 text-muted-foreground accordion-icon"></i>
+                        </button>
+                        <div class="accordion-content text-sm text-muted-foreground" data-state="closed">
+                            <div class="accordion-inner pb-4">By default, no. All calls are strictly confidential and encrypted. AI summaries are generated in real-time without saving audio data.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 10. CTA Section -->
+        <section class="border-t border-border bg-card py-32 transition-colors">
+            <div class="container mx-auto px-4 text-center max-w-3xl">
+                <h2 class="text-4xl md:text-5xl font-bold tracking-tight mb-6">Ready to get started?</h2>
+                <p class="text-muted-foreground mb-10 text-lg">Join the minimal, high-performance platform for professional consultations.</p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button class="btn btn-primary h-11 px-8 text-base">Find an Expert</button>
+                    <button class="btn btn-outline h-11 px-8 text-base">Apply as Professional</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 11. Footer -->
+    <footer class="border-t border-border bg-background py-12 transition-colors">
+        <div class="container mx-auto px-4 md:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-12">
+                <div class="col-span-2 lg:col-span-2 pr-8">
+                    <div class="flex items-center gap-2 font-bold tracking-tight mb-4">
+                        <div class="w-6 h-6 rounded bg-primary text-primary-foreground flex items-center justify-center text-xs">L</div>
+                        laxiriir<span class="text-muted-foreground font-normal">.expert</span>
+                    </div>
+                    <p class="text-sm text-muted-foreground max-w-xs mb-6">The infrastructure for secure, professional virtual consultations.</p>
+                </div>
+                <div>
+                    <h3 class="font-semibold mb-4 text-sm">Product</h3>
+                    <ul class="space-y-3 text-sm text-muted-foreground"><li><a href="#" class="hover:text-foreground transition-colors">Features</a></li><li><a href="#" class="hover:text-foreground transition-colors">Security</a></li><li><a href="#" class="hover:text-foreground transition-colors">Pricing</a></li></ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold mb-4 text-sm">Solutions</h3>
+                    <ul class="space-y-3 text-sm text-muted-foreground"><li><a href="#" class="hover:text-foreground transition-colors">Healthcare</a></li><li><a href="#" class="hover:text-foreground transition-colors">Spiritual</a></li><li><a href="#" class="hover:text-foreground transition-colors">Business</a></li></ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold mb-4 text-sm">Legal</h3>
+                    <ul class="space-y-3 text-sm text-muted-foreground"><li><a href="#" class="hover:text-foreground transition-colors">Privacy (HIPAA)</a></li><li><a href="#" class="hover:text-foreground transition-colors">Terms of Service</a></li></ul>
+                </div>
+            </div>
+            <div class="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-muted-foreground font-mono">
+                <p>© 2024 laxiriir-expert Inc. All rights reserved.</p>
+                <div class="flex gap-4 mt-4 md:mt-0">
+                    <a href="#" class="hover:text-foreground transition-colors"><i data-lucide="twitter" class="w-4 h-4"></i></a>
+                    <a href="#" class="hover:text-foreground transition-colors"><i data-lucide="github" class="w-4 h-4"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Theme Toggle Logic
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const htmlElement = document.documentElement;
+
+        themeToggleBtn.addEventListener('click', () => {
+            htmlElement.classList.toggle('dark');
+
+            // Swap icon based on theme
+            if (htmlElement.classList.contains('dark')) {
+                themeIcon.setAttribute('data-lucide', 'sun');
+            } else {
+                themeIcon.setAttribute('data-lucide', 'moon');
+            }
+
+            lucide.createIcons();
+        });
+
+        // Shadcn-style Tabs Logic
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-trigger').forEach(trigger => {
+                trigger.setAttribute('data-state', 'inactive');
+            });
+            event.currentTarget.setAttribute('data-state', 'active');
+
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.setAttribute('data-state', 'inactive');
+            });
+            document.getElementById(tabId).setAttribute('data-state', 'active');
+        }
+
+        // Shadcn-style Accordion Logic
+        function toggleAccordion(button) {
+            const isClosed = button.getAttribute('data-state') === 'closed';
+            const content = button.nextElementSibling;
+
+            // Close all
+            document.querySelectorAll('.accordion-trigger').forEach(btn => {
+                btn.setAttribute('data-state', 'closed');
+                btn.nextElementSibling.setAttribute('data-state', 'closed');
+            });
+
+            // Open clicked if it was closed
+            if (isClosed) {
+                button.setAttribute('data-state', 'open');
+                content.setAttribute('data-state', 'open');
+            }
+        }
+    </script>
+</body>
+</html>

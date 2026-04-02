@@ -1,6 +1,6 @@
 <template>
 	<div class="flex min-h-screen items-center justify-center bg-background px-6 text-foreground">
-		<h1 class="text-3xl font-semibold tracking-tight">Welcome</h1>
+		<h1 class="text-3xl font-semibold tracking-tight">Client welcome only</h1>
 	</div>
 </template>
 
@@ -8,10 +8,10 @@
 definePageMeta({
 	layout: false,
 	middleware: ["auth-required", "verified-required", "role-required"],
-	roles: ["admin"],
+	roles: ["client"],
 });
 
 useSeoMeta({
-	title: "Admin | Laxiriir Expert",
+	title: "Client | Laxiriir Expert",
 });
 </script>

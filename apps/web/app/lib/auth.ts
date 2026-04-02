@@ -15,7 +15,7 @@ export function getRoleHomePath(user: CurrentUser) {
 		case "expert":
 			return user.expertStatus === "approved" ? "/expert" : "/expert/pending";
 		default:
-			return "/bookings";
+			return "/client";
 	}
 }
 

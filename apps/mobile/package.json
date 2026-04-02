@@ -3,7 +3,7 @@
 	"version": "1.0.0",
 	"main": "index.ts",
 	"scripts": {
-		"dev": "expo start --dev-client",
+		"devs": "expo start --dev-client",
 		"dev:go": "expo start",
 		"start": "expo start",
 		"android": "expo start --android",

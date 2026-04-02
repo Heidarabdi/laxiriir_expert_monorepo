@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "background": "#0e0e0e",
+              "outline": "#777575",
+              "inverse-primary": "#006e36",
+              "on-background": "#ffffff",
+              "on-error": "#450900",
+              "secondary-fixed-dim": "#6beca9",
+              "on-primary-container": "#002f13",
+              "tertiary-dim": "#00d1ec",
+              "surface-container-highest": "#262626",
+              "on-secondary-fixed-variant": "#006942",
+              "inverse-on-surface": "#565554",
+              "secondary-fixed": "#7afbb7",
+              "on-tertiary": "#005561",
+              "outline-variant": "#494847",
+              "secondary": "#7afbb7",
+              "secondary-container": "#006d44",
+              "on-tertiary-fixed": "#00363e",
+              "on-secondary": "#005e3a",
+              "error-container": "#b92902",
+              "surface-dim": "#0e0e0e",
+              "on-secondary-fixed": "#00492c",
+              "on-tertiary-container": "#004b56",
+              "primary-fixed-dim": "#5def8f",
+              "tertiary-fixed-dim": "#00d1ec",
+              "surface-tint": "#6dfe9c",
+              "error": "#ff7351",
+              "primary-container": "#19be64",
+              "on-primary": "#005f2e",
+              "primary-dim": "#5def8f",
+              "on-tertiary-fixed-variant": "#005561",
+              "primary": "#6dfe9c",
+              "primary-fixed": "#6dfe9c",
+              "surface-variant": "#262626",
+              "tertiary": "#7de9ff",
+              "tertiary-fixed": "#00e0fd",
+              "on-primary-fixed": "#004a22",
+              "surface-bright": "#2c2c2c",
+              "on-secondary-container": "#e1ffe9",
+              "on-primary-fixed-variant": "#006a34",
+              "surface-container-low": "#131313",
+              "surface-container": "#1a1919",
+              "tertiary-container": "#00e0fd",
+              "surface-container-high": "#201f1f",
+              "on-error-container": "#ffd2c8",
+              "secondary-dim": "#6beca9",
+              "on-surface-variant": "#adaaaa",
+              "error-dim": "#d53d18",
+              "surface-container-lowest": "#000000",
+              "on-surface": "#ffffff",
+              "surface": "#0e0e0e",
+              "inverse-surface": "#fcf8f8"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .tonal-shift { transition: background-color 0.3s ease; }
+        .glass-panel {
+            background: rgba(38, 38, 38, 0.6);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body selection:bg-primary/30">
+<!-- Top Navigation Shell -->
+<nav class="fixed top-0 w-full z-50 bg-[#0e0e0e]/60 backdrop-blur-xl shadow-[0_20px_40px_rgba(0,0,0,0.4)] flex justify-between items-center px-8 h-20 w-full">
+<div class="flex items-center gap-12">
+<span class="font-headline text-2xl font-black tracking-tighter text-white">ARCHITECT_V</span>
+<div class="hidden md:flex items-center gap-8 font-headline tracking-tight">
+<a class="text-primary font-bold border-b-2 border-primary pb-1 transition-transform active:scale-95" href="#">Dashboard</a>
+<a class="text-on-surface-variant font-medium hover:text-primary-dim transition-colors duration-200 active:scale-95" href="#">Experts</a>
+<a class="text-on-surface-variant font-medium hover:text-primary-dim transition-colors duration-200 active:scale-95" href="#">Sessions</a>
+<a class="text-on-surface-variant font-medium hover:text-primary-dim transition-colors duration-200 active:scale-95" href="#">Financials</a>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">notifications</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">account_circle</button>
+</div>
+</nav>
+<!-- Side Navigation Shell -->
+<aside class="fixed left-0 top-0 h-full w-64 z-40 bg-surface-container-low border-r border-outline-variant/15 flex flex-col py-24 px-4 gap-y-2 hidden lg:flex">
+<div class="mb-8 px-2">
+<h2 class="text-primary font-headline font-bold text-lg">Consultant Pro</h2>
+<p class="text-on-surface-variant text-xs font-medium tracking-wide">Premium Tier</p>
+</div>
+<nav class="flex-1 flex flex-col gap-y-1">
+<a class="flex items-center gap-3 px-4 py-3 bg-primary/10 text-primary border-r-4 border-primary font-headline text-sm font-medium transition-all duration-300" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high font-headline text-sm font-medium transition-all duration-300 active:translate-x-1" href="#">
+<span class="material-symbols-outlined">groups</span>
+                Experts
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high font-headline text-sm font-medium transition-all duration-300 active:translate-x-1" href="#">
+<span class="material-symbols-outlined">video_call</span>
+                Sessions
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high font-headline text-sm font-medium transition-all duration-300 active:translate-x-1" href="#">
+<span class="material-symbols-outlined">payments</span>
+                Financials
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high font-headline text-sm font-medium transition-all duration-300 active:translate-x-1" href="#">
+<span class="material-symbols-outlined">menu_book</span>
+                Resources
+            </a>
+</nav>
+<div class="mt-auto flex flex-col gap-y-1 pt-4 border-t border-outline-variant/10">
+<button class="w-full bg-primary-container text-on-primary-container font-headline font-bold py-3 rounded-xl mb-4 hover:brightness-110 transition-all active:scale-95">
+                Start Session
+            </button>
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:text-on-surface text-sm font-medium transition-all" href="#">
+<span class="material-symbols-outlined">settings</span>
+                Settings
+            </a>
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:text-on-surface text-sm font-medium transition-all" href="#">
+<span class="material-symbols-outlined">help</span>
+                Support
+            </a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="lg:ml-64 pt-32 pb-16 px-6 lg:px-12 max-w-7xl mx-auto">
+<!-- Welcome Banner & High-Level Stats -->
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+<div class="lg:col-span-2 flex flex-col justify-center">
+<h1 class="font-headline text-4xl lg:text-6xl font-extrabold tracking-tighter text-on-surface mb-4">
+                    Welcome back, <span class="text-primary">Architect.</span>
+</h1>
+<p class="text-on-surface-variant text-lg max-w-xl">
+                    Your consulting ecosystem is optimized and ready for today's high-performance sessions.
+                </p>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-surface-container-low p-6 rounded-xl flex flex-col justify-between border border-outline-variant/5">
+<span class="text-on-surface-variant text-xs font-bold uppercase tracking-widest">Total Sessions</span>
+<span class="font-headline text-3xl font-black text-primary mt-2">124</span>
+</div>
+<div class="bg-surface-container-low p-6 rounded-xl flex flex-col justify-between border border-outline-variant/5">
+<span class="text-on-surface-variant text-xs font-bold uppercase tracking-widest">Hours Consulted</span>
+<span class="font-headline text-3xl font-black text-tertiary mt-2">842.5</span>
+</div>
+</div>
+</section>
+<!-- Bento Grid: Main Dashboard Modules -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Upcoming Session Card (Large) -->
+<div class="lg:col-span-8 bg-surface-container rounded-xl overflow-hidden relative border border-outline-variant/10 group">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent pointer-events-none"></div>
+<div class="p-8 relative z-10">
+<div class="flex flex-wrap justify-between items-start gap-4 mb-12">
+<div>
+<span class="inline-flex items-center gap-2 px-3 py-1 bg-primary/20 text-primary text-xs font-bold rounded-full mb-4">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                                NEXT UP
+                            </span>
+<h2 class="font-headline text-3xl font-extrabold text-on-surface mb-2">Technical Architecture Review</h2>
+<p class="text-on-surface-variant">with Senior Consultant Sarah Chen</p>
+</div>
+<div class="text-right">
+<p class="text-on-surface-variant text-sm font-medium mb-1">Starts in</p>
+<p class="font-headline text-4xl font-black text-on-surface tracking-tight">00:14:22</p>
+</div>
+</div>
+<div class="flex items-center gap-6 mt-auto">
+<button class="bg-primary text-on-primary font-headline font-bold px-8 py-4 rounded-full flex items-center gap-3 hover:shadow-[0_0_20px_rgba(109,254,156,0.3)] transition-all active:scale-95">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">video_call</span>
+                            Join Room
+                        </button>
+<button class="text-on-surface-variant font-bold hover:text-on-surface transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined">description</span>
+                            Review Brief
+                        </button>
+</div>
+</div>
+<img alt="Futuristic digital architecture visualization" class="absolute right-0 top-0 h-full w-1/3 object-cover opacity-10 group-hover:opacity-20 transition-opacity pointer-events-none" data-alt="Abstract blue and green digital tech pattern" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYbvMFTb66dVnoKmF61aC9PHSuRzMA__NkbLePxp8_LhfbSoBlt-B2sJgRO5it5ZSAhBoDKbLvYLil2tKssEK_a-9aCMlqxh22qed9YDvnt3dn8doRPAja2poCAHDk5G1yx-ZVyF-BNj2iaUF_8c5C0lU6a2kS9if4-pVCAjlXhxxHbvvIrD_hgZZHPwHHloFr7BrT5-jLBEU6S7OlsO5s34jgKJ7dye9pSkW1sEfCmUTwWQUG7n9HoRm3dHru4Naln-rl1vfQgfE"/>
+</div>
+<!-- Milestone Track (Side) -->
+<div class="lg:col-span-4 bg-surface-container-low p-8 rounded-xl border border-outline-variant/5">
+<h3 class="font-headline text-xl font-bold text-on-surface mb-6">Milestone Track</h3>
+<div class="space-y-8">
+<div class="relative pl-8 border-l-2 border-primary/30">
+<div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-primary shadow-[0_0_10px_rgba(109,254,156,0.5)]"></div>
+<p class="text-xs font-bold text-primary mb-1">COMPLETED</p>
+<p class="text-on-surface font-semibold text-sm">System Audit &amp; Discovery</p>
+</div>
+<div class="relative pl-8 border-l-2 border-primary">
+<div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-primary animate-ping"></div>
+<div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-primary border-4 border-background"></div>
+<p class="text-xs font-bold text-primary mb-1">IN PROGRESS</p>
+<p class="text-on-surface font-semibold text-sm">Infrastructure Hardening</p>
+<p class="text-on-surface-variant text-xs mt-2">Target completion: June 12</p>
+</div>
+<div class="relative pl-8 border-l-2 border-outline-variant/30">
+<div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-surface-container-highest border-2 border-outline-variant/30"></div>
+<p class="text-xs font-bold text-on-surface-variant mb-1">UPCOMING</p>
+<p class="text-on-surface-variant font-semibold text-sm">Scalability Stress Test</p>
+</div>
+</div>
+<div class="mt-10 pt-6 border-t border-outline-variant/10">
+<div class="flex justify-between items-end mb-2">
+<span class="text-xs font-bold text-on-surface-variant uppercase tracking-tighter">Project Velocity</span>
+<span class="text-sm font-bold text-primary">64%</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary" style="width: 64%"></div>
+</div>
+</div>
+</div>
+<!-- Recommended Experts Carousel (Wide) -->
+<div class="lg:col-span-12 py-8">
+<div class="flex justify-between items-center mb-8">
+<div>
+<h3 class="font-headline text-2xl font-bold text-on-surface">Recommended Experts</h3>
+<p class="text-on-surface-variant text-sm">AI-driven matches based on your recent activity</p>
+</div>
+<div class="flex gap-2">
+<button class="p-2 rounded-full bg-surface-container-low hover:bg-surface-container-high transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="p-2 rounded-full bg-surface-container-low hover:bg-surface-container-high transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Expert Card 1 -->
+<div class="bg-surface-container hover:bg-surface-container-high transition-all duration-300 p-6 rounded-xl border border-outline-variant/5 group">
+<div class="relative w-16 h-16 mb-6">
+<img alt="Professional consultant portrait" class="w-full h-full object-cover rounded-full border-2 border-primary/20" data-alt="Portrait of a female technology executive" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1FuZZEkoa4JOgKFzr4JRYZIrs4zAYXP-mqp1X06mm8BwV-KDv3-2Ja_MQNISWbXFVRsegQOhz-ArKmeqxLVlVlgI7JZ_n-ZBL5kzFHxwzznNaZ2khl68QTpuo6_yi3TkpRqJuki52Cwqxb1QxStgkw_JLFVuOirrNMV6-AEbJP2rJYOvg6qAOiCJkUbNqoBf6xEARbfGNhmMQHR5Ng8v7wf64jLZEDK8Pke2J54hi-isMR5YiWw7W0PZUFhYsrZeoOO_FwSe_uMM"/>
+<span class="absolute bottom-0 right-0 w-4 h-4 bg-tertiary rounded-full border-2 border-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[10px] text-on-tertiary-container font-bold">bolt</span>
+</span>
+</div>
+<h4 class="font-headline font-bold text-on-surface group-hover:text-primary transition-colors">Dr. Aris Thorne</h4>
+<p class="text-on-surface-variant text-xs mb-4">Cloud Security Architect</p>
+<div class="flex flex-wrap gap-2 mb-6">
+<span class="px-2 py-0.5 bg-surface-container-highest text-[10px] font-bold rounded text-on-surface-variant">AWS</span>
+<span class="px-2 py-0.5 bg-surface-container-highest text-[10px] font-bold rounded text-on-surface-variant">STIG</span>
+</div>
+<button class="w-full py-2 border border-outline-variant/30 text-on-surface font-bold text-sm rounded-lg hover:bg-primary hover:text-on-primary hover:border-primary transition-all">Book Consultation</button>
+</div>
+<!-- Expert Card 2 -->
+<div class="bg-surface-container hover:bg-surface-container-high transition-all duration-300 p-6 rounded-xl border border-outline-variant/5 group">
+<div class="relative w-16 h-16 mb-6">
+<img alt="Professional consultant portrait" class="w-full h-full object-cover rounded-full border-2 border-primary/20" data-alt="Portrait of a male business strategist" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB6_Q5_LY2587_Fu6VCltvNqXHOjK8fIMGKcrlEX-uKrwlcDzkBATJPQtcFMaauqhFHNqc0SBxthN-S4QKyTzYNbJfJczJaOVXjDdud07y_3ojHMv-w5xLFeRzrbQ--7VdUkNweU0NBRwbcfXC3AjZjtPU-HZ-Z47R5BpxVZqY5P1cQK4LgU4gM18tJKTFYIoIISIFLSkZkFuuUp4X1yF8HRXKUYPlBg4e6ObpC2B8JgPijRaoHY1ft8-z0-mYtJ6pExLWcNBHyd6I"/>
+<span class="absolute bottom-0 right-0 w-4 h-4 bg-tertiary rounded-full border-2 border-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[10px] text-on-tertiary-container font-bold">bolt</span>
+</span>
+</div>
+<h4 class="font-headline font-bold text-on-surface group-hover:text-primary transition-colors">Marcus Vane</h4>
+<p class="text-on-surface-variant text-xs mb-4">GTM Operations Lead</p>
+<div class="flex flex-wrap gap-2 mb-6">
+<span class="px-2 py-0.5 bg-surface-container-highest text-[10px] font-bold rounded text-on-surface-variant">SaaS</span>
+<span class="px-2 py-0.5 bg-surface-container-highest text-[10px] font-bold rounded text-on-surface-variant">Series B</span>
+</div>
+<button class="w-full py-2 border border-outline-variant/30 text-on-surface font-bold text-sm rounded-lg hover:bg-primary hover:text-on-primary hover:border-primary transition-all">Book Consultation</button>
+</div>
+<!-- Expert Card 3 -->
+<div class="bg-surface-container hover:bg-surface-container-high transition-all duration-300 p-6 rounded-xl border border-outline-variant/5 group">
+<div class="relative w-16 h-16 mb-6">
+<img alt="Professional consultant portrait" class="w-full h-full object-cover rounded-full border-2 border-primary/20" data-alt="Portrait of a smiling female engineer" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvMta_IgIFHoY2UdPlZ8YcKYBIQ3fCNDVthTWNQLVyFLSvi_cxEYxZM5Hnd5_y1IkC0aG7JBmz5nxsORNzUZZ_0-bbE7H8SKSG_rW-J9ilRw1lAzJxYJYH6C6TQq0q2dOIxVpqI6-4PiwzH2GPP53PQKHzZP8aH6S-hbmCx3tA7luGw-7xEdNC5CZ6KtVgabxVMXSC0oseAwASFyGbdbUCsyBLXSCVhEBc3nMNuwBZvtszl6e8mfpuTx1Z-hwr_N6q8ASyalPiQ3k"/>
+<span class="absolute bottom-0 right-0 w-4 h-4 bg-tertiary rounded-full border-2 border-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[10px] text-on-tertiary-container font-bold">bolt</span>
+</span>
+</div>
+<h4 class="font-headline font-bold text-on-surface group-hover:text-primary transition-colors">Elena Rossi</h4>
+<p class="text-on-surface-variant text-xs mb-4">UX Cognitive Scientist</p>
+<div class="flex flex-wrap gap-2 mb-6">
+<span class="px-2 py-0.5 bg-surface-container-highest text-[10px] font-bold rounded text-on-surface-variant">HCI</span>
+<span class="px-2 py-0.5 bg-surface-container-highest text-[10px] font-bold rounded text-on-surface-variant">Bento</span>
+</div>
+<button class="w-full py-2 border border-outline-variant/30 text-on-surface font-bold text-sm rounded-lg hover:bg-primary hover:text-on-primary hover:border-primary transition-all">Book Consultation</button>
+</div>
+<!-- Expert Card 4 -->
+<div class="bg-surface-container hover:bg-surface-container-high transition-all duration-300 p-6 rounded-xl border border-outline-variant/5 group">
+<div class="relative w-16 h-16 mb-6">
+<img alt="Professional consultant portrait" class="w-full h-full object-cover rounded-full border-2 border-primary/20" data-alt="Portrait of a senior executive male" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzkhy25KBwc-YnyXt7DFamwCVYLUl2FeakmPdixqYKUt_k44LmlnkYisd2vOoibDnAcZUl2fqlP7eBItl0cK3iIrYMI2li3p3bw3NE_4ZSr83WwN90cNd0VuWqOxNQdWszjgUAONFlhMusjWd95mxiBwbAJr8CxLOYoMyc9xQHIrN6mCUQs_cDMNM1Oww-c_qDhzG7FYJyCFm5IwzxzEzFAUxvUvaBjBBjd17QXWuH4VJuttTUlTy6PKTD1kxMQq32lzLz3gC2zUM"/>
+<span class="absolute bottom-0 right-0 w-4 h-4 bg-tertiary rounded-full border-2 border-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[10px] text-on-tertiary-container font-bold">bolt</span>
+</span>
+</div>
+<h4 class="font-headline font-bold text-on-surface group-hover:text-primary transition-colors">Julian Pierce</h4>
+<p class="text-on-surface-variant text-xs mb-4">AI Integration Lead</p>
+<div class="flex flex-wrap gap-2 mb-6">
+<span class="px-2 py-0.5 bg-surface-container-highest text-[10px] font-bold rounded text-on-surface-variant">LLM</span>
+<span class="px-2 py-0.5 bg-surface-container-highest text-[10px] font-bold rounded text-on-surface-variant">Python</span>
+</div>
+<button class="w-full py-2 border border-outline-variant/30 text-on-surface font-bold text-sm rounded-lg hover:bg-primary hover:text-on-primary hover:border-primary transition-all">Book Consultation</button>
+</div>
+</div>
+</div>
+<!-- Recent Activity Feed (Bottom) -->
+<div class="lg:col-span-12 bg-surface-container-low p-8 rounded-xl border border-outline-variant/5">
+<div class="flex justify-between items-center mb-8">
+<h3 class="font-headline text-2xl font-bold text-on-surface">Recent Activity</h3>
+<button class="text-primary text-sm font-bold hover:underline">Download Reports</button>
+</div>
+<div class="space-y-4">
+<div class="flex items-center justify-between py-4 group">
+<div class="flex items-center gap-6">
+<div class="w-12 h-12 rounded bg-surface-container-highest flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">description</span>
+</div>
+<div>
+<p class="text-on-surface font-semibold">Architecture Proposal Updated</p>
+<p class="text-on-surface-variant text-xs">By Sarah Chen • 2 hours ago</p>
+</div>
+</div>
+<button class="opacity-0 group-hover:opacity-100 transition-opacity bg-surface-container-highest text-on-surface text-xs font-bold px-4 py-2 rounded">View File</button>
+</div>
+<div class="flex items-center justify-between py-4 group border-t border-outline-variant/5">
+<div class="flex items-center gap-6">
+<div class="w-12 h-12 rounded bg-surface-container-highest flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined">payments</span>
+</div>
+<div>
+<p class="text-on-surface font-semibold">Payment Confirmed: Q3 Retainer</p>
+<p class="text-on-surface-variant text-xs">Automatic Processing • 5 hours ago</p>
+</div>
+</div>
+<button class="opacity-0 group-hover:opacity-100 transition-opacity bg-surface-container-highest text-on-surface text-xs font-bold px-4 py-2 rounded">Receipt</button>
+</div>
+<div class="flex items-center justify-between py-4 group border-t border-outline-variant/5">
+<div class="flex items-center gap-6">
+<div class="w-12 h-12 rounded bg-surface-container-highest flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">video_call</span>
+</div>
+<div>
+<p class="text-on-surface font-semibold">Session Recording Available: Discovery Call</p>
+<p class="text-on-surface-variant text-xs">System • Yesterday</p>
+</div>
+</div>
+<button class="opacity-0 group-hover:opacity-100 transition-opacity bg-surface-container-highest text-on-surface text-xs font-bold px-4 py-2 rounded">Watch</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Contextual FAB (Dashboard only) -->
+<button class="fixed bottom-8 right-8 w-16 h-16 bg-primary text-on-primary rounded-full shadow-[0_10px_30px_rgba(109,254,156,0.4)] flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-50">
+<span class="material-symbols-outlined text-3xl font-bold">add</span>
+</button>
+</body></html>
