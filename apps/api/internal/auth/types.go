@@ -45,6 +45,12 @@ type CurrentUserResponse struct {
 	AllowedAreas  []string     `json:"allowedAreas"`
 }
 
+type Principal struct {
+	UserID        string
+	PrimaryRole   PrimaryRole
+	EmailVerified bool
+}
+
 type ExpertStatusUpdateResponse struct {
 	Message string         `json:"message"`
 	Profile AccountProfile `json:"profile"`

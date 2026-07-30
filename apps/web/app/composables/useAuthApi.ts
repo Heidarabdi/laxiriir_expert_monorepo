@@ -34,16 +34,15 @@ function replaceQueryToken(token: string) {
 
 export function useAuthApi() {
 	const config = useRuntimeConfig();
+	const fetchJson = $fetch as unknown as (
+		url: string,
+		options?: PlatformRequestOptions,
+	) => Promise<unknown>;
 	const authClient = createPlatformAuthClient({
 		apiBaseUrl: config.public.apiBaseUrl,
 		credentials: "include",
 		fetch: <TResponse>(url: string, options?: PlatformRequestOptions) =>
-			$fetch<TResponse>(url, {
-				body: options?.body,
-				credentials: options?.credentials,
-				headers: options?.headers,
-				method: options?.method,
-			}),
+			fetchJson(url, options) as Promise<TResponse>,
 	});
 
 	async function getCurrentUser() {

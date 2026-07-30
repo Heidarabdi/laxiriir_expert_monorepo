@@ -1,13 +1,16 @@
 package routes
 
 import (
+	"context"
 	"net/http"
+	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/supertokens/supertokens-golang/supertokens"
 	"laxiriir-expert-monorepo/apps/api/internal/auth"
 	"laxiriir-expert-monorepo/apps/api/internal/config"
+	"laxiriir-expert-monorepo/apps/api/internal/consultations"
 )
 
 func SetupRouter(cfg *config.Config) (*gin.Engine, error) {
@@ -23,6 +26,15 @@ func SetupRouterWithServices(cfg *config.Config) (*gin.Engine, *auth.Service, er
 	authService, err := auth.NewService(cfg)
 	if err != nil {
 		return nil, nil, err
+	}
+	consultationService := consultations.NewService(authService.Database())
+	if err := consultationService.EnsureSchema(context.Background()); err != nil {
+		return nil, nil, err
+	}
+	if cfg.Environment == "development" {
+		if err := consultationService.SeedDemoData(context.Background(), time.Now().UTC()); err != nil {
+			return nil, nil, err
+		}
 	}
 
 	r := gin.Default()
@@ -83,6 +95,23 @@ func SetupRouterWithServices(cfg *config.Config) (*gin.Engine, *auth.Service, er
 				RequireVerified: true,
 			}),
 			authService.UpdateExpertStatusHandler(auth.ExpertStatusSuspended, "expert suspended"),
+		)
+		consultations.RegisterRoutes(
+			v1,
+			consultationService,
+			authService.RequireAuth(auth.GuardOptions{
+				AllowedRoles:    []auth.PrimaryRole{auth.PrimaryRoleClient},
+				RequireVerified: true,
+			}),
+			func(c *gin.Context) {
+				principal, ok := auth.PrincipalFromContext(c)
+				if !ok {
+					c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "unauthorized"})
+					return
+				}
+				consultations.SetClientUserID(c, principal.UserID)
+				c.Next()
+			},
 		)
 	}
 

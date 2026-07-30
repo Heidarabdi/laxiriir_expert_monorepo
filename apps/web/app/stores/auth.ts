@@ -1,5 +1,5 @@
-import { defineStore } from "pinia";
 import type { SignInInput, SignUpInput } from "@repo/platform/auth";
+import { defineStore } from "pinia";
 import type { CurrentUser, PrimaryRole } from "~/lib/auth";
 import { getAuthRedirectPath } from "~/lib/auth";
 
@@ -13,6 +13,10 @@ export const useAuthStore = defineStore("auth", () => {
 	const isAuthenticated = computed(() => user.value !== null);
 
 	async function refreshCurrentUser(silent = false) {
+		if (import.meta.server) {
+			return;
+		}
+
 		const authApi = useAuthApi();
 
 		if (!silent) {
@@ -31,6 +35,10 @@ export const useAuthStore = defineStore("auth", () => {
 	}
 
 	async function ensureLoaded() {
+		if (import.meta.server) {
+			return;
+		}
+
 		if (bootstrapped.value) {
 			return;
 		}
@@ -54,7 +62,8 @@ export const useAuthStore = defineStore("auth", () => {
 			await refreshCurrentUser(true);
 			return user.value;
 		} catch (error) {
-			errorMessage.value = error instanceof Error ? error.message : "Unable to sign in.";
+			errorMessage.value =
+				error instanceof Error ? error.message : "Unable to sign in.";
 			throw error;
 		} finally {
 			loading.value = false;
@@ -72,7 +81,8 @@ export const useAuthStore = defineStore("auth", () => {
 			await refreshCurrentUser(true);
 			return user.value;
 		} catch (error) {
-			errorMessage.value = error instanceof Error ? error.message : "Unable to create account.";
+			errorMessage.value =
+				error instanceof Error ? error.message : "Unable to create account.";
 			throw error;
 		} finally {
 			loading.value = false;

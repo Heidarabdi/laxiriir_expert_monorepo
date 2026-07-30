@@ -1,6 +1,10 @@
 import { isRoleAllowed, type PrimaryRole } from "~/lib/auth";
 
 export default defineNuxtRouteMiddleware(async (to) => {
+	if (import.meta.server) {
+		return;
+	}
+
 	const auth = useAuthStore();
 	await auth.ensureLoaded();
 

@@ -295,18 +295,20 @@ Already in place:
 - environment-aware Turbo hashing
 - Expo development-build setup
 - shared `packages/platform` package
-- smoke tests for API and web
+- SuperTokens authentication baseline
+- persisted expert, availability, and booking models
+- PostgreSQL initial schema migration
+- API integration tests and web API-client tests
+- GitHub Actions validation
 
 Still needed before real production work:
 
-- real auth stack
-- real database and migration tooling
-- booking domain implementation
+- managed PostgreSQL environment and automated migration execution
 - payment integration
 - video provider integration
 - reminder worker and provider integration
 - staging environment
-- CI/CD and release automation
+- deployment and release automation
 
 ## Decisions To Confirm
 
