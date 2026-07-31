@@ -24,6 +24,15 @@ export function createAuth(database: DB, config: ApiConfig) {
 						}
 					},
 				},
+				update: {
+					before: async (user) => {
+						if (user.role !== undefined) {
+							throw new APIError("FORBIDDEN", {
+								message: "Role cannot be changed through profile updates",
+							});
+						}
+					},
+				},
 			},
 		},
 		emailAndPassword: {

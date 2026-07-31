@@ -1,5 +1,6 @@
 import type { FastifyPluginAsync } from "fastify";
 import fastifyPlugin from "fastify-plugin";
+import { fromNodeHeaders } from "better-auth/node";
 
 import type { AppOptions } from "../app-options.js";
 
@@ -13,13 +14,6 @@ const authPlugin: FastifyPluginAsync<AppOptions> = async (fastify, options) => {
 	fastify.route({
 		handler: async (request, reply) => {
 			const url = new URL(request.url, options.config.BETTER_AUTH_URL);
-			const headers = new Headers();
-
-			for (const [name, value] of Object.entries(request.headers)) {
-				if (value !== undefined) {
-					headers.set(name, Array.isArray(value) ? value.join(",") : value);
-				}
-			}
 
 			const response = await auth.handler(
 				new Request(url, {
@@ -27,7 +21,7 @@ const authPlugin: FastifyPluginAsync<AppOptions> = async (fastify, options) => {
 						request.body === undefined
 							? undefined
 							: JSON.stringify(request.body),
-					headers,
+					headers: fromNodeHeaders(request.headers),
 					method: request.method,
 				}),
 			);

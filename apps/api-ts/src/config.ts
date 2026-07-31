@@ -44,6 +44,30 @@ export const apiConfigSchema = z
 				path: ["BETTER_AUTH_SECRET"],
 			});
 		}
+
+		if (
+			config.NODE_ENV === "production" &&
+			new URL(config.BETTER_AUTH_URL).protocol !== "https:"
+		) {
+			context.addIssue({
+				code: "custom",
+				message: "BETTER_AUTH_URL must use HTTPS in production",
+				path: ["BETTER_AUTH_URL"],
+			});
+		}
+
+		if (
+			config.NODE_ENV === "production" &&
+			config.TRUSTED_ORIGINS.some(
+				(origin) => new URL(origin).protocol !== "https:",
+			)
+		) {
+			context.addIssue({
+				code: "custom",
+				message: "TRUSTED_ORIGINS must use HTTPS in production",
+				path: ["TRUSTED_ORIGINS"],
+			});
+		}
 	});
 
 export type ApiConfig = z.infer<typeof apiConfigSchema>;

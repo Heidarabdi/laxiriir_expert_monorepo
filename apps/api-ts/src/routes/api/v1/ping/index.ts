@@ -1,9 +1,22 @@
-import type { FastifyPluginAsync } from "fastify";
+import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
+import { z } from "zod";
 
-const pingRoutes: FastifyPluginAsync = async (fastify) => {
-	fastify.get("", async () => ({
-		message: "pong",
-	}));
+const pingRoutes: FastifyPluginAsyncZod = async (fastify) => {
+	fastify.get(
+		"",
+		{
+			schema: {
+				response: {
+					200: z.object({
+						message: z.literal("pong"),
+					}),
+				},
+			},
+		},
+		async () => ({
+			message: "pong" as const,
+		}),
+	);
 };
 
 export default pingRoutes;

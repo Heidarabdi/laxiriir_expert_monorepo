@@ -22,4 +22,24 @@ describe("API configuration", () => {
 			}),
 		).toThrow("BETTER_AUTH_SECRET must be changed in production");
 	});
+
+	it("requires HTTPS authentication origins in production", () => {
+		expect(() =>
+			readApiConfig({
+				BETTER_AUTH_SECRET: "a-secure-production-secret-with-32-characters",
+				BETTER_AUTH_URL: "http://api.example.com",
+				NODE_ENV: "production",
+				TRUSTED_ORIGINS: "https://app.example.com",
+			}),
+		).toThrow("BETTER_AUTH_URL must use HTTPS in production");
+
+		expect(() =>
+			readApiConfig({
+				BETTER_AUTH_SECRET: "a-secure-production-secret-with-32-characters",
+				BETTER_AUTH_URL: "https://api.example.com",
+				NODE_ENV: "production",
+				TRUSTED_ORIGINS: "http://app.example.com",
+			}),
+		).toThrow("TRUSTED_ORIGINS must use HTTPS in production");
+	});
 });

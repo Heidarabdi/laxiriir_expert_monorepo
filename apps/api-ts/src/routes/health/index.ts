@@ -1,14 +1,25 @@
-import type { FastifyPluginAsync } from "fastify";
+import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
+import { z } from "zod";
 
-const healthRoutes: FastifyPluginAsync = async (fastify) => {
+const healthResponseSchema = z.object({
+	env: z.enum(["development", "production", "test"]),
+	status: z.literal("ok"),
+});
+
+const healthRoutes: FastifyPluginAsyncZod = async (fastify) => {
 	fastify.get(
 		"",
 		{
 			logLevel: "silent",
+			schema: {
+				response: {
+					200: healthResponseSchema,
+				},
+			},
 		},
 		async () => ({
 			env: fastify.config.NODE_ENV,
-			status: "ok",
+			status: "ok" as const,
 		}),
 	);
 };

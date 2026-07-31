@@ -1,4 +1,5 @@
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { PGlite } from "@electric-sql/pglite";
 import { drizzle } from "drizzle-orm/pglite";
 import { migrate } from "drizzle-orm/pglite/migrator";
@@ -19,7 +20,10 @@ async function createAuthServer() {
 	const client = new PGlite();
 	const db = drizzle({ client, schema });
 	await migrate(db, {
-		migrationsFolder: path.join(import.meta.dirname, "..", "drizzle"),
+		migrationsFolder: path.join(
+			fileURLToPath(new URL("..", import.meta.url)),
+			"drizzle",
+		),
 	});
 
 	const config = createTestConfig();
@@ -149,6 +153,35 @@ describe("authentication", () => {
 				email: "session@example.com",
 				role: "client",
 			},
+		});
+	});
+
+	it("does not allow a user to change their own role", async () => {
+		const server = await createAuthServer();
+		const registration = await server.inject({
+			method: "POST",
+			payload: {
+				email: "role-change@example.com",
+				name: "Client User",
+				password: "correct-horse-battery-staple",
+				role: "client",
+			},
+			url: "/api/auth/sign-up/email",
+		});
+		const cookie = registration.cookies
+			.map((item) => `${item.name}=${item.value}`)
+			.join("; ");
+
+		const response = await server.inject({
+			headers: { cookie },
+			method: "POST",
+			payload: { role: "expert" },
+			url: "/api/auth/update-user",
+		});
+
+		expect(response.statusCode).toBe(403);
+		expect(response.json()).toMatchObject({
+			message: "Role cannot be changed through profile updates",
 		});
 	});
 });
