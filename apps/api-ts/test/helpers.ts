@@ -1,7 +1,10 @@
 import { type ApiConfig, apiConfigSchema } from "../src/config.js";
+import type { z } from "zod";
+
+export type TestConfigOverrides = Partial<z.input<typeof apiConfigSchema>>;
 
 export function createTestConfig(
-	overrides: Partial<ApiConfig> = {},
+	overrides: TestConfigOverrides = {},
 ): ApiConfig {
 	return apiConfigSchema.parse({
 		HOST: "127.0.0.1",

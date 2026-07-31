@@ -7,7 +7,7 @@ import type { AppOptions } from "./app-options.js";
 
 export type BuildServerOptions = AppOptions;
 
-export function buildServer({ auth, config, logger }: BuildServerOptions) {
+export function buildServer({ auth, config, database, logger }: BuildServerOptions) {
 	const sourceDirectory = fileURLToPath(new URL(".", import.meta.url));
 	const server = Fastify({
 		bodyLimit: 1_048_576,
@@ -23,7 +23,7 @@ export function buildServer({ auth, config, logger }: BuildServerOptions) {
 	server.register(autoload, {
 		dir: path.join(sourceDirectory, "plugins"),
 		forceESM: true,
-		options: { auth, config },
+		options: { auth, config, database },
 	});
 	server.register(autoload, {
 		autoHooks: true,

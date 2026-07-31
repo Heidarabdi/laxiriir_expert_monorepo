@@ -2,59 +2,42 @@
 
 Last reviewed: 2026-07-31
 
-## Decision
+## Status: complete
 
-The replacement API stack is:
+The backend has moved from Go and SuperTokens to a single TypeScript service:
 
 - Fastify 5 and TypeScript
 - Better Auth
 - Drizzle ORM and PostgreSQL
-- Zod validation
+- Zod request/response validation
 - OpenAPI and Swagger UI
 - Vitest with embedded PostgreSQL integration tests
-- BullMQ when background jobs are introduced
 
-Drizzle was selected instead of Prisma. Fastify remains intentionally modular,
-while the application package includes the production plugins needed for
-security, validation, documentation, authentication, and database access.
+The Go API and local SuperTokens infrastructure have been removed. Nuxt now
+uses Better Auth endpoints for registration, sign-in, sign-out, verification,
+password recovery, and sessions. Web and mobile API defaults point to port
+`8081`.
 
-## Migration rule
+The domain migration uses `IF NOT EXISTS` for the former Go-owned tables, so
+existing expert, availability, booking, and application-profile records are
+preserved. Legacy identities keep their IDs (or are reconciled by normalized
+email when a Better Auth account already exists), so historical bookings remain
+attached to their owners. SuperTokens sessions and password credentials are not
+compatible with Better Auth; migrated users must reset their password and verify
+their email before signing in.
 
-This is a strangler migration. `apps/api-ts` and the existing Go API run side
-by side. A route moves only after its existing public contract is captured by
-tests and its TypeScript replacement passes those tests.
+## Migrated contracts
 
-The Go API and `infra/supertokens` must not be deleted until the Nuxt and Expo
-clients use Better Auth and all domain routes have moved.
-
-## Current status
-
-Milestone 1 is implemented:
-
-- Fastify server factory and autoloaded plugins/routes
-- validated environment configuration
-- security headers, CORS, rate limits, and safe structured errors
-- Zod request/response integration
-- generated OpenAPI document and Swagger UI
-- Drizzle PostgreSQL client and committed migration
-- Better Auth registration, sign-in, sessions, and role persistence
-- public registration restricted to `client` and `expert`
-- health, ping, config, error, OpenAPI, registration, and sign-in tests
-- production entry point with redacted structured logs and graceful shutdown
-
-The Nuxt application still calls SuperTokens. Login and registration in the
-browser will use the new API only after the web auth client is migrated.
-
-## Route migration order
-
-1. Add Better Auth email verification and password recovery delivery.
-2. Replace the Nuxt SuperTokens client with Better Auth and verify browser
-   registration, sign-in, sign-out, and session hydration.
-3. Add an authenticated Fastify route guard and migrate `GET /api/v1/me`.
-4. Migrate expert discovery and availability.
-5. Migrate booking creation and history.
-6. Migrate admin expert moderation.
-7. Move the Expo client, then remove the Go API and SuperTokens infrastructure.
+- `GET /health`
+- `GET /api/v1/ping`
+- Better Auth endpoints under `/api/auth/*`
+- `GET /api/v1/me`
+- `GET /api/v1/experts`
+- `GET /api/v1/experts/:id/availability`
+- `GET|POST /api/v1/client/bookings`
+- `PATCH /api/v1/admin/experts/:id/approve`
+- `PATCH /api/v1/admin/experts/:id/reject`
+- `PATCH /api/v1/admin/experts/:id/suspend`
 
 ## Local commands
 
@@ -64,5 +47,6 @@ pnpm --filter api-ts db:migrate
 pnpm --filter api-ts dev
 ```
 
-The TypeScript API defaults to port `8081` while the Go API remains on `8080`.
-Its OpenAPI UI is available at `http://localhost:8081/documentation`.
+The API defaults to `http://localhost:8081`; OpenAPI UI is available at
+`http://localhost:8081/documentation`. PostgreSQL is required for the running
+API. Tests use embedded PostgreSQL and do not require Docker.

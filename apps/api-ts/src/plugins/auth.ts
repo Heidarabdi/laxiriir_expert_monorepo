@@ -1,8 +1,44 @@
-import type { FastifyPluginAsync } from "fastify";
+import type {
+	FastifyPluginAsync,
+	FastifyReply,
+	FastifyRequest,
+} from "fastify";
 import fastifyPlugin from "fastify-plugin";
 import { fromNodeHeaders } from "better-auth/node";
 
 import type { AppOptions } from "../app-options.js";
+
+export type PrimaryRole = "admin" | "client" | "expert";
+export type ExpertStatus =
+	| "approved"
+	| "not_applicable"
+	| "pending_review"
+	| "rejected"
+	| "suspended";
+
+export interface AuthenticatedUser {
+	email: string;
+	emailVerified: boolean;
+	expertStatus: ExpertStatus;
+	id: string;
+	name: string;
+	role: PrimaryRole;
+}
+
+export interface SessionRequirements {
+	requireVerified?: boolean;
+	roles?: PrimaryRole[];
+}
+
+declare module "fastify" {
+	interface FastifyInstance {
+		requireSession: (
+			request: FastifyRequest,
+			reply: FastifyReply,
+			requirements?: SessionRequirements,
+		) => Promise<AuthenticatedUser | null>;
+	}
+}
 
 const authPlugin: FastifyPluginAsync<AppOptions> = async (fastify, options) => {
 	if (!options.auth) {
@@ -10,6 +46,38 @@ const authPlugin: FastifyPluginAsync<AppOptions> = async (fastify, options) => {
 	}
 
 	const auth = options.auth;
+
+	fastify.decorate(
+		"requireSession",
+		async (
+			request: FastifyRequest,
+			reply: FastifyReply,
+			requirements: SessionRequirements = {},
+		) => {
+			const session = await auth.api.getSession({
+				headers: fromNodeHeaders(request.headers),
+			});
+			if (!session) {
+				await reply.code(401).send({ message: "unauthorized" });
+				return null;
+			}
+
+			const user = session.user as AuthenticatedUser;
+			if (requirements.requireVerified && !user.emailVerified) {
+				await reply.code(403).send({ message: "email verification required" });
+				return null;
+			}
+			if (
+				requirements.roles &&
+				!requirements.roles.includes(user.role)
+			) {
+				await reply.code(403).send({ message: "forbidden" });
+				return null;
+			}
+
+			return user;
+		},
+	);
 
 	fastify.route({
 		handler: async (request, reply) => {

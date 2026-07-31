@@ -1,44 +1,21 @@
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-import { PGlite } from "@electric-sql/pglite";
-import { drizzle } from "drizzle-orm/pglite";
-import { migrate } from "drizzle-orm/pglite/migrator";
-import { afterEach, describe, expect, it } from "vitest";
+import { eq } from "drizzle-orm";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { createAuth } from "../src/auth/factory.js";
-import * as schema from "../src/db/schema.js";
-import { buildServer } from "../src/server.js";
-import { createTestConfig } from "./helpers.js";
+import { user } from "../src/db/auth-schema.js";
+import { createTestApplication } from "./application.js";
 
 const closeTasks: Array<() => Promise<unknown>> = [];
 
 afterEach(async () => {
 	await Promise.all(closeTasks.splice(0).map((close) => close()));
+	vi.unstubAllGlobals();
 });
 
 async function createAuthServer() {
-	const client = new PGlite();
-	const db = drizzle({ client, schema });
-	await migrate(db, {
-		migrationsFolder: path.join(
-			fileURLToPath(new URL("..", import.meta.url)),
-			"drizzle",
-		),
-	});
+	const application = await createTestApplication();
+	closeTasks.push(() => application.close());
 
-	const config = createTestConfig();
-	const auth = createAuth(db, config);
-	const server = buildServer({
-		auth,
-		config,
-	});
-
-	closeTasks.push(
-		() => server.close(),
-		() => client.close(),
-	);
-
-	return server;
+	return application.server;
 }
 
 describe("authentication", () => {
@@ -64,13 +41,13 @@ describe("authentication", () => {
 				role: "client",
 			},
 		});
-		expect(String(response.headers["set-cookie"])).toContain(
-			"better-auth.session_token=",
-		);
+		expect(response.headers["set-cookie"]).toBeUndefined();
 	});
 
 	it("signs in a registered user with email and password", async () => {
-		const server = await createAuthServer();
+		const application = await createTestApplication();
+		closeTasks.push(() => application.close());
+		const server = application.server;
 		const credentials = {
 			email: "expert@example.com",
 			password: "correct-horse-battery-staple",
@@ -85,6 +62,10 @@ describe("authentication", () => {
 			},
 			url: "/api/auth/sign-up/email",
 		});
+		await application.database
+			.update(user)
+			.set({ emailVerified: true })
+			.where(eq(user.email, credentials.email));
 
 		const response = await server.inject({
 			method: "POST",
@@ -125,8 +106,10 @@ describe("authentication", () => {
 	});
 
 	it("returns the current session from its cookie", async () => {
-		const server = await createAuthServer();
-		const registration = await server.inject({
+		const application = await createTestApplication();
+		closeTasks.push(() => application.close());
+		const server = application.server;
+		await server.inject({
 			method: "POST",
 			payload: {
 				email: "session@example.com",
@@ -136,10 +119,22 @@ describe("authentication", () => {
 			},
 			url: "/api/auth/sign-up/email",
 		});
+		await application.database
+			.update(user)
+			.set({ emailVerified: true })
+			.where(eq(user.email, "session@example.com"));
+		const signIn = await server.inject({
+			method: "POST",
+			payload: {
+				email: "session@example.com",
+				password: "correct-horse-battery-staple",
+			},
+			url: "/api/auth/sign-in/email",
+		});
 
 		const response = await server.inject({
 			headers: {
-				cookie: registration.cookies
+				cookie: signIn.cookies
 					.map((cookie) => `${cookie.name}=${cookie.value}`)
 					.join("; "),
 			},
@@ -157,8 +152,10 @@ describe("authentication", () => {
 	});
 
 	it("does not allow a user to change their own role", async () => {
-		const server = await createAuthServer();
-		const registration = await server.inject({
+		const application = await createTestApplication();
+		closeTasks.push(() => application.close());
+		const server = application.server;
+		await server.inject({
 			method: "POST",
 			payload: {
 				email: "role-change@example.com",
@@ -168,7 +165,19 @@ describe("authentication", () => {
 			},
 			url: "/api/auth/sign-up/email",
 		});
-		const cookie = registration.cookies
+		await application.database
+			.update(user)
+			.set({ emailVerified: true })
+			.where(eq(user.email, "role-change@example.com"));
+		const signIn = await server.inject({
+			method: "POST",
+			payload: {
+				email: "role-change@example.com",
+				password: "correct-horse-battery-staple",
+			},
+			url: "/api/auth/sign-in/email",
+		});
+		const cookie = signIn.cookies
 			.map((item) => `${item.name}=${item.value}`)
 			.join("; ");
 
@@ -183,5 +192,48 @@ describe("authentication", () => {
 		expect(response.json()).toMatchObject({
 			message: "Role cannot be changed through profile updates",
 		});
+	});
+
+	it("uses secure cross-site session cookies in production", async () => {
+		vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(null, { status: 202 })));
+		const application = await createTestApplication({
+			BETTER_AUTH_SECRET: "production-secret-that-is-at-least-32-characters",
+			BETTER_AUTH_URL: "https://api.example.com",
+			DATABASE_URL: "postgres://production.example.com/laxiriir",
+			EMAIL_FROM: "Laxiriir <auth@example.com>",
+			NODE_ENV: "production",
+			RESEND_API_KEY: "resend-test-key",
+			TRUSTED_ORIGINS: "https://web.example.net",
+		});
+		closeTasks.push(() => application.close());
+
+		const credentials = {
+			email: "production-cookie@example.com",
+			password: "correct-horse-battery-staple",
+		};
+		await application.server.inject({
+			method: "POST",
+			payload: {
+				...credentials,
+				name: "Production User",
+				role: "client",
+			},
+			url: "/api/auth/sign-up/email",
+		});
+		await application.database
+			.update(user)
+			.set({ emailVerified: true })
+			.where(eq(user.email, credentials.email));
+
+		const response = await application.server.inject({
+			method: "POST",
+			payload: credentials,
+			url: "/api/auth/sign-in/email",
+		});
+		const sessionCookie = String(response.headers["set-cookie"]);
+
+		expect(response.statusCode).toBe(200);
+		expect(sessionCookie).toContain("SameSite=None");
+		expect(sessionCookie).toContain("Secure");
 	});
 });

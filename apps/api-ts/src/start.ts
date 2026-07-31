@@ -2,15 +2,20 @@ import closeWithGrace from "close-with-grace";
 
 import { createAuth } from "./auth/factory.js";
 import { readApiConfig } from "./config.js";
+import { ConsultationService } from "./consultations/service.js";
 import { createPostgresDatabase } from "./db/postgres.js";
 import { buildServer } from "./server.js";
 
 const config = readApiConfig();
 const database = createPostgresDatabase(config.DATABASE_URL);
 const auth = createAuth(database.db, config);
+if (config.NODE_ENV === "development") {
+	await new ConsultationService(database.db).seedDemoData();
+}
 const server = buildServer({
 	auth,
 	config,
+	database: database.db,
 	logger:
 		config.LOG_LEVEL === "silent"
 			? false

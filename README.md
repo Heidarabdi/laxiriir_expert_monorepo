@@ -48,14 +48,12 @@ Laxiriir Expert is designed as an end-to-end consultation platform where clients
 
 ## Repository Structure
 
-- `apps/api`: Go API using Gin
-- `apps/api-ts`: Fastify and TypeScript API being migrated route by route
+- `apps/api-ts`: Fastify and TypeScript API with Better Auth and Drizzle
 - `apps/web`: Nuxt 4 frontend with Tailwind CSS v4
 - `apps/mobile`: Expo / React Native client
 - `packages/env`: shared environment parsing and defaults
 - `packages/platform`: shared API contracts and URL helpers
 - `packages/config/*`: shared repository configuration packages
-- `infra/supertokens`: legacy auth infrastructure retained during migration
 
 ## Monorepo Tooling
 
@@ -100,19 +98,16 @@ Run a single app:
 ```bash
 pnpm turbo run dev --filter=web
 pnpm turbo run dev --filter=mobile
-pnpm turbo run dev --filter=api
 pnpm turbo run dev --filter=api-ts
 ```
 
 ## Environment
 
-The Go API defaults to port `8080`. The TypeScript migration API defaults to
-port `8081`.
+The API defaults to port `8081`.
 
 Create local env files from the examples:
 
 ```bash
-apps/api/.env.example
 apps/api-ts/.env.example
 apps/web/.env.example
 apps/mobile/.env.example
@@ -121,7 +116,6 @@ apps/mobile/.env.example
 Current variables:
 
 - `PORT`
-- `GO_ENV`
 - `DATABASE_URL`
 - `NUXT_PUBLIC_API_BASE_URL`
 - `EXPO_PUBLIC_API_BASE_URL`
@@ -130,7 +124,7 @@ Current variables:
 
 Recommended production topology for the current stack:
 
-- `apps/api`: deploy as a Go service on a container or VM platform behind HTTPS
+- `apps/api-ts`: deploy as a Node.js service on a container or VM platform behind HTTPS
 - `apps/web`: deploy Nuxt as a separate frontend application and point it at the API through `NUXT_PUBLIC_API_BASE_URL`
 - `apps/mobile`: use Expo EAS for development builds, preview builds, and store-ready production builds
 - Video: start with a managed provider such as LiveKit Cloud instead of self-hosting WebRTC on day one
@@ -164,7 +158,7 @@ Turborepo task hashing is environment-aware per app:
 
 - web tasks hash `NUXT_PUBLIC_API_BASE_URL`
 - mobile tasks hash `EXPO_PUBLIC_API_BASE_URL`
-- api tasks hash `PORT`, `GO_ENV`, and `DATABASE_URL`
+- API tasks hash its environment files and source inputs
 
 Each app also includes its own `.env*` files in task inputs so cache results stay aligned with environment changes.
 
@@ -172,18 +166,18 @@ Each app also includes its own `.env*` files in task inputs so cache results sta
 
 What already exists:
 
-- SuperTokens email-password, verification, recovery, and session integration
+- Better Auth email-password, verification, recovery, and session integration
+- legacy identity reconciliation that preserves historical booking ownership
 - role-aware client, expert, and admin route protection
 - persisted expert discovery and availability APIs
 - conflict-safe client booking creation and booking history APIs
 - client dashboard, expert directory, availability selection, and session list
-- SQLite support for tests and local development
+- embedded PostgreSQL integration tests and PostgreSQL for development/production
 - PostgreSQL schema migration for deployed environments
 - GitHub Actions validation for lint, type checks, tests, and builds
 - mobile status screen wired to shared env and platform helpers
 - API integration tests and web API-client tests
-- a Fastify/TypeScript migration API with Better Auth, Drizzle, OpenAPI, and
-  embedded PostgreSQL auth tests
+- a Fastify/TypeScript API with Better Auth, Drizzle, OpenAPI, and embedded PostgreSQL tests
 
 What still needs product work:
 
@@ -203,7 +197,6 @@ repository. Local environment files and secrets are not stored in Git.
 
 Production readiness still depends on these decisions:
 
-- confirm the canonical Go module path
 - choose the managed PostgreSQL host
 - choose payment provider
 - choose reminder providers

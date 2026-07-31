@@ -1,11 +1,7 @@
 # Laxiriir Expert TypeScript API
 
-This application is the incremental replacement for the Go API in
-`apps/api`. It uses Fastify, Better Auth, Drizzle, PostgreSQL, Zod, and
-OpenAPI.
-
-The two APIs remain side by side until every public contract has been migrated
-and verified. Do not remove `apps/api` yet.
+This is the primary Laxiriir Expert API. It uses Fastify, Better Auth, Drizzle,
+PostgreSQL, Zod, and OpenAPI.
 
 ## Local setup
 
@@ -43,6 +39,11 @@ separate SuperTokens Core service.
 - `POST /api/auth/sign-up/email`
 - `POST /api/auth/sign-in/email`
 - Better Auth session endpoints under `/api/auth/*`
+- `GET /api/v1/me`
+- `GET /api/v1/experts`
+- `GET /api/v1/experts/:id/availability`
+- `GET|POST /api/v1/client/bookings`
+- `PATCH /api/v1/admin/experts/:id/:action`
 
 Only `client` and `expert` are accepted as public registration roles. Admin
-accounts must eventually be created through a separate privileged workflow.
+accounts are bootstrapped from `AUTH_BOOTSTRAP_ADMIN_EMAILS`.

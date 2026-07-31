@@ -39,14 +39,12 @@ The product must work as one coherent system across:
 
 ## Authentication Direction
 
-- `SuperTokens` is the target identity and session system for the project.
-- The project will keep custom Nuxt auth pages and use SuperTokens for session, email-password, email verification, recovery, and later social login flows.
-- The Go API will own application authorization, app profiles, role enforcement, and expert approval status.
-- `ThirdPartyEmailPassword`, `Session`, and `EmailVerification` are the target MVP recipes.
-- Google sign-in should be prepared through SuperTokens now and enabled later when provider secrets are available.
+- Better Auth is the identity and session system for the project.
+- The project keeps custom Nuxt auth pages and uses Better Auth for sessions, email-password, email verification, and recovery.
+- The Fastify API owns application authorization, app profiles, role enforcement, and expert approval status.
+- Google sign-in can be added through Better Auth when provider secrets are available.
 - The app database remains the source of truth for `primary_role` and `expert_status`.
-- The current Authula code in the repo should be treated as a temporary spike to be replaced.
-- Local development and CI should use self-hosted SuperTokens Core. Production should support both self-hosted and managed Core, with managed recommended first.
+- Local development needs PostgreSQL; embedded PostgreSQL is used by API tests.
 
 ## Planning Principles
 
@@ -248,7 +246,7 @@ MVP is one complete web consultation workflow that is real, persistent, and test
 
 - database
 - migrations
-- SuperTokens for authentication and session management
+- Better Auth for authentication and session management
 - authorization
 - payment integration
 - video provider integration
@@ -354,7 +352,7 @@ MVP is one complete web consultation workflow that is real, persistent, and test
 
 - expert directory
 - expert profile
-- SuperTokens authentication baseline
+- Better Auth authentication baseline
 - booking and schedule flow
 - client bookings list and detail
 
@@ -406,7 +404,7 @@ What exists already:
 
 - public pages baseline
 - expert directory and profile baseline
-- SuperTokens authentication and application profiles
+- Better Auth authentication and application profiles
 - role-aware client, expert, and admin route protection
 - persisted expert and availability API
 - conflict-safe client booking creation

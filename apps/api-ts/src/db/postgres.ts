@@ -12,3 +12,5 @@ export function createPostgresDatabase(databaseUrl: string) {
 		db,
 	};
 }
+
+export type AppDatabase = ReturnType<typeof createPostgresDatabase>["db"];

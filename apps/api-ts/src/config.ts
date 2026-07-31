@@ -6,9 +6,19 @@ const developmentDatabaseUrl =
 
 export const apiConfigSchema = z
 	.object({
+		AUTH_BOOTSTRAP_ADMIN_EMAILS: z
+			.string()
+			.default("")
+			.transform((value) =>
+				value
+					.split(",")
+					.map((email) => email.trim().toLowerCase())
+					.filter(Boolean),
+			),
 		BETTER_AUTH_SECRET: z.string().min(32).default(developmentAuthSecret),
 		BETTER_AUTH_URL: z.string().url().default("http://localhost:8081"),
 		DATABASE_URL: z.string().url().default(developmentDatabaseUrl),
+		EMAIL_FROM: z.string().default(""),
 		HOST: z.string().default("0.0.0.0"),
 		LOG_LEVEL: z
 			.enum(["fatal", "error", "warn", "info", "debug", "trace", "silent"])
@@ -17,6 +27,7 @@ export const apiConfigSchema = z
 			.enum(["development", "production", "test"])
 			.default("development"),
 		PORT: z.coerce.number().int().min(1).max(65_535).default(8081),
+		RESEND_API_KEY: z.string().default(""),
 		TRUSTED_ORIGINS: z
 			.string()
 			.default("http://localhost:3000")
@@ -52,6 +63,17 @@ export const apiConfigSchema = z
 				code: "custom",
 				message: "DATABASE_URL must be configured in production",
 				path: ["DATABASE_URL"],
+			});
+		}
+
+		if (
+			config.NODE_ENV === "production" &&
+			(!config.EMAIL_FROM || !config.RESEND_API_KEY)
+		) {
+			context.addIssue({
+				code: "custom",
+				message: "EMAIL_FROM and RESEND_API_KEY are required in production",
+				path: ["RESEND_API_KEY"],
 			});
 		}
 

@@ -19,7 +19,7 @@ function MainScreen() {
 			<Text style={styles.title}>Laxiriir Expert Mobile</Text>
 
 			<View style={styles.statusBox}>
-				<Text style={styles.subtitle}>Go API Connection Status</Text>
+				<Text style={styles.subtitle}>Fastify API Connection Status</Text>
 
 				{isPending ? (
 					<View style={styles.row}>

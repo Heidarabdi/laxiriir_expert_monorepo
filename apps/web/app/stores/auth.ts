@@ -77,7 +77,6 @@ export const useAuthStore = defineStore("auth", () => {
 		errorMessage.value = null;
 		try {
 			await authApi.signUp(input);
-			await authApi.resendVerificationEmail();
 			await refreshCurrentUser(true);
 			return user.value;
 		} catch (error) {
@@ -90,10 +89,9 @@ export const useAuthStore = defineStore("auth", () => {
 	}
 
 	async function resendVerificationEmail(email: string, role?: PrimaryRole) {
-		void email;
 		void role;
 		const authApi = useAuthApi();
-		await authApi.resendVerificationEmail();
+		await authApi.resendVerificationEmail(email);
 	}
 
 	async function requestPasswordReset(email: string) {

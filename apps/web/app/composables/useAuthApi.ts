@@ -4,32 +4,24 @@ import {
 	type SignInInput,
 	type SignUpInput,
 } from "@repo/platform/auth";
+import { joinApiUrl } from "@repo/platform/health";
 import type { CurrentUser } from "~/lib/auth";
 
-function formatFieldErrorMessage(
-	fields: Array<{ error: string; id: string }> | undefined,
-	fallback: string,
-) {
-	const first = fields?.find((field) => field.error?.trim().length > 0);
-	return first?.error ?? fallback;
-}
-
 function ensureClientAuthRuntime() {
-	if (import.meta.client) {
-		return;
+	if (!import.meta.client) {
+		throw new Error("This auth action is only available in the browser.");
 	}
-
-	throw new Error("This auth action is only available in the browser.");
 }
 
-function replaceQueryToken(token: string) {
-	if (!import.meta.client || token.trim() === "") {
-		return;
+function getErrorMessage(error: unknown, fallback: string) {
+	if (error && typeof error === "object" && "data" in error) {
+		const data = error.data;
+		if (data && typeof data === "object" && "message" in data) {
+			const message = data.message;
+			if (typeof message === "string" && message.trim()) return message;
+		}
 	}
-
-	const url = new URL(window.location.href);
-	url.searchParams.set("token", token);
-	window.history.replaceState({}, "", url.toString());
+	return error instanceof Error && error.message ? error.message : fallback;
 }
 
 export function useAuthApi() {
@@ -45,154 +37,81 @@ export function useAuthApi() {
 			fetchJson(url, options) as Promise<TResponse>,
 	});
 
-	async function getCurrentUser() {
+	async function authRequest<TResponse>(
+		path: string,
+		options: PlatformRequestOptions,
+		fallback: string,
+	) {
+		ensureClientAuthRuntime();
+		try {
+			return (await fetchJson(
+				joinApiUrl(config.public.apiBaseUrl, `/api/auth${path}`),
+				{ ...options, credentials: "include" },
+			)) as TResponse;
+		} catch (error) {
+			throw new Error(getErrorMessage(error, fallback));
+		}
+	}
+
+	function getCurrentUser() {
 		return authClient.getCurrentUser() as Promise<CurrentUser>;
 	}
 
-	async function signIn(input: SignInInput) {
-		ensureClientAuthRuntime();
-
-		const { signIn: signInWithEmailPassword } = await import(
-			"supertokens-web-js/recipe/emailpassword"
+	function signIn(input: SignInInput) {
+		return authRequest(
+			"/sign-in/email",
+			{ body: input, method: "POST" },
+			"Unable to sign in.",
 		);
-
-		const response = await signInWithEmailPassword({
-			formFields: [
-				{ id: "email", value: input.email },
-				{ id: "password", value: input.password },
-			],
-		});
-
-		switch (response.status) {
-			case "OK":
-				return response.user;
-			case "WRONG_CREDENTIALS_ERROR":
-				throw new Error("The email or password you entered is incorrect.");
-			case "FIELD_ERROR":
-				throw new Error(
-					formatFieldErrorMessage(response.formFields, "Please check your sign-in details."),
-				);
-			case "SIGN_IN_NOT_ALLOWED":
-				throw new Error(response.reason);
-		}
 	}
 
-	async function signUp(input: SignUpInput) {
-		ensureClientAuthRuntime();
-
-		const { signUp: signUpWithEmailPassword } = await import(
-			"supertokens-web-js/recipe/emailpassword"
+	function signUp(input: SignUpInput) {
+		return authRequest(
+			"/sign-up/email",
+			{ body: input, method: "POST" },
+			"Unable to create account.",
 		);
-
-		const response = await signUpWithEmailPassword({
-			formFields: [
-				{ id: "email", value: input.email },
-				{ id: "password", value: input.password },
-				{ id: "name", value: input.name },
-				{ id: "role", value: input.role },
-			],
-		});
-
-		switch (response.status) {
-			case "OK":
-				return response.user;
-			case "FIELD_ERROR":
-				throw new Error(
-					formatFieldErrorMessage(
-						response.formFields,
-						"Please check the account details you entered.",
-					),
-				);
-			case "SIGN_UP_NOT_ALLOWED":
-				throw new Error(response.reason);
-		}
 	}
 
-	async function resendVerificationEmail() {
-		ensureClientAuthRuntime();
-
-		const { sendVerificationEmail } = await import(
-			"supertokens-web-js/recipe/emailverification"
+	function resendVerificationEmail(email: string) {
+		return authRequest(
+			"/send-verification-email",
+			{ body: { email }, method: "POST" },
+			"Unable to send the verification email.",
 		);
-		const response = await sendVerificationEmail();
-
-		if (response.status === "EMAIL_ALREADY_VERIFIED_ERROR") {
-			return;
-		}
 	}
 
-	async function requestPasswordReset(email: string) {
-		ensureClientAuthRuntime();
-
-		const { sendPasswordResetEmail } = await import(
-			"supertokens-web-js/recipe/emailpassword"
+	function requestPasswordReset(email: string) {
+		return authRequest(
+			"/request-password-reset",
+			{ body: { email }, method: "POST" },
+			"Unable to send the password reset email.",
 		);
-		const response = await sendPasswordResetEmail({
-			formFields: [{ id: "email", value: email }],
-		});
-
-		switch (response.status) {
-			case "OK":
-				return;
-			case "FIELD_ERROR":
-				throw new Error(
-					formatFieldErrorMessage(
-						response.formFields,
-						"Please enter a valid email address.",
-					),
-				);
-			case "PASSWORD_RESET_NOT_ALLOWED":
-				throw new Error(response.reason);
-		}
 	}
 
-	async function resetPassword(token: string, password: string) {
-		ensureClientAuthRuntime();
-		replaceQueryToken(token);
-
-		const { submitNewPassword } = await import(
-			"supertokens-web-js/recipe/emailpassword"
+	function resetPassword(token: string, password: string) {
+		return authRequest(
+			"/reset-password",
+			{ body: { newPassword: password, token }, method: "POST" },
+			"This reset link is invalid or has expired.",
 		);
-		const response = await submitNewPassword({
-			formFields: [{ id: "password", value: password }],
-		});
-
-		switch (response.status) {
-			case "OK":
-				return;
-			case "RESET_PASSWORD_INVALID_TOKEN_ERROR":
-				throw new Error("This reset link is invalid or has expired.");
-			case "FIELD_ERROR":
-				throw new Error(
-					formatFieldErrorMessage(
-						response.formFields,
-						"Please choose a stronger password.",
-					),
-				);
-		}
 	}
 
-	async function signOut() {
-		ensureClientAuthRuntime();
-
-		const { signOut: signOutSession } = await import(
-			"supertokens-web-js/recipe/session"
+	function signOut() {
+		return authRequest(
+			"/sign-out",
+			{ method: "POST" },
+			"Unable to sign out.",
 		);
-		await signOutSession();
 	}
 
-	async function verifyEmailToken(token: string) {
-		ensureClientAuthRuntime();
-		replaceQueryToken(token);
-
-		const { verifyEmail } = await import(
-			"supertokens-web-js/recipe/emailverification"
+	function verifyEmailToken(token: string) {
+		const query = new URLSearchParams({ token });
+		return authRequest(
+			`/verify-email?${query.toString()}`,
+			{ method: "GET" },
+			"This verification link is invalid or has expired.",
 		);
-		const response = await verifyEmail();
-
-		if (response.status === "EMAIL_VERIFICATION_INVALID_TOKEN_ERROR") {
-			throw new Error("This verification link is invalid or has expired.");
-		}
 	}
 
 	return {
