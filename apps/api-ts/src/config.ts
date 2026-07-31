@@ -1,15 +1,14 @@
 import { z } from "zod";
 
 const developmentAuthSecret = "development-only-secret-change-me";
+const developmentDatabaseUrl =
+	"postgres://postgres:postgres@localhost:5432/laxiriir_expert";
 
 export const apiConfigSchema = z
 	.object({
 		BETTER_AUTH_SECRET: z.string().min(32).default(developmentAuthSecret),
 		BETTER_AUTH_URL: z.string().url().default("http://localhost:8081"),
-		DATABASE_URL: z
-			.string()
-			.url()
-			.default("postgres://postgres:postgres@localhost:5432/laxiriir_expert"),
+		DATABASE_URL: z.string().url().default(developmentDatabaseUrl),
 		HOST: z.string().default("0.0.0.0"),
 		LOG_LEVEL: z
 			.enum(["fatal", "error", "warn", "info", "debug", "trace", "silent"])
@@ -42,6 +41,17 @@ export const apiConfigSchema = z
 				code: "custom",
 				message: "BETTER_AUTH_SECRET must be changed in production",
 				path: ["BETTER_AUTH_SECRET"],
+			});
+		}
+
+		if (
+			config.NODE_ENV === "production" &&
+			config.DATABASE_URL === developmentDatabaseUrl
+		) {
+			context.addIssue({
+				code: "custom",
+				message: "DATABASE_URL must be configured in production",
+				path: ["DATABASE_URL"],
 			});
 		}
 

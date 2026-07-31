@@ -42,4 +42,15 @@ describe("API configuration", () => {
 			}),
 		).toThrow("TRUSTED_ORIGINS must use HTTPS in production");
 	});
+
+	it("requires an explicit database in production", () => {
+		expect(() =>
+			readApiConfig({
+				BETTER_AUTH_SECRET: "a-secure-production-secret-with-32-characters",
+				BETTER_AUTH_URL: "https://api.example.com",
+				NODE_ENV: "production",
+				TRUSTED_ORIGINS: "https://app.example.com",
+			}),
+		).toThrow("DATABASE_URL must be configured in production");
+	});
 });
