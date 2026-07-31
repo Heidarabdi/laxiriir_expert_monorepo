@@ -12,6 +12,7 @@
 	},
 	"exports": {
 		"./auth": "./src/auth.ts",
+		"./consultations": "./src/consultations.ts",
 		"./health": "./src/health.ts"
 	},
 	"devDependencies": {

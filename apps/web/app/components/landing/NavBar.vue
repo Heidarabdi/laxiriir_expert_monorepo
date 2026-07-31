@@ -1,47 +1,53 @@
 <script setup lang="ts">
-import ThemeToggle from './ThemeToggle.vue'
-import { computed, ref } from 'vue'
-import { Menu, X } from 'lucide-vue-next'
+import { Menu, X } from "lucide-vue-next";
+import { computed, ref } from "vue";
+import ThemeToggle from "./ThemeToggle.vue";
 
-const isMobileMenuOpen = ref(false)
-const auth = useAuthStore()
+const isMobileMenuOpen = ref(false);
+const auth = useAuthStore();
 
-await auth.ensureLoaded()
+if (import.meta.client) {
+	await auth.ensureLoaded();
+}
 
 const dashboardLink = computed(() => {
 	if (!auth.user) {
-		return "/login"
+		return "/login";
 	}
 
 	switch (auth.user.primaryRole) {
 		case "admin":
-			return "/admin"
+			return "/admin";
 		case "expert":
-			return auth.user.expertStatus === "approved" ? "/expert" : "/expert/pending"
+			return auth.user.expertStatus === "approved"
+				? "/expert"
+				: "/expert/pending";
 		default:
-			return "/client"
+			return "/client";
 	}
-})
+});
 
 const dashboardLabel = computed(() => {
 	if (!auth.user) {
-		return "Log In"
+		return "Log In";
 	}
 
 	switch (auth.user.primaryRole) {
 		case "admin":
-			return "Admin"
+			return "Admin";
 		case "expert":
-			return auth.user.expertStatus === "approved" ? "Expert Dashboard" : "Expert Review"
+			return auth.user.expertStatus === "approved"
+				? "Expert Dashboard"
+				: "Expert Review";
 		default:
-			return "Client Dashboard"
+			return "Client Dashboard";
 	}
-})
+});
 
 async function handleSignOut() {
-	await auth.signOut()
-	isMobileMenuOpen.value = false
-	await navigateTo("/")
+	await auth.signOut();
+	isMobileMenuOpen.value = false;
+	await navigateTo("/");
 }
 </script>
 <template>

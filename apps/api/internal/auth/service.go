@@ -33,6 +33,7 @@ import (
 const (
 	appName             = "Laxiriir Expert"
 	nameFormFieldID     = "name"
+	principalContextKey = "auth.principal"
 	roleFormFieldID     = "role"
 	supertokensBasePath = "/api/auth"
 )
@@ -115,6 +116,20 @@ func (s *Service) EmailSink() *EmailSink {
 	return s.emailSink
 }
 
+func (s *Service) Database() *bun.DB {
+	return s.db
+}
+
+func PrincipalFromContext(c *gin.Context) (Principal, bool) {
+	principal, ok := c.Get(principalContextKey)
+	if !ok {
+		return Principal{}, false
+	}
+
+	value, ok := principal.(Principal)
+	return value, ok
+}
+
 func (s *Service) RequireAuth(options GuardOptions) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		sessionContainer, err := session.GetSession(
@@ -154,6 +169,11 @@ func (s *Service) RequireAuth(options GuardOptions) gin.HandlerFunc {
 		}
 
 		c.Set("auth", authCtx)
+		c.Set(principalContextKey, Principal{
+			UserID:        authCtx.Session.GetUserID(),
+			PrimaryRole:   authCtx.Profile.PrimaryRole,
+			EmailVerified: authCtx.EmailVerified,
+		})
 		c.Next()
 	}
 }

@@ -65,6 +65,9 @@ Laxiriir Expert is designed as an end-to-end consultation platform where clients
 
 Detailed production planning lives in `PRODUCTION.md`.
 
+Current project status and move instructions live in
+[`docs/PROJECT_HANDOFF.md`](./docs/PROJECT_HANDOFF.md).
+
 ## Local Development
 
 Install dependencies from the repository root:
@@ -160,33 +163,39 @@ Each app also includes its own `.env*` files in task inputs so cache results sta
 
 ## Current Baseline
 
-The repository is now a clean single monorepo baseline.
-
 What already exists:
 
-- health and ping endpoints in the API
-- web status page wired to shared env and platform helpers
+- SuperTokens email-password, verification, recovery, and session integration
+- role-aware client, expert, and admin route protection
+- persisted expert discovery and availability APIs
+- conflict-safe client booking creation and booking history APIs
+- client dashboard, expert directory, availability selection, and session list
+- SQLite support for tests and local development
+- PostgreSQL schema migration for deployed environments
+- GitHub Actions validation for lint, type checks, tests, and builds
 - mobile status screen wired to shared env and platform helpers
-- smoke tests for the API and web client
+- API integration tests and web API-client tests
 
 What still needs product work:
 
-- expert and client data models
-- real booking and calendar workflows
 - payments
 - embedded video sessions
 - reminders and notifications
-- dashboards for admins and experts
+- expert-managed availability
+- booking cancellation and rescheduling
+- operational admin and expert dashboards
 - ratings, reviews, and consultation history
 - AI-assisted workflows
 
-## Before First Commit
+## Before Moving or Merging
 
-This repo is in a good baseline state, but production readiness still depends on product decisions you have not fully completed yet:
+Use [`docs/PROJECT_HANDOFF.md`](./docs/PROJECT_HANDOFF.md) before moving the
+repository. Local environment files and secrets are not stored in Git.
 
-- choose the real Git remote and then set the final Go module path to match it
-- complete the migration from the temporary Authula spike to SuperTokens
-- choose database and migration tooling
+Production readiness still depends on these decisions:
+
+- confirm the canonical Go module path
+- choose the managed PostgreSQL host
 - choose payment provider
 - choose reminder providers
 - choose managed video provider and meeting token flow
@@ -194,7 +203,7 @@ This repo is in a good baseline state, but production readiness still depends on
 
 ## Next Build Targets
 
-1. Move the shared auth contracts into `packages/platform` and complete the SuperTokens migration.
-2. Model the first real product domain in `packages/platform`, likely experts, availability, and bookings.
-3. Replace local API defaults with environment-specific deployment values.
-4. Expand tests from smoke coverage to core booking and session flows.
+1. Add expert-managed availability creation and editing.
+2. Add booking cancellation and rescheduling rules.
+3. Integrate the payment provider and webhook reconciliation.
+4. Add the managed video provider and authorized session-room access.

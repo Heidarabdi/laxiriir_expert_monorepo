@@ -406,26 +406,30 @@ What exists already:
 
 - public pages baseline
 - expert directory and profile baseline
-- interim booking list baseline
-- auth UI shells
-- temporary Authula integration spike
+- SuperTokens authentication and application profiles
+- role-aware client, expert, and admin route protection
+- persisted expert and availability API
+- conflict-safe client booking creation
+- persisted client booking history
+- working client dashboard booking flow
+- PostgreSQL initial schema migration
+- CI validation workflow
 
 What does not exist yet:
 
-- SuperTokens runtime integration
-- real client dashboard
-- expert dashboard
-- admin dashboard
-- persistent booking backend
 - real payment integration
 - real live session infrastructure
-- real role-based dashboards
+- expert-managed availability
+- booking cancellation and rescheduling
+- operational expert and admin dashboards
+- reminder and notification workers
+- staging infrastructure
 
 ## Immediate Next Step
 
 The next correct implementation step is:
 
-1. complete the first SuperTokens migration slice for web login, registration, verification, recovery, and `/me`
-2. move shared auth and product contracts into `packages/platform`
-3. finalize the booking routes around the Stitch `Booking & Schedule` rail
-4. replace local booking state with real API persistence
+1. add expert-managed availability
+2. define cancellation and rescheduling rules
+3. integrate payment intents and verified webhooks
+4. issue authorized video-session tokens for confirmed bookings
