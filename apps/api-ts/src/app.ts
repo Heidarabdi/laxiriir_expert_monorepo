@@ -1,11 +1,13 @@
-import "dotenv/config";
-
 import closeWithGrace from "close-with-grace";
+import { config as loadEnvironment } from "dotenv";
 
 import { createAuth } from "./auth/factory.js";
 import { readApiConfig } from "./config.js";
 import { createPostgresDatabase } from "./db/postgres.js";
 import { buildServer } from "./server.js";
+
+loadEnvironment({ path: new URL("../.env.local", import.meta.url) });
+loadEnvironment({ path: new URL("../.env", import.meta.url) });
 
 const config = readApiConfig();
 const database = createPostgresDatabase(config.DATABASE_URL);
