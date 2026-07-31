@@ -49,12 +49,13 @@ Laxiriir Expert is designed as an end-to-end consultation platform where clients
 ## Repository Structure
 
 - `apps/api`: Go API using Gin
+- `apps/api-ts`: Fastify and TypeScript API being migrated route by route
 - `apps/web`: Nuxt 4 frontend with Tailwind CSS v4
 - `apps/mobile`: Expo / React Native client
 - `packages/env`: shared environment parsing and defaults
 - `packages/platform`: shared API contracts and URL helpers
 - `packages/config/*`: shared repository configuration packages
-- `infra/supertokens`: local SuperTokens Core scaffolding for development and CI
+- `infra/supertokens`: legacy auth infrastructure retained during migration
 
 ## Monorepo Tooling
 
@@ -67,6 +68,9 @@ Detailed production planning lives in `PRODUCTION.md`.
 
 Current project status and move instructions live in
 [`docs/PROJECT_HANDOFF.md`](./docs/PROJECT_HANDOFF.md).
+
+The active API replacement plan and completed milestones live in
+[`docs/API_TYPESCRIPT_MIGRATION.md`](./docs/API_TYPESCRIPT_MIGRATION.md).
 
 ## Local Development
 
@@ -97,16 +101,19 @@ Run a single app:
 pnpm turbo run dev --filter=web
 pnpm turbo run dev --filter=mobile
 pnpm turbo run dev --filter=api
+pnpm turbo run dev --filter=api-ts
 ```
 
 ## Environment
 
-The API defaults to port `8080`.
+The Go API defaults to port `8080`. The TypeScript migration API defaults to
+port `8081`.
 
 Create local env files from the examples:
 
 ```bash
 apps/api/.env.example
+apps/api-ts/.env.example
 apps/web/.env.example
 apps/mobile/.env.example
 ```
@@ -175,6 +182,8 @@ What already exists:
 - GitHub Actions validation for lint, type checks, tests, and builds
 - mobile status screen wired to shared env and platform helpers
 - API integration tests and web API-client tests
+- a Fastify/TypeScript migration API with Better Auth, Drizzle, OpenAPI, and
+  embedded PostgreSQL auth tests
 
 What still needs product work:
 

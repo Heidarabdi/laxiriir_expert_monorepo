@@ -17,7 +17,7 @@ import (
 
 func TestExpertDiscoveryReturnsPersistedExperts(t *testing.T) {
 	service := newTestService(t)
-	now := time.Date(2026, time.July, 30, 9, 0, 0, 0, time.UTC)
+	now := time.Now().UTC()
 
 	if err := service.SeedDemoData(t.Context(), now); err != nil {
 		t.Fatalf("seed demo data: %v", err)
@@ -49,7 +49,7 @@ func TestExpertDiscoveryReturnsPersistedExperts(t *testing.T) {
 
 func TestExpertAvailabilityReturnsFutureOpenSlots(t *testing.T) {
 	service := newTestService(t)
-	now := time.Date(2026, time.July, 30, 9, 0, 0, 0, time.UTC)
+	now := time.Now().UTC()
 
 	if err := service.SeedDemoData(t.Context(), now); err != nil {
 		t.Fatalf("seed demo data: %v", err)
@@ -90,7 +90,7 @@ func TestExpertAvailabilityReturnsFutureOpenSlots(t *testing.T) {
 
 func TestClientCanCreateBookingForOpenSlot(t *testing.T) {
 	service := newTestService(t)
-	now := time.Date(2026, time.July, 30, 9, 0, 0, 0, time.UTC)
+	now := time.Now().UTC()
 
 	if err := service.SeedDemoData(t.Context(), now); err != nil {
 		t.Fatalf("seed demo data: %v", err)
@@ -142,7 +142,7 @@ func TestClientCanCreateBookingForOpenSlot(t *testing.T) {
 
 func TestBookingAnAlreadyClaimedSlotReturnsConflict(t *testing.T) {
 	service := newTestService(t)
-	now := time.Date(2026, time.July, 30, 9, 0, 0, 0, time.UTC)
+	now := time.Now().UTC()
 
 	if err := service.SeedDemoData(t.Context(), now); err != nil {
 		t.Fatalf("seed demo data: %v", err)
@@ -246,7 +246,7 @@ func TestClientCannotBookPastAvailability(t *testing.T) {
 
 func TestClientBookingListOnlyReturnsTheirBookings(t *testing.T) {
 	service := newTestService(t)
-	now := time.Date(2026, time.July, 30, 9, 0, 0, 0, time.UTC)
+	now := time.Now().UTC()
 
 	if err := service.SeedDemoData(t.Context(), now); err != nil {
 		t.Fatalf("seed demo data: %v", err)

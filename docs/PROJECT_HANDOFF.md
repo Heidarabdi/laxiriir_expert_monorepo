@@ -1,6 +1,6 @@
 # Laxiriir Expert Project Handoff
 
-Last reviewed: 2026-07-30
+Last reviewed: 2026-07-31
 
 ## Purpose
 
@@ -25,6 +25,7 @@ The product has three roles:
 ```text
 apps/
   api/       Go and Gin API
+  api-ts/    Fastify and TypeScript API migration
   web/       Nuxt 4 web application
   mobile/    Expo and React Native application
 packages/
@@ -44,6 +45,7 @@ The repository uses:
 - Nuxt 4
 - Expo 55
 - SuperTokens
+- Better Auth and Drizzle in the replacement API
 - Biome
 
 ## Current Product Status
@@ -73,10 +75,15 @@ It is not ready for production.
 
 ### In Progress
 
-The current branch stabilizes the dashboard and implements the first booking slice.
+The booking slice is stabilized. The current branch starts an incremental API
+migration from Go and SuperTokens to Fastify, Better Auth, and Drizzle.
 
 It includes:
 
+- a runnable TypeScript API on port `8081`
+- Better Auth registration, sign-in, and sessions
+- a committed PostgreSQL auth migration
+- OpenAPI documentation and embedded PostgreSQL auth tests
 - client layout
 - client sidebar and header
 - API-backed dashboard overview
@@ -121,17 +128,28 @@ The Go API currently provides:
 
 Payment and video-session API routes are not implemented yet.
 
+The TypeScript migration API currently provides:
+
+- `GET /health`
+- `GET /api/v1/ping`
+- Better Auth routes below `/api/auth`
+- OpenAPI UI at `/documentation`
+
+See [`API_TYPESCRIPT_MIGRATION.md`](./API_TYPESCRIPT_MIGRATION.md) for the
+route-by-route migration status. The Nuxt client still uses SuperTokens, so the
+old API and auth infrastructure remain required for the current browser UI.
+
 ## Git Status
 
-Current branch:
+Current migration branch:
 
 ```text
-codex/stabilize-booking-slice
+codex/fastify-api-migration
 ```
 
-This branch contains the dashboard stabilization, persistent booking slice,
-validation workflow, migration files, and project handoff documentation.
-Merge it into `main` before treating `main` as the complete movable baseline.
+This branch is based on the stabilized booking commit and adds the new
+TypeScript API foundation. The booking pull request should be merged before
+the API migration pull request.
 
 ## Commit History
 
@@ -217,6 +235,7 @@ Transfer their values through a password manager or secret manager.
 Check:
 
 - `apps/api/.env.local`
+- `apps/api-ts/.env.local`
 - `apps/web/.env.local`
 - any mobile local environment file
 - SuperTokens credentials
@@ -232,7 +251,8 @@ Install the required runtimes:
 - Node.js 20 or newer
 - pnpm 9.15.5
 - Go 1.26.1
-- Docker for local SuperTokens
+- PostgreSQL for the TypeScript API
+- Docker for SuperTokens only while the old web auth client remains
 
 Then run:
 
@@ -249,6 +269,7 @@ Start each application through Turborepo:
 ```bash
 pnpm turbo run dev --filter=web
 pnpm turbo run dev --filter=api
+pnpm turbo run dev --filter=api-ts
 ```
 
 ```bash
