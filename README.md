@@ -60,7 +60,7 @@ Laxiriir Expert is designed as an end-to-end consultation platform where clients
 - Package manager: `pnpm`
 - Task runner: `turbo`
 - Formatter and linter: `biome`
-- Minimum Node.js: `20`
+- Minimum Node.js: `22`
 
 Detailed production planning lives in `PRODUCTION.md`.
 
