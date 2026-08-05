@@ -17,6 +17,8 @@ useHead({
 	<NuxtLoadingIndicator color="#4f46e5" />
 	<NuxtRouteAnnouncer />
 	<div class="min-h-screen bg-background font-sans text-foreground selection:bg-primary selection:text-primary-foreground">
-		<NuxtPage />
+		<NuxtLayout>
+			<NuxtPage />
+		</NuxtLayout>
 	</div>
 </template>
