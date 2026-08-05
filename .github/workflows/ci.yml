@@ -19,10 +19,9 @@ jobs:
     timeout-minutes: 20
 
     env:
-      GO_ENV: test
-      DATABASE_URL: "file::memory:?cache=shared"
-      NUXT_PUBLIC_API_BASE_URL: "http://localhost:8080"
-      EXPO_PUBLIC_API_BASE_URL: "http://localhost:8080"
+      DATABASE_URL: "postgres://postgres:postgres@localhost:5432/laxiriir_expert"
+      NUXT_PUBLIC_API_BASE_URL: "http://localhost:8081"
+      EXPO_PUBLIC_API_BASE_URL: "http://localhost:8081"
 
     steps:
       - name: Check out repository
@@ -38,12 +37,6 @@ jobs:
         with:
           node-version: 20
           cache: pnpm
-
-      - name: Install Go
-        uses: actions/setup-go@v5
-        with:
-          go-version-file: apps/api/go.mod
-          cache-dependency-path: apps/api/go.sum
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile

@@ -27,14 +27,14 @@ Default recommendation for the first production deployment:
 
 Why this is the default:
 
-- one platform can host the Go API, Nuxt web app, and PostgreSQL with simple private networking
+- one platform can host the Fastify API, Nuxt web app, and PostgreSQL with simple private networking
 - lower operations overhead than splitting hosting across multiple vendors on day one
 - easier staging and production rollout for a small team
 - easy to revisit later if scale, compliance, or cost changes
 
 ### Applications
 
-- `apps/api`: Go API, deployed as the primary backend service
+- `apps/api-ts`: Fastify API, deployed as the primary backend service
 - `apps/web`: Nuxt frontend, deployed separately and configured to call the API
 - `apps/mobile`: Expo app, distributed through EAS and app stores
 
@@ -57,15 +57,15 @@ Why this is the default:
 
 Best current fit for the default stack.
 
-- good fit for hosting the Go API, Nuxt web app, background jobs, and PostgreSQL together
+- good fit for hosting the Fastify API, Nuxt web app, background jobs, and PostgreSQL together
 - simpler initial operations model for staging and production
 - better default choice when speed and operational simplicity matter more than low-level infra control
 
 ### Fly.io
 
-Good option, especially for the Go API, but not my first recommendation for the initial all-in-one production stack.
+Good container hosting option, but not my first recommendation for the initial all-in-one production stack.
 
-- strong for containerized Go services
+- strong for containerized Node.js services
 - attractive if you want more infrastructure control earlier
 - not as simple as Render for starting with API, web, and managed database under one default setup
 
@@ -81,7 +81,7 @@ Still a valid alternative, but I would keep it as the backup option.
 
 ### Backend
 
-The Go API should own:
+The Fastify API should own:
 
 - authorization and application role enforcement
 - user, expert, and admin roles
@@ -102,7 +102,7 @@ The Nuxt app should own:
 - admin dashboard
 - booking and payment flows
 - embedded web video experience
-- custom UI for SuperTokens browser flows
+- custom UI backed by Better Auth endpoints
 
 ### Mobile
 
@@ -122,14 +122,13 @@ The Expo app should initially focus on:
 Expected environment variables:
 
 - `PORT`
-- `GO_ENV`
 - `DATABASE_URL`
-- `SUPERTOKENS_CONNECTION_URI`
-- `SUPERTOKENS_API_KEY`
-- `SUPERTOKENS_API_BASE_PATH`
-- `SUPERTOKENS_WEBSITE_DOMAIN`
-- `SUPERTOKENS_API_DOMAIN`
+- `BETTER_AUTH_SECRET`
+- `BETTER_AUTH_URL`
+- `TRUSTED_ORIGINS`
 - `AUTH_BOOTSTRAP_ADMIN_EMAILS`
+- `RESEND_API_KEY`
+- `EMAIL_FROM`
 - `PAYMENT_SECRET_KEY`
 - `PAYMENT_WEBHOOK_SECRET`
 - `LIVEKIT_API_KEY`
@@ -158,7 +157,7 @@ Expected environment variables:
 
 ### Deferred Social Login Configuration
 
-Google and other social providers are intentionally deferred. The MVP should initialize SuperTokens with `ThirdPartyEmailPassword`, but real provider enablement should wait until provider secrets, callback URLs, and the final deployment domains are available.
+Google and other social providers are intentionally deferred. Add them through Better Auth only after provider secrets, callback URLs, and final deployment domains are available.
 
 ## Environment Stages
 
@@ -295,7 +294,7 @@ Already in place:
 - environment-aware Turbo hashing
 - Expo development-build setup
 - shared `packages/platform` package
-- SuperTokens authentication baseline
+- Better Auth authentication baseline
 - persisted expert, availability, and booking models
 - PostgreSQL initial schema migration
 - API integration tests and web API-client tests
@@ -314,8 +313,8 @@ Still needed before real production work:
 
 The following decisions are still open and should be confirmed before first deployment:
 
-- final Git remote and canonical Go module path
-- SuperTokens deployment model for first production release: managed Core or self-hosted Core
+- final Git remote
+- production Better Auth secret and trusted origins
 - database host and migration tool
 - payment provider
 - email provider

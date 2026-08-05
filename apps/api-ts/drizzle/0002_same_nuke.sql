@@ -1,0 +1,1 @@
+ALTER TABLE "bookings" ALTER COLUMN "availability_slot_id" SET DATA TYPE bigint;
