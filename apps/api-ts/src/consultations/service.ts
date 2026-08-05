@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { and, asc, count, eq, gt } from "drizzle-orm";
+import { and, asc, count, eq, gt, lt, ne } from "drizzle-orm";
 
 import type { AppDatabase } from "../db/postgres.js";
 import {
@@ -12,6 +12,27 @@ export class SlotUnavailableError extends Error {
 	constructor() {
 		super("availability slot is no longer available");
 		this.name = "SlotUnavailableError";
+	}
+}
+
+export class AvailabilityConflictError extends Error {
+	constructor(message = "availability overlaps an existing slot") {
+		super(message);
+		this.name = "AvailabilityConflictError";
+	}
+}
+
+export class AvailabilityNotFoundError extends Error {
+	constructor() {
+		super("availability slot not found");
+		this.name = "AvailabilityNotFoundError";
+	}
+}
+
+export class BookedAvailabilityError extends Error {
+	constructor() {
+		super("booked availability cannot be changed");
+		this.name = "BookedAvailabilityError";
 	}
 }
 
@@ -123,23 +144,189 @@ export class ConsultationService {
 		const rows = await this.database
 			.select()
 			.from(experts)
+			.where(eq(experts.active, true))
 			.orderBy(asc(experts.displayName));
 		return rows.map(serializeExpert);
 	}
 
 	async listAvailability(expertId: string, after = new Date()) {
 		const rows = await this.database
+			.select({ slot: availabilitySlots })
+			.from(availabilitySlots)
+			.innerJoin(experts, eq(availabilitySlots.expertId, experts.id))
+			.where(
+				and(
+					eq(availabilitySlots.expertId, expertId),
+					eq(availabilitySlots.booked, false),
+					eq(experts.active, true),
+					gt(availabilitySlots.startsAt, after),
+				),
+			)
+			.orderBy(asc(availabilitySlots.startsAt));
+		return rows.map(({ slot }) => serializeSlot(slot));
+	}
+
+	async listExpertAvailability(expertId: string, after = new Date()) {
+		const rows = await this.database
 			.select()
 			.from(availabilitySlots)
 			.where(
 				and(
 					eq(availabilitySlots.expertId, expertId),
-					eq(availabilitySlots.booked, false),
-					gt(availabilitySlots.startsAt, after),
+					gt(availabilitySlots.endsAt, after),
 				),
 			)
 			.orderBy(asc(availabilitySlots.startsAt));
 		return rows.map(serializeSlot);
+	}
+
+	async createAvailability(
+		expertId: string,
+		startsAt: Date,
+		endsAt: Date,
+		now = new Date(),
+	) {
+		if (startsAt <= now) {
+			throw new AvailabilityConflictError("availability must start in the future");
+		}
+
+		return this.database.transaction(async (transaction) => {
+			const [expert] = await transaction
+				.select({ id: experts.id })
+				.from(experts)
+				.where(and(eq(experts.id, expertId), eq(experts.active, true)))
+				.for("update")
+				.limit(1);
+			if (!expert) throw new AvailabilityNotFoundError();
+
+			await this.assertNoAvailabilityOverlap(
+				transaction,
+				expertId,
+				startsAt,
+				endsAt,
+			);
+			const [slot] = await transaction
+				.insert(availabilitySlots)
+				.values({ expertId, startsAt, endsAt, createdAt: now })
+				.returning();
+			return serializeSlot(slot);
+		});
+	}
+
+	async updateAvailability(
+		expertId: string,
+		slotId: number,
+		startsAt: Date,
+		endsAt: Date,
+		now = new Date(),
+	) {
+		if (startsAt <= now) {
+			throw new AvailabilityConflictError("availability must start in the future");
+		}
+
+		return this.database.transaction(async (transaction) => {
+			const [expert] = await transaction
+				.select({ id: experts.id })
+				.from(experts)
+				.where(and(eq(experts.id, expertId), eq(experts.active, true)))
+				.for("update")
+				.limit(1);
+			if (!expert) throw new AvailabilityNotFoundError();
+
+			const [existing] = await transaction
+				.select()
+				.from(availabilitySlots)
+				.where(
+					and(
+						eq(availabilitySlots.id, slotId),
+						eq(availabilitySlots.expertId, expertId),
+					),
+				)
+				.limit(1);
+			if (!existing) throw new AvailabilityNotFoundError();
+			if (existing.booked) throw new BookedAvailabilityError();
+
+			await this.assertNoAvailabilityOverlap(
+				transaction,
+				expertId,
+				startsAt,
+				endsAt,
+				slotId,
+			);
+			const [slot] = await transaction
+				.update(availabilitySlots)
+				.set({ startsAt, endsAt })
+				.where(
+					and(
+						eq(availabilitySlots.id, slotId),
+						eq(availabilitySlots.expertId, expertId),
+						eq(availabilitySlots.booked, false),
+					),
+				)
+				.returning();
+			if (!slot) throw new BookedAvailabilityError();
+			return serializeSlot(slot);
+		});
+	}
+
+	async deleteAvailability(expertId: string, slotId: number) {
+		await this.database.transaction(async (transaction) => {
+			const [expert] = await transaction
+				.select({ id: experts.id })
+				.from(experts)
+				.where(and(eq(experts.id, expertId), eq(experts.active, true)))
+				.for("update")
+				.limit(1);
+			if (!expert) throw new AvailabilityNotFoundError();
+
+			const [deleted] = await transaction
+				.delete(availabilitySlots)
+				.where(
+					and(
+						eq(availabilitySlots.id, slotId),
+						eq(availabilitySlots.expertId, expertId),
+						eq(availabilitySlots.booked, false),
+					),
+				)
+				.returning({ id: availabilitySlots.id });
+			if (deleted) return;
+
+			const [existing] = await transaction
+				.select({ booked: availabilitySlots.booked })
+				.from(availabilitySlots)
+				.where(
+					and(
+						eq(availabilitySlots.id, slotId),
+						eq(availabilitySlots.expertId, expertId),
+					),
+				)
+				.limit(1);
+			if (!existing) throw new AvailabilityNotFoundError();
+			throw new BookedAvailabilityError();
+		});
+	}
+
+	private async assertNoAvailabilityOverlap(
+		database: Pick<AppDatabase, "select">,
+		expertId: string,
+		startsAt: Date,
+		endsAt: Date,
+		excludedSlotId?: number,
+	) {
+		const predicates = [
+			eq(availabilitySlots.expertId, expertId),
+			lt(availabilitySlots.startsAt, endsAt),
+			gt(availabilitySlots.endsAt, startsAt),
+		];
+		if (excludedSlotId !== undefined) {
+			predicates.push(ne(availabilitySlots.id, excludedSlotId));
+		}
+		const [overlap] = await database
+			.select({ id: availabilitySlots.id })
+			.from(availabilitySlots)
+			.where(and(...predicates))
+			.limit(1);
+		if (overlap) throw new AvailabilityConflictError();
 	}
 
 	async createBooking(
@@ -148,6 +335,26 @@ export class ConsultationService {
 		now = new Date(),
 	) {
 		return this.database.transaction(async (transaction) => {
+			const [candidate] = await transaction
+				.select({ expertId: availabilitySlots.expertId })
+				.from(availabilitySlots)
+				.where(eq(availabilitySlots.id, availabilitySlotId))
+				.limit(1);
+			if (!candidate) throw new SlotUnavailableError();
+
+			const [expert] = await transaction
+				.select()
+				.from(experts)
+				.where(
+					and(
+						eq(experts.id, candidate.expertId),
+						eq(experts.active, true),
+					),
+				)
+				.for("update")
+				.limit(1);
+			if (!expert) throw new SlotUnavailableError();
+
 			const [slot] = await transaction
 				.update(availabilitySlots)
 				.set({ booked: true })
@@ -160,15 +367,6 @@ export class ConsultationService {
 				)
 				.returning();
 			if (!slot) {
-				throw new SlotUnavailableError();
-			}
-
-			const [expert] = await transaction
-				.select()
-				.from(experts)
-				.where(eq(experts.id, slot.expertId))
-				.limit(1);
-			if (!expert) {
 				throw new SlotUnavailableError();
 			}
 

@@ -15,6 +15,7 @@ import {
 export const experts = pgTable(
 	"experts",
 	{
+		active: boolean("active").default(true).notNull(),
 		id: text("id").primaryKey(),
 		displayName: text("display_name").notNull(),
 		title: text("title").notNull(),

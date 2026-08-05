@@ -3,6 +3,7 @@ import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import { z } from "zod";
 
 import { user as userTable } from "../../../../../db/auth-schema.ts";
+import { experts } from "../../../../../db/consultation-schema.ts";
 
 const statusByAction = {
 	approve: "approved",
@@ -51,16 +52,50 @@ const adminExpertRoutes: FastifyPluginAsyncZod = async (fastify) => {
 			});
 			if (!admin) return;
 
-			const [expert] = await database
-				.update(userTable)
-				.set({ expertStatus: statusByAction[request.params.action] })
-				.where(
-					and(
-						eq(userTable.id, request.params.id),
-						eq(userTable.role, "expert"),
-					),
-				)
-				.returning();
+			const expert = await database.transaction(async (transaction) => {
+				const [identity] = await transaction
+					.update(userTable)
+					.set({ expertStatus: statusByAction[request.params.action] })
+					.where(
+						and(
+							eq(userTable.id, request.params.id),
+							eq(userTable.role, "expert"),
+						),
+					)
+					.returning();
+				if (!identity) return null;
+
+				if (request.params.action === "approve") {
+					await transaction
+						.insert(experts)
+						.values({
+							active: true,
+							avatarUrl: `https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(identity.name)}`,
+							bio: "Newly approved expert profile.",
+							category: "General",
+							displayName: identity.name,
+							hourlyRateCents: 0,
+							id: identity.id,
+							title: "Consultation Expert",
+							updatedAt: new Date(),
+						})
+						.onConflictDoUpdate({
+							set: {
+								active: true,
+								displayName: identity.name,
+								updatedAt: new Date(),
+							},
+							target: experts.id,
+						});
+				} else {
+					await transaction
+						.update(experts)
+						.set({ active: false, updatedAt: new Date() })
+						.where(eq(experts.id, identity.id));
+				}
+
+				return identity;
+			});
 			if (!expert) {
 				return reply.code(404).send({ message: "expert profile not found" });
 			}
