@@ -78,7 +78,6 @@ export const bookings = pgTable(
 			.references(() => experts.id),
 		availabilitySlotId: bigint("availability_slot_id", { mode: "number" })
 			.notNull()
-			.unique()
 			.references(() => availabilitySlots.id),
 		startsAt: timestamp("starts_at", { withTimezone: true }).notNull(),
 		endsAt: timestamp("ends_at", { withTimezone: true }).notNull(),
@@ -93,6 +92,9 @@ export const bookings = pgTable(
 			table.clientUserId,
 			table.startsAt,
 		),
+		uniqueIndex("bookings_confirmed_availability_slot_unique")
+			.on(table.availabilitySlotId)
+			.where(sql`${table.status} = 'confirmed'`),
 	],
 );
 

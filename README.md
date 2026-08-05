@@ -172,6 +172,7 @@ What already exists:
 - persisted expert discovery and availability APIs
 - expert-managed availability creation, editing, and deletion
 - conflict-safe client booking creation and booking history APIs
+- client-owned booking cancellation and same-expert rescheduling with a 24-hour policy
 - client dashboard, expert directory, availability selection, and session list
 - embedded PostgreSQL integration tests and PostgreSQL for development/production
 - PostgreSQL schema migration for deployed environments
@@ -185,7 +186,6 @@ What still needs product work:
 - payments
 - embedded video sessions
 - reminders and notifications
-- booking cancellation and rescheduling
 - operational admin and expert dashboards
 - ratings, reviews, and consultation history
 - AI-assisted workflows
@@ -205,6 +205,6 @@ Production readiness still depends on these decisions:
 
 ## Next Build Targets
 
-1. Add booking cancellation and rescheduling rules.
-2. Integrate the payment provider and webhook reconciliation.
-3. Add the managed video provider and authorized session-room access.
+1. Integrate the payment provider and webhook reconciliation.
+2. Add the managed video provider and authorized session-room access.
+3. Add reminder and notification delivery.

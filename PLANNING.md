@@ -410,6 +410,7 @@ What exists already:
 - expert-managed availability creation, editing, and deletion
 - conflict-safe client booking creation
 - persisted client booking history
+- client-owned cancellation and same-expert rescheduling at least 24 hours before start
 - working client dashboard booking flow
 - PostgreSQL initial schema migration
 - CI validation workflow
@@ -418,7 +419,6 @@ What does not exist yet:
 
 - real payment integration
 - real live session infrastructure
-- booking cancellation and rescheduling
 - operational expert and admin dashboards
 - reminder and notification workers
 - staging infrastructure
@@ -427,6 +427,6 @@ What does not exist yet:
 
 The next correct implementation step is:
 
-1. define cancellation and rescheduling rules
-2. integrate payment intents and verified webhooks
-3. issue authorized video-session tokens for confirmed bookings
+1. integrate payment intents and verified webhooks
+2. issue authorized video-session tokens for confirmed bookings
+3. add reminder and notification workers

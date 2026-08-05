@@ -1,6 +1,9 @@
 <script setup lang="ts">
-import type { BookingDetail } from "@repo/platform/consultations";
-import { Calendar, Clock } from "lucide-vue-next";
+import type {
+	AvailabilitySlot,
+	BookingDetail,
+} from "@repo/platform/consultations";
+import { Calendar, Clock, RefreshCw, X } from "lucide-vue-next";
 
 definePageMeta({
 	layout: "client",
@@ -18,14 +21,24 @@ const bookings = ref<BookingDetail[]>([]);
 const loading = ref(true);
 const errorMessage = ref("");
 const activeFilter = ref<"all" | "upcoming" | "past">("all");
+const actionBookingId = ref<string | null>(null);
+const reschedulingBookingId = ref<string | null>(null);
+const replacementSlots = ref<AvailabilitySlot[]>([]);
+const loadingReplacementSlots = ref(false);
 
 const filteredBookings = computed(() => {
 	const now = new Date();
 	if (activeFilter.value === "upcoming") {
-		return bookings.value.filter((booking) => new Date(booking.startsAt) > now);
+		return bookings.value.filter(
+			(booking) =>
+				booking.status === "confirmed" && new Date(booking.startsAt) > now,
+		);
 	}
 	if (activeFilter.value === "past") {
-		return bookings.value.filter((booking) => new Date(booking.endsAt) <= now);
+		return bookings.value.filter(
+			(booking) =>
+				booking.status === "cancelled" || new Date(booking.endsAt) <= now,
+		);
 	}
 	return bookings.value;
 });
@@ -55,6 +68,97 @@ function formatTimeRange(start: string, end: string) {
 	});
 	return `${formatter.format(new Date(start))} – ${formatter.format(new Date(end))}`;
 }
+
+function canChangeBooking(booking: BookingDetail) {
+	return (
+		booking.status === "confirmed" &&
+		new Date(booking.startsAt).getTime() - Date.now() >= 24 * 60 * 60 * 1000
+	);
+}
+
+function replaceBooking(updated: BookingDetail) {
+	bookings.value = bookings.value.map((booking) =>
+		booking.id === updated.id ? updated : booking,
+	);
+}
+
+async function cancelBooking(booking: BookingDetail) {
+	if (!window.confirm("Cancel this session? The time will become available again.")) {
+		return;
+	}
+	actionBookingId.value = booking.id;
+	errorMessage.value = "";
+	try {
+		const response = await consultationApi.cancelBooking(booking.id);
+		replaceBooking(response.booking);
+		if (reschedulingBookingId.value === booking.id) {
+			reschedulingBookingId.value = null;
+			replacementSlots.value = [];
+		}
+	} catch (error) {
+		errorMessage.value =
+			error instanceof Error ? error.message : "Unable to cancel this session.";
+	} finally {
+		actionBookingId.value = null;
+	}
+}
+
+async function openReschedule(booking: BookingDetail) {
+	if (reschedulingBookingId.value === booking.id) {
+		reschedulingBookingId.value = null;
+		replacementSlots.value = [];
+		return;
+	}
+	reschedulingBookingId.value = booking.id;
+	const requestBookingId = booking.id;
+	replacementSlots.value = [];
+	loadingReplacementSlots.value = true;
+	errorMessage.value = "";
+	try {
+		const response = await consultationApi.listAvailability(booking.expert.id);
+		if (reschedulingBookingId.value === requestBookingId) {
+			replacementSlots.value = response.slots.filter(
+				(slot) =>
+					new Date(slot.startsAt).getTime() - Date.now() >=
+					24 * 60 * 60 * 1000,
+			);
+		}
+	} catch (error) {
+		if (reschedulingBookingId.value === requestBookingId) {
+			errorMessage.value =
+				error instanceof Error
+					? error.message
+					: "Unable to load replacement times.";
+		}
+	} finally {
+		if (reschedulingBookingId.value === requestBookingId) {
+			loadingReplacementSlots.value = false;
+		}
+	}
+}
+
+async function rescheduleBooking(
+	booking: BookingDetail,
+	slot: AvailabilitySlot,
+) {
+	actionBookingId.value = booking.id;
+	errorMessage.value = "";
+	try {
+		const response = await consultationApi.rescheduleBooking(booking.id, {
+			availabilitySlotId: slot.id,
+		});
+		replaceBooking(response.booking);
+		reschedulingBookingId.value = null;
+		replacementSlots.value = [];
+	} catch (error) {
+		errorMessage.value =
+			error instanceof Error
+				? error.message
+				: "Unable to reschedule this session.";
+	} finally {
+		actionBookingId.value = null;
+	}
+}
 </script>
 
 <template>
@@ -66,7 +170,7 @@ function formatTimeRange(start: string, end: string) {
 					My sessions
 				</h1>
 				<p class="mt-1 text-sm text-muted-foreground">
-					Every confirmed booking saved to your account.
+					Review, reschedule, or cancel your saved sessions.
 				</p>
 			</div>
 			<NuxtLink
@@ -137,7 +241,7 @@ function formatTimeRange(start: string, end: string) {
 					</div>
 				</div>
 
-				<div class="space-y-1 text-sm sm:text-right">
+				<div class="space-y-3 text-sm sm:min-w-72 sm:text-right">
 					<p class="flex items-center gap-2 font-medium sm:justify-end">
 						<Calendar class="size-4 text-primary" />
 						{{ formatDate(booking.startsAt) }}
@@ -146,6 +250,56 @@ function formatTimeRange(start: string, end: string) {
 						<Clock class="size-4" />
 						{{ formatTimeRange(booking.startsAt, booking.endsAt) }}
 					</p>
+
+					<div
+						v-if="canChangeBooking(booking)"
+						class="flex flex-wrap gap-2 sm:justify-end"
+					>
+						<button
+							type="button"
+							class="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-xs font-semibold transition hover:border-primary hover:text-primary disabled:opacity-50"
+							:disabled="actionBookingId === booking.id"
+							@click="openReschedule(booking)"
+						>
+							<RefreshCw class="size-3.5" />
+							{{ reschedulingBookingId === booking.id ? "Close times" : "Reschedule" }}
+						</button>
+						<button
+							type="button"
+							class="inline-flex items-center gap-2 rounded-lg border border-destructive/40 px-3 py-2 text-xs font-semibold text-destructive transition hover:bg-destructive/10 disabled:opacity-50"
+							:disabled="actionBookingId === booking.id"
+							@click="cancelBooking(booking)"
+						>
+							<X class="size-3.5" />
+							{{ actionBookingId === booking.id ? "Updating..." : "Cancel" }}
+						</button>
+					</div>
+
+					<div
+						v-if="reschedulingBookingId === booking.id"
+						class="rounded-lg border border-border bg-secondary/50 p-3 text-left"
+					>
+						<p class="text-xs font-semibold">Choose a new time</p>
+						<p v-if="loadingReplacementSlots" class="mt-2 text-xs text-muted-foreground">
+							Loading open times...
+						</p>
+						<p v-else-if="replacementSlots.length === 0" class="mt-2 text-xs text-muted-foreground">
+							No replacement times are available at least 24 hours ahead.
+						</p>
+						<div v-else class="mt-2 grid gap-2">
+							<button
+								v-for="slot in replacementSlots"
+								:key="slot.id"
+								type="button"
+								class="rounded-md border border-border bg-background px-3 py-2 text-left text-xs transition hover:border-primary hover:text-primary disabled:opacity-50"
+								:disabled="actionBookingId === booking.id"
+								@click="rescheduleBooking(booking, slot)"
+							>
+								{{ formatDate(slot.startsAt) }} ·
+								{{ formatTimeRange(slot.startsAt, slot.endsAt) }}
+							</button>
+						</div>
+					</div>
 				</div>
 			</article>
 		</div>

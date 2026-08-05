@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { and, asc, count, eq, gt, lt, ne } from "drizzle-orm";
+import { and, asc, count, eq, gt, gte, lt, ne } from "drizzle-orm";
 
 import type { AppDatabase } from "../db/postgres.js";
 import {
@@ -30,9 +30,23 @@ export class AvailabilityNotFoundError extends Error {
 }
 
 export class BookedAvailabilityError extends Error {
-	constructor() {
-		super("booked availability cannot be changed");
+	constructor(message = "booked availability cannot be changed") {
+		super(message);
 		this.name = "BookedAvailabilityError";
+	}
+}
+
+export class BookingNotFoundError extends Error {
+	constructor() {
+		super("booking not found");
+		this.name = "BookingNotFoundError";
+	}
+}
+
+export class BookingChangeConflictError extends Error {
+	constructor(message = "booking can only be changed at least 24 hours before it starts") {
+		super(message);
+		this.name = "BookingChangeConflictError";
 	}
 }
 
@@ -65,7 +79,7 @@ function serializeBooking(
 		expert: serializeExpert(expert),
 		id: booking.id,
 		startsAt: booking.startsAt.toISOString(),
-		status: "confirmed" as const,
+		status: booking.status as "cancelled" | "confirmed",
 	};
 }
 
@@ -278,6 +292,16 @@ export class ConsultationService {
 				.for("update")
 				.limit(1);
 			if (!expert) throw new AvailabilityNotFoundError();
+			const [bookingHistory] = await transaction
+				.select({ id: bookings.id })
+				.from(bookings)
+				.where(eq(bookings.availabilitySlotId, slotId))
+				.limit(1);
+			if (bookingHistory) {
+				throw new BookedAvailabilityError(
+					"availability with booking history cannot be deleted",
+				);
+			}
 
 			const [deleted] = await transaction
 				.delete(availabilitySlots)
@@ -398,6 +422,172 @@ export class ConsultationService {
 		return rows.map(({ booking, expert }) =>
 			serializeBooking(booking, expert),
 		);
+	}
+
+	async cancelBooking(
+		clientUserId: string,
+		bookingId: string,
+		now = new Date(),
+	) {
+		return this.database.transaction(async (transaction) => {
+			const [candidate] = await transaction
+				.select({ expertId: bookings.expertId })
+				.from(bookings)
+				.where(
+					and(
+						eq(bookings.id, bookingId),
+						eq(bookings.clientUserId, clientUserId),
+					),
+				)
+				.limit(1);
+			if (!candidate) throw new BookingNotFoundError();
+
+			const [expert] = await transaction
+				.select()
+				.from(experts)
+				.where(eq(experts.id, candidate.expertId))
+				.for("update")
+				.limit(1);
+			if (!expert) throw new BookingNotFoundError();
+
+			const [booking] = await transaction
+				.select()
+				.from(bookings)
+				.where(
+					and(
+						eq(bookings.id, bookingId),
+						eq(bookings.clientUserId, clientUserId),
+					),
+				)
+				.limit(1);
+			if (!booking) throw new BookingNotFoundError();
+		this.assertBookingChangeAllowed(booking, now);
+
+			const [cancelled] = await transaction
+				.update(bookings)
+				.set({ status: "cancelled" })
+				.where(
+					and(
+						eq(bookings.id, bookingId),
+						eq(bookings.clientUserId, clientUserId),
+						eq(bookings.status, "confirmed"),
+					),
+				)
+				.returning();
+			if (!cancelled) throw new BookingChangeConflictError();
+
+			await transaction
+				.update(availabilitySlots)
+				.set({ booked: false })
+				.where(eq(availabilitySlots.id, booking.availabilitySlotId));
+
+			return serializeBooking(cancelled, expert);
+		});
+	}
+
+	async rescheduleBooking(
+		clientUserId: string,
+		bookingId: string,
+		availabilitySlotId: number,
+		now = new Date(),
+	) {
+		return this.database.transaction(async (transaction) => {
+			const [candidate] = await transaction
+				.select({ expertId: bookings.expertId })
+				.from(bookings)
+				.where(
+					and(
+						eq(bookings.id, bookingId),
+						eq(bookings.clientUserId, clientUserId),
+					),
+				)
+				.limit(1);
+			if (!candidate) throw new BookingNotFoundError();
+
+			const [expert] = await transaction
+				.select()
+				.from(experts)
+				.where(
+					and(
+						eq(experts.id, candidate.expertId),
+						eq(experts.active, true),
+					),
+				)
+				.for("update")
+				.limit(1);
+			if (!expert) {
+				throw new BookingChangeConflictError("expert is not accepting bookings");
+			}
+
+			const [booking] = await transaction
+				.select()
+				.from(bookings)
+				.where(
+					and(
+						eq(bookings.id, bookingId),
+						eq(bookings.clientUserId, clientUserId),
+					),
+				)
+				.limit(1);
+			if (!booking) throw new BookingNotFoundError();
+			this.assertBookingChangeAllowed(booking, now);
+
+			const policyDeadline = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+			const [replacement] = await transaction
+				.update(availabilitySlots)
+				.set({ booked: true })
+				.where(
+					and(
+						eq(availabilitySlots.id, availabilitySlotId),
+						eq(availabilitySlots.expertId, booking.expertId),
+						eq(availabilitySlots.booked, false),
+					gte(availabilitySlots.startsAt, policyDeadline),
+					),
+				)
+				.returning();
+			if (!replacement) {
+				throw new BookingChangeConflictError(
+					"replacement availability slot is no longer available",
+				);
+			}
+
+			const [rescheduled] = await transaction
+				.update(bookings)
+				.set({
+					availabilitySlotId: replacement.id,
+					endsAt: replacement.endsAt,
+					startsAt: replacement.startsAt,
+				})
+				.where(
+					and(
+						eq(bookings.id, bookingId),
+						eq(bookings.clientUserId, clientUserId),
+						eq(bookings.status, "confirmed"),
+					),
+				)
+				.returning();
+			if (!rescheduled) throw new BookingChangeConflictError();
+
+			await transaction
+				.update(availabilitySlots)
+				.set({ booked: false })
+				.where(eq(availabilitySlots.id, booking.availabilitySlotId));
+
+			return serializeBooking(rescheduled, expert);
+		});
+	}
+
+	private assertBookingChangeAllowed(
+		booking: typeof bookings.$inferSelect,
+		now: Date,
+	) {
+		if (booking.status !== "confirmed") {
+			throw new BookingChangeConflictError("booking is not confirmed");
+		}
+		const policyDeadline = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+		if (booking.startsAt < policyDeadline) {
+			throw new BookingChangeConflictError();
+		}
 	}
 }
 

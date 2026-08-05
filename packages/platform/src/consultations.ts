@@ -9,7 +9,7 @@ export const EXPERTS_PATH = "/api/v1/experts";
 export const CLIENT_BOOKINGS_PATH = "/api/v1/client/bookings";
 export const EXPERT_AVAILABILITY_PATH = "/api/v1/expert/availability";
 
-export type BookingStatus = "confirmed";
+export type BookingStatus = "cancelled" | "confirmed";
 
 export interface ExpertSummary {
 	avatarUrl: string;
@@ -89,6 +89,13 @@ export function getClientBookingsUrl(apiBaseUrl: string) {
 	return joinApiUrl(apiBaseUrl, CLIENT_BOOKINGS_PATH);
 }
 
+export function getClientBookingUrl(apiBaseUrl: string, bookingId: string) {
+	return joinApiUrl(
+		apiBaseUrl,
+		`${CLIENT_BOOKINGS_PATH}/${encodeURIComponent(bookingId)}`,
+	);
+}
+
 export function getOwnAvailabilityUrl(apiBaseUrl: string, slotId?: number) {
 	return joinApiUrl(
 		apiBaseUrl,
@@ -112,6 +119,12 @@ export function createPlatformConsultationClient(
 		});
 
 	return {
+		cancelBooking(bookingId: string) {
+			return request<BookingResponse>(
+				getClientBookingUrl(options.apiBaseUrl, bookingId),
+				{ method: "DELETE" },
+			);
+		},
 		createAvailability(input: AvailabilityInput) {
 			return request<{ slot: AvailabilitySlot }>(
 				getOwnAvailabilityUrl(options.apiBaseUrl),
@@ -149,6 +162,12 @@ export function createPlatformConsultationClient(
 		},
 		listExperts() {
 			return request<ExpertListResponse>(getExpertsUrl(options.apiBaseUrl));
+		},
+		rescheduleBooking(bookingId: string, input: CreateBookingInput) {
+			return request<BookingResponse>(
+				getClientBookingUrl(options.apiBaseUrl, bookingId),
+				{ body: input, method: "PATCH" },
+			);
 		},
 		updateAvailability(slotId: number, input: AvailabilityInput) {
 			return request<{ slot: AvailabilitySlot }>(

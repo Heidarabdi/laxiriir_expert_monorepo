@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX "bookings_confirmed_availability_slot_unique" ON "bookings" USING btree ("availability_slot_id") WHERE "bookings"."status" = 'confirmed';
