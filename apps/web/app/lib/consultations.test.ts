@@ -35,4 +35,47 @@ describe("platform consultation client", () => {
 			},
 		);
 	});
+
+	it("manages the signed-in expert availability through the expert API", async () => {
+		const fetch = vi.fn().mockResolvedValue({ slot: {} });
+		const client = createPlatformConsultationClient({
+			apiBaseUrl: "http://localhost:8081",
+			fetch,
+		});
+		const input = {
+			endsAt: "2030-01-01T11:00:00.000Z",
+			startsAt: "2030-01-01T10:00:00.000Z",
+		};
+
+		await client.createAvailability(input);
+		await client.updateAvailability(7, input);
+		await client.deleteAvailability(7);
+
+		expect(fetch).toHaveBeenNthCalledWith(
+			1,
+			"http://localhost:8081/api/v1/expert/availability",
+			{
+				body: input,
+				credentials: "include",
+				method: "POST",
+			},
+		);
+		expect(fetch).toHaveBeenNthCalledWith(
+			2,
+			"http://localhost:8081/api/v1/expert/availability/7",
+			{
+				body: input,
+				credentials: "include",
+				method: "PATCH",
+			},
+		);
+		expect(fetch).toHaveBeenNthCalledWith(
+			3,
+			"http://localhost:8081/api/v1/expert/availability/7",
+			{
+				credentials: "include",
+				method: "DELETE",
+			},
+		);
+	});
 });

@@ -58,10 +58,14 @@ describe("legacy Go database migration", () => {
 			);
 			INSERT INTO account_profiles
 				(auth_user_id, email, display_name, primary_role, expert_status)
-			VALUES ('legacy-client', 'Legacy@Example.com', 'Legacy Client', 'client', 'not_applicable');
+			VALUES
+				('legacy-client', 'Legacy@Example.com', 'Legacy Client', 'client', 'not_applicable'),
+				('suspended-expert', 'suspended@example.com', 'Suspended Expert', 'expert', 'suspended');
 			INSERT INTO experts
 				(id, display_name, title, category, bio, hourly_rate_cents, avatar_url)
-			VALUES ('legacy-expert', 'Legacy Expert', 'Advisor', 'Strategy', 'Legacy profile', 10000, 'https://example.com/avatar');
+			VALUES
+				('legacy-expert', 'Legacy Expert', 'Advisor', 'Strategy', 'Legacy profile', 10000, 'https://example.com/avatar'),
+				('suspended-expert', 'Suspended Expert', 'Advisor', 'Strategy', 'Suspended profile', 10000, 'https://example.com/suspended-avatar');
 			INSERT INTO availability_slots
 				(expert_id, starts_at, ends_at)
 			VALUES ('legacy-expert', '2030-01-01T10:00:00Z', '2030-01-01T11:00:00Z');
@@ -85,6 +89,9 @@ describe("legacy Go database migration", () => {
 		const migratedBookings = await client.query<{ client_user_id: string }>(
 			`SELECT client_user_id FROM bookings WHERE id = 'legacy-booking'`,
 		);
+		const suspendedExperts = await client.query<{ active: boolean }>(
+			`SELECT active FROM experts WHERE id = 'suspended-expert'`,
+		);
 
 		expect(migratedUsers.rows).toEqual([
 			{ email: "legacy@example.com", id: "legacy-client" },
@@ -92,6 +99,7 @@ describe("legacy Go database migration", () => {
 		expect(migratedBookings.rows).toEqual([
 			{ client_user_id: "legacy-client" },
 		]);
+		expect(suspendedExperts.rows).toEqual([{ active: false }]);
 
 		const config = createTestConfig();
 		const auth = createAuth(database, config);

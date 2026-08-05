@@ -29,6 +29,13 @@
       "when": 1785503825771,
       "tag": "0003_yellow_roland_deschain",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1785928297917,
+      "tag": "0004_cool_albert_cleary",
+      "breakpoints": true
     }
   ]
 }

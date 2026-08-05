@@ -407,6 +407,7 @@ What exists already:
 - Better Auth authentication and application profiles
 - role-aware client, expert, and admin route protection
 - persisted expert and availability API
+- expert-managed availability creation, editing, and deletion
 - conflict-safe client booking creation
 - persisted client booking history
 - working client dashboard booking flow
@@ -417,7 +418,6 @@ What does not exist yet:
 
 - real payment integration
 - real live session infrastructure
-- expert-managed availability
 - booking cancellation and rescheduling
 - operational expert and admin dashboards
 - reminder and notification workers
@@ -427,7 +427,6 @@ What does not exist yet:
 
 The next correct implementation step is:
 
-1. add expert-managed availability
-2. define cancellation and rescheduling rules
-3. integrate payment intents and verified webhooks
-4. issue authorized video-session tokens for confirmed bookings
+1. define cancellation and rescheduling rules
+2. integrate payment intents and verified webhooks
+3. issue authorized video-session tokens for confirmed bookings

@@ -7,6 +7,7 @@ import { joinApiUrl } from "./health";
 
 export const EXPERTS_PATH = "/api/v1/experts";
 export const CLIENT_BOOKINGS_PATH = "/api/v1/client/bookings";
+export const EXPERT_AVAILABILITY_PATH = "/api/v1/expert/availability";
 
 export type BookingStatus = "confirmed";
 
@@ -62,6 +63,11 @@ export interface CreateBookingInput {
 	availabilitySlotId: number;
 }
 
+export interface AvailabilityInput {
+	endsAt: string;
+	startsAt: string;
+}
+
 export interface PlatformConsultationClientOptions {
 	apiBaseUrl: string;
 	credentials?: PlatformRequestCredentials;
@@ -83,6 +89,15 @@ export function getClientBookingsUrl(apiBaseUrl: string) {
 	return joinApiUrl(apiBaseUrl, CLIENT_BOOKINGS_PATH);
 }
 
+export function getOwnAvailabilityUrl(apiBaseUrl: string, slotId?: number) {
+	return joinApiUrl(
+		apiBaseUrl,
+		slotId === undefined
+			? EXPERT_AVAILABILITY_PATH
+			: `${EXPERT_AVAILABILITY_PATH}/${slotId}`,
+	);
+}
+
 export function createPlatformConsultationClient(
 	options: PlatformConsultationClientOptions,
 ) {
@@ -97,6 +112,12 @@ export function createPlatformConsultationClient(
 		});
 
 	return {
+		createAvailability(input: AvailabilityInput) {
+			return request<{ slot: AvailabilitySlot }>(
+				getOwnAvailabilityUrl(options.apiBaseUrl),
+				{ body: input, method: "POST" },
+			);
+		},
 		createBooking(input: CreateBookingInput) {
 			return request<BookingResponse>(
 				getClientBookingsUrl(options.apiBaseUrl),
@@ -106,9 +127,19 @@ export function createPlatformConsultationClient(
 				},
 			);
 		},
+		deleteAvailability(slotId: number) {
+			return request<void>(getOwnAvailabilityUrl(options.apiBaseUrl, slotId), {
+				method: "DELETE",
+			});
+		},
 		listAvailability(expertId: string) {
 			return request<AvailabilityListResponse>(
 				getExpertAvailabilityUrl(options.apiBaseUrl, expertId),
+			);
+		},
+		listOwnAvailability() {
+			return request<AvailabilityListResponse>(
+				getOwnAvailabilityUrl(options.apiBaseUrl),
 			);
 		},
 		listBookings() {
@@ -118,6 +149,12 @@ export function createPlatformConsultationClient(
 		},
 		listExperts() {
 			return request<ExpertListResponse>(getExpertsUrl(options.apiBaseUrl));
+		},
+		updateAvailability(slotId: number, input: AvailabilityInput) {
+			return request<{ slot: AvailabilitySlot }>(
+				getOwnAvailabilityUrl(options.apiBaseUrl, slotId),
+				{ body: input, method: "PATCH" },
+			);
 		},
 	};
 }
