@@ -36,6 +36,20 @@
       "when": 1785928297917,
       "tag": "0004_cool_albert_cleary",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1785929475757,
+      "tag": "0005_wide_mandarin",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1785930187501,
+      "tag": "0006_redundant_bullseye",
+      "breakpoints": true
     }
   ]
 }

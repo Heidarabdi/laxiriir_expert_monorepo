@@ -10,7 +10,8 @@ export const bookingSchema = z.object({
 	expert: expertSchema,
 	id: z.string(),
 	startsAt: z.string().datetime(),
-	status: z.literal("confirmed"),
+	status: z.enum(["cancelled", "confirmed"]),
 });
 
 export const errorSchema = z.object({ message: z.string() });
+export const bookingParamsSchema = z.object({ id: z.string().trim().min(1) });

@@ -78,4 +78,35 @@ describe("platform consultation client", () => {
 			},
 		);
 	});
+
+	it("cancels and reschedules an authenticated client booking", async () => {
+		const fetch = vi.fn().mockResolvedValue({ booking: {} });
+		const client = createPlatformConsultationClient({
+			apiBaseUrl: "http://localhost:8081",
+			fetch,
+		});
+
+		await client.cancelBooking("booking-1");
+		await client.rescheduleBooking("booking-1", {
+			availabilitySlotId: 19,
+		});
+
+		expect(fetch).toHaveBeenNthCalledWith(
+			1,
+			"http://localhost:8081/api/v1/client/bookings/booking-1",
+			{
+				credentials: "include",
+				method: "DELETE",
+			},
+		);
+		expect(fetch).toHaveBeenNthCalledWith(
+			2,
+			"http://localhost:8081/api/v1/client/bookings/booking-1",
+			{
+				body: { availabilitySlotId: 19 },
+				credentials: "include",
+				method: "PATCH",
+			},
+		);
+	});
 });

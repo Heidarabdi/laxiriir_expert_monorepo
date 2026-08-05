@@ -358,7 +358,7 @@ describe("expert availability management", () => {
 		});
 		await approveExpert(application, admin.cookie, expert.userId);
 
-		const startsAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+		const startsAt = new Date(Date.now() + 72 * 60 * 60 * 1000);
 		const endsAt = new Date(startsAt.getTime() + 60 * 60 * 1000);
 		const created = await application.server.inject({
 			headers: { cookie: expert.cookie },
@@ -394,6 +394,19 @@ describe("expert availability management", () => {
 		});
 		expect(updated.statusCode).toBe(409);
 		expect(deleted.statusCode).toBe(409);
+
+		const cancelled = await application.server.inject({
+			headers: { cookie: client.cookie },
+			method: "DELETE",
+			url: `/api/v1/client/bookings/${booking.json().booking.id}`,
+		});
+		expect(cancelled.statusCode).toBe(200);
+		const historyDelete = await application.server.inject({
+			headers: { cookie: expert.cookie },
+			method: "DELETE",
+			url: `/api/v1/expert/availability/${slotId}`,
+		});
+		expect(historyDelete.statusCode).toBe(409);
 	});
 
 	it("hides and blocks availability after an expert is suspended", async () => {
