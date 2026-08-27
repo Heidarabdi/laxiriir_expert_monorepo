@@ -1,10 +1,7 @@
-import {
-	createPlatformAuthClient,
-	type PlatformRequestOptions,
-	type SignInInput,
-	type SignUpInput,
-} from "@repo/platform/auth";
-import { joinApiUrl } from "@repo/platform/health";
+import { createAuthClient } from "@repo/api-client/auth";
+import { joinApiUrl } from "@repo/api-client/health";
+import type { ApiRequestOptions } from "@repo/api-client/request";
+import type { SignInInput, SignUpInput } from "@repo/contracts/auth";
 import type { CurrentUser } from "~/lib/auth";
 
 function ensureClientAuthRuntime() {
@@ -28,18 +25,18 @@ export function useAuthApi() {
 	const config = useRuntimeConfig();
 	const fetchJson = $fetch as unknown as (
 		url: string,
-		options?: PlatformRequestOptions,
+		options?: ApiRequestOptions,
 	) => Promise<unknown>;
-	const authClient = createPlatformAuthClient({
+	const authClient = createAuthClient({
 		apiBaseUrl: config.public.apiBaseUrl,
 		credentials: "include",
-		fetch: <TResponse>(url: string, options?: PlatformRequestOptions) =>
+		fetch: <TResponse>(url: string, options?: ApiRequestOptions) =>
 			fetchJson(url, options) as Promise<TResponse>,
 	});
 
 	async function authRequest<TResponse>(
 		path: string,
-		options: PlatformRequestOptions,
+		options: ApiRequestOptions,
 		fallback: string,
 	) {
 		ensureClientAuthRuntime();
@@ -98,11 +95,7 @@ export function useAuthApi() {
 	}
 
 	function signOut() {
-		return authRequest(
-			"/sign-out",
-			{ method: "POST" },
-			"Unable to sign out.",
-		);
+		return authRequest("/sign-out", { method: "POST" }, "Unable to sign out.");
 	}
 
 	function verifyEmailToken(token: string) {

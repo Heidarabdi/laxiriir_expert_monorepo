@@ -15,8 +15,9 @@
 	},
 	"dependencies": {
 		"@pinia/nuxt": "^0.11.3",
+		"@repo/api-client": "workspace:*",
+		"@repo/contracts": "workspace:*",
 		"@repo/env": "workspace:*",
-		"@repo/platform": "workspace:*",
 		"@tanstack/vue-table": "^8.21.3",
 		"@unovis/vue": "^1.6.4",
 		"@vueuse/core": "^14.2.1",

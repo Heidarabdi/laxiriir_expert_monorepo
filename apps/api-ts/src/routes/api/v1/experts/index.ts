@@ -1,22 +1,27 @@
+import {
+	availabilityListResponseSchema,
+	expertListResponseSchema,
+	expertParamsSchema,
+} from "@repo/contracts/consultations";
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
-import { z } from "zod";
 
 import { ConsultationService } from "../../../../consultations/service.ts";
-import { availabilitySchema, expertSchema } from "./schema.ts";
 
 const expertRoutes: FastifyPluginAsyncZod = async (fastify) => {
 	if (!fastify.database) {
 		return;
 	}
 
-	const consultations = new ConsultationService(fastify.database);
+	const consultations = new ConsultationService(fastify.database, {
+		allowPendingExperts: fastify.config.NODE_ENV === "development",
+	});
 
 	fastify.get(
 		"",
 		{
 			schema: {
 				response: {
-					200: z.object({ experts: z.array(expertSchema) }),
+					200: expertListResponseSchema,
 				},
 			},
 		},
@@ -27,9 +32,9 @@ const expertRoutes: FastifyPluginAsyncZod = async (fastify) => {
 		"/:id/availability",
 		{
 			schema: {
-				params: z.object({ id: z.string().trim().min(1) }),
+				params: expertParamsSchema,
 				response: {
-					200: z.object({ slots: z.array(availabilitySchema) }),
+					200: availabilityListResponseSchema,
 				},
 			},
 		},

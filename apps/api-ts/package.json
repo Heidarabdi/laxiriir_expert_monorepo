@@ -22,6 +22,7 @@
 		"@fastify/sensible": "^6.0.4",
 		"@fastify/swagger": "^9.8.1",
 		"@fastify/swagger-ui": "^6.1.1",
+		"@repo/contracts": "workspace:*",
 		"better-auth": "^1.6.25",
 		"close-with-grace": "^2.5.0",
 		"dotenv": "catalog:",
@@ -30,7 +31,7 @@
 		"fastify-plugin": "^6.0.0",
 		"fastify-type-provider-zod": "^7.0.0",
 		"pg": "^8.22.0",
-		"zod": "^4.4.3"
+		"zod": "catalog:"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "catalog:",

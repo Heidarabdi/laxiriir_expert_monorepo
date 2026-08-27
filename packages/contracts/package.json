@@ -1,13 +1,13 @@
 {
-	"name": "@repo/platform",
+	"name": "@repo/contracts",
 	"version": "1.0.0",
 	"private": true,
 	"type": "module",
 	"scripts": {
 		"build": "tsc --noEmit",
 		"clean": "node -e \"require('node:fs').rmSync('.turbo', { recursive: true, force: true })\"",
-		"lint": "biome lint src package.json tsconfig.json",
-		"test": "node -e \"process.exit(0)\"",
+		"lint": "biome lint src test package.json tsconfig.json",
+		"test": "vitest run",
 		"typecheck": "tsc --noEmit"
 	},
 	"exports": {
@@ -15,9 +15,13 @@
 		"./consultations": "./src/consultations.ts",
 		"./health": "./src/health.ts"
 	},
+	"dependencies": {
+		"zod": "catalog:"
+	},
 	"devDependencies": {
 		"@biomejs/biome": "catalog:",
 		"@repo/typescript-config": "workspace:*",
-		"typescript": "catalog:"
+		"typescript": "catalog:",
+		"vitest": "catalog:"
 	}
 }

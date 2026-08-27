@@ -1,20 +1,11 @@
-import type {
-	FastifyPluginAsync,
-	FastifyReply,
-	FastifyRequest,
-} from "fastify";
-import fastifyPlugin from "fastify-plugin";
+import type { ExpertStatus, PrimaryRole } from "@repo/contracts/auth";
 import { fromNodeHeaders } from "better-auth/node";
+import type { FastifyPluginAsync, FastifyReply, FastifyRequest } from "fastify";
+import fastifyPlugin from "fastify-plugin";
 
 import type { AppOptions } from "../app-options.js";
 
-export type PrimaryRole = "admin" | "client" | "expert";
-export type ExpertStatus =
-	| "approved"
-	| "not_applicable"
-	| "pending_review"
-	| "rejected"
-	| "suspended";
+export type { ExpertStatus, PrimaryRole } from "@repo/contracts/auth";
 
 export interface AuthenticatedUser {
 	email: string;
@@ -62,15 +53,25 @@ const authPlugin: FastifyPluginAsync<AppOptions> = async (fastify, options) => {
 				return null;
 			}
 
-			const user = session.user as AuthenticatedUser;
+			const sessionUser = session.user as AuthenticatedUser;
+			const user: AuthenticatedUser =
+				options.config.NODE_ENV === "development"
+					? {
+							...sessionUser,
+							emailVerified: true,
+							expertStatus:
+								sessionUser.role === "expert" &&
+								sessionUser.expertStatus === "pending_review"
+									? "approved"
+									: sessionUser.expertStatus,
+						}
+					: sessionUser;
+
 			if (requirements.requireVerified && !user.emailVerified) {
 				await reply.code(403).send({ message: "email verification required" });
 				return null;
 			}
-			if (
-				requirements.roles &&
-				!requirements.roles.includes(user.role)
-			) {
+			if (requirements.roles && !requirements.roles.includes(user.role)) {
 				await reply.code(403).send({ message: "forbidden" });
 				return null;
 			}

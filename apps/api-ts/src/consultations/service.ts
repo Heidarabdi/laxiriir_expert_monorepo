@@ -1,12 +1,14 @@
 import { randomUUID } from "node:crypto";
-import { and, asc, count, eq, gt, gte, lt, ne } from "drizzle-orm";
+import type { ExpertStatus } from "@repo/contracts/auth";
+import { and, asc, count, eq, gt, gte, isNull, lt, ne, or } from "drizzle-orm";
 
-import type { AppDatabase } from "../db/postgres.js";
+import { user } from "../db/auth-schema.ts";
 import {
 	availabilitySlots,
 	bookings,
 	experts,
 } from "../db/consultation-schema.ts";
+import type { AppDatabase } from "../db/postgres.js";
 
 export class SlotUnavailableError extends Error {
 	constructor() {
@@ -44,7 +46,9 @@ export class BookingNotFoundError extends Error {
 }
 
 export class BookingChangeConflictError extends Error {
-	constructor(message = "booking can only be changed at least 24 hours before it starts") {
+	constructor(
+		message = "booking can only be changed at least 24 hours before it starts",
+	) {
 		super(message);
 		this.name = "BookingChangeConflictError";
 	}
@@ -83,11 +87,59 @@ function serializeBooking(
 	};
 }
 
+const productionBookableExpertStatuses = [
+	"approved",
+] as const satisfies readonly ExpertStatus[];
+const developmentBookableExpertStatuses = [
+	...productionBookableExpertStatuses,
+	"pending_review",
+] as const satisfies readonly ExpertStatus[];
+
 export class ConsultationService {
 	private readonly database: AppDatabase;
+	private readonly allowPendingExperts: boolean;
 
-	constructor(database: AppDatabase) {
+	constructor(
+		database: AppDatabase,
+		options: { allowPendingExperts?: boolean } = {},
+	) {
 		this.database = database;
+		this.allowPendingExperts = options.allowPendingExperts ?? false;
+	}
+
+	private expertIdentityIsEligible() {
+		return or(
+			isNull(user.id),
+			...this.bookableExpertStatuses().map((status) =>
+				eq(user.expertStatus, status),
+			),
+		);
+	}
+
+	private bookableExpertStatuses(): readonly ExpertStatus[] {
+		return this.allowPendingExperts
+			? developmentBookableExpertStatuses
+			: productionBookableExpertStatuses;
+	}
+
+	private expertStatusCanAcceptBookings(status: string) {
+		return this.bookableExpertStatuses().some(
+			(candidate) => candidate === status,
+		);
+	}
+
+	private async identityCanAcceptBookings(
+		database: Pick<AppDatabase, "select">,
+		expertId: string,
+	) {
+		const [identity] = await database
+			.select({ expertStatus: user.expertStatus })
+			.from(user)
+			.where(eq(user.id, expertId))
+			.limit(1);
+		return (
+			!identity || this.expertStatusCanAcceptBookings(identity.expertStatus)
+		);
 	}
 
 	async seedDemoData(now = new Date()) {
@@ -100,8 +152,7 @@ export class ConsultationService {
 
 		const demoExperts = [
 			{
-				avatarUrl:
-					"https://api.dicebear.com/7.x/avataaars/svg?seed=Marcus",
+				avatarUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Marcus",
 				bio: "Former McKinsey partner helping teams turn difficult growth decisions into focused execution.",
 				category: "Strategy",
 				displayName: "Marcus Thorne",
@@ -156,11 +207,12 @@ export class ConsultationService {
 
 	async listExperts() {
 		const rows = await this.database
-			.select()
+			.select({ expert: experts })
 			.from(experts)
-			.where(eq(experts.active, true))
+			.leftJoin(user, eq(experts.id, user.id))
+			.where(and(eq(experts.active, true), this.expertIdentityIsEligible()))
 			.orderBy(asc(experts.displayName));
-		return rows.map(serializeExpert);
+		return rows.map(({ expert }) => serializeExpert(expert));
 	}
 
 	async listAvailability(expertId: string, after = new Date()) {
@@ -168,11 +220,13 @@ export class ConsultationService {
 			.select({ slot: availabilitySlots })
 			.from(availabilitySlots)
 			.innerJoin(experts, eq(availabilitySlots.expertId, experts.id))
+			.leftJoin(user, eq(experts.id, user.id))
 			.where(
 				and(
 					eq(availabilitySlots.expertId, expertId),
 					eq(availabilitySlots.booked, false),
 					eq(experts.active, true),
+					this.expertIdentityIsEligible(),
 					gt(availabilitySlots.startsAt, after),
 				),
 			)
@@ -201,7 +255,9 @@ export class ConsultationService {
 		now = new Date(),
 	) {
 		if (startsAt <= now) {
-			throw new AvailabilityConflictError("availability must start in the future");
+			throw new AvailabilityConflictError(
+				"availability must start in the future",
+			);
 		}
 
 		return this.database.transaction(async (transaction) => {
@@ -235,7 +291,9 @@ export class ConsultationService {
 		now = new Date(),
 	) {
 		if (startsAt <= now) {
-			throw new AvailabilityConflictError("availability must start in the future");
+			throw new AvailabilityConflictError(
+				"availability must start in the future",
+			);
 		}
 
 		return this.database.transaction(async (transaction) => {
@@ -365,15 +423,17 @@ export class ConsultationService {
 				.where(eq(availabilitySlots.id, availabilitySlotId))
 				.limit(1);
 			if (!candidate) throw new SlotUnavailableError();
+			if (
+				!(await this.identityCanAcceptBookings(transaction, candidate.expertId))
+			) {
+				throw new SlotUnavailableError();
+			}
 
 			const [expert] = await transaction
 				.select()
 				.from(experts)
 				.where(
-					and(
-						eq(experts.id, candidate.expertId),
-						eq(experts.active, true),
-					),
+					and(eq(experts.id, candidate.expertId), eq(experts.active, true)),
 				)
 				.for("update")
 				.limit(1);
@@ -419,9 +479,7 @@ export class ConsultationService {
 			.innerJoin(experts, eq(bookings.expertId, experts.id))
 			.where(eq(bookings.clientUserId, clientUserId))
 			.orderBy(asc(bookings.startsAt));
-		return rows.map(({ booking, expert }) =>
-			serializeBooking(booking, expert),
-		);
+		return rows.map(({ booking, expert }) => serializeBooking(booking, expert));
 	}
 
 	async cancelBooking(
@@ -461,7 +519,7 @@ export class ConsultationService {
 				)
 				.limit(1);
 			if (!booking) throw new BookingNotFoundError();
-		this.assertBookingChangeAllowed(booking, now);
+			this.assertBookingChangeAllowed(booking, now);
 
 			const [cancelled] = await transaction
 				.update(bookings)
@@ -503,20 +561,26 @@ export class ConsultationService {
 				)
 				.limit(1);
 			if (!candidate) throw new BookingNotFoundError();
+			if (
+				!(await this.identityCanAcceptBookings(transaction, candidate.expertId))
+			) {
+				throw new BookingChangeConflictError(
+					"expert is not accepting bookings",
+				);
+			}
 
 			const [expert] = await transaction
 				.select()
 				.from(experts)
 				.where(
-					and(
-						eq(experts.id, candidate.expertId),
-						eq(experts.active, true),
-					),
+					and(eq(experts.id, candidate.expertId), eq(experts.active, true)),
 				)
 				.for("update")
 				.limit(1);
 			if (!expert) {
-				throw new BookingChangeConflictError("expert is not accepting bookings");
+				throw new BookingChangeConflictError(
+					"expert is not accepting bookings",
+				);
 			}
 
 			const [booking] = await transaction
@@ -541,7 +605,7 @@ export class ConsultationService {
 						eq(availabilitySlots.id, availabilitySlotId),
 						eq(availabilitySlots.expertId, booking.expertId),
 						eq(availabilitySlots.booked, false),
-					gte(availabilitySlots.startsAt, policyDeadline),
+						gte(availabilitySlots.startsAt, policyDeadline),
 					),
 				)
 				.returning();

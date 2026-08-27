@@ -1,4 +1,4 @@
-import type { SignInInput, SignUpInput } from "@repo/platform/auth";
+import type { SignInInput, SignUpInput } from "@repo/contracts/auth";
 import { defineStore } from "pinia";
 import type { CurrentUser, PrimaryRole } from "~/lib/auth";
 import { getAuthRedirectPath } from "~/lib/auth";

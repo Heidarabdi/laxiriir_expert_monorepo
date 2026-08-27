@@ -1,12 +1,3 @@
-export interface HealthResponse {
-	status: string;
-	env: string;
-}
-
-export interface PingResponse {
-	message: string;
-}
-
 export const HEALTH_PATH = "/health";
 export const API_V1_PING_PATH = "/api/v1/ping";
 

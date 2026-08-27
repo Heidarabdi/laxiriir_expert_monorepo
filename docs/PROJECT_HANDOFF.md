@@ -1,6 +1,6 @@
 # Project Handoff
 
-Last reviewed: 2026-07-31
+Last reviewed: 2026-08-27
 
 ## Current status
 
@@ -30,8 +30,6 @@ these files securely if they exist:
 - `apps/api-ts/.env.local`
 - `apps/web/.env.local`
 - `apps/mobile/.env.local`
-- the preserved legacy `apps/api/.env.local` only if it contains values you
-  still need to transfer manually
 
 Then run:
 
@@ -64,10 +62,86 @@ Docker.
 
 Production also requires HTTPS URLs and real email delivery credentials.
 
-## Next product work
+## Project progress checklist
 
-1. Expert-managed availability creation and editing.
-2. Booking cancellation and rescheduling.
-3. Payments and webhook reconciliation.
-4. Managed video rooms and access tokens.
-5. Reminders, notifications, ratings, and consultation history.
+This is the working checklist for moving the product forward. Change `[ ]` to
+`[x]` only after the feature is implemented and its relevant checks pass.
+
+### Migration and foundation
+
+- [x] Replace the Go API with the Fastify TypeScript API.
+- [x] Replace SuperTokens with Better Auth.
+- [x] Remove the legacy Go application and its Docker-only auth setup.
+- [x] Move the application database to PostgreSQL/Neon through Drizzle.
+- [x] Preserve legacy user IDs and booking ownership during migration.
+- [x] Add API integration tests, shared API-client tests, and CI validation.
+- [x] Require Node.js 22.18 or newer in the repository and CI.
+
+### Monorepo packages
+
+- [x] Make `packages/contracts` the shared Zod contract source for API, web, and mobile.
+- [x] Move typed HTTP behavior from `packages/platform` to `packages/api-client`.
+- [x] Make shared packages consume `@repo/typescript-config` through package exports.
+- [x] Add real contract, API-client, and environment package tests.
+- [x] Remove the unused Tailwind config package and its placeholder tasks.
+- [x] Add package-boundary validation to CI for supported non-Nuxt workspaces.
+
+### Server/API
+
+- [x] Email/password registration, login, logout, recovery, and sessions.
+- [x] Client, expert, and admin role authorization.
+- [x] Development-only bypass for email verification and expert approval.
+- [x] Expert discovery and availability endpoints.
+- [x] Expert-managed availability creation, editing, and deletion.
+- [x] Client booking creation and booking history.
+- [x] Client booking cancellation and same-expert rescheduling.
+- [x] Admin actions to approve, reject, and suspend an expert.
+- [ ] Add an admin endpoint to list pending, approved, rejected, and suspended experts.
+- [ ] Configure and verify the first bootstrap admin account.
+- [ ] Add expert-owned upcoming and past booking endpoints.
+- [ ] Add expert dashboard summary endpoints.
+- [ ] Add expert profile editing.
+- [ ] Add payment intents and verified webhook reconciliation.
+- [ ] Add authorized video-room creation and access tokens.
+- [ ] Add reminder and notification workers.
+- [ ] Add production monitoring, error reporting, and deployment smoke checks.
+
+### Web application
+
+- [x] Registration, login, logout, verification, and password recovery pages.
+- [x] Role-aware client, expert, and admin route protection.
+- [x] Client dashboard and real expert directory.
+- [x] Availability selection and booking creation.
+- [x] Client session history, cancellation, and rescheduling.
+- [x] Expert availability calendar with create, edit, and delete controls.
+- [ ] Build the admin expert-review table with approve, reject, and suspend actions.
+- [ ] Build the expert workspace navigation and dashboard.
+- [ ] Show an expert's upcoming and past bookings.
+- [ ] Build expert profile editing.
+- [ ] Replace the public `/experts` and `/experts/:id` demo data with API data.
+- [ ] Add payment checkout and payment-result states.
+- [ ] Add the in-app video consultation room.
+- [ ] Add notification and reminder surfaces.
+- [ ] Complete responsive, loading, empty, error, and accessibility states.
+
+### Later product work
+
+- [ ] Ratings and reviews.
+- [ ] Consultation notes and history.
+- [ ] Admin booking, payment, user, and analytics operations.
+- [ ] Complete the mobile client after the web workflows are stable.
+- [ ] Add optional AI-assisted matching and session summaries.
+
+## Immediate next milestone
+
+Complete the admin expert-review flow end to end:
+
+- [ ] Server: list expert applications with status filters.
+- [ ] Server: test listing and moderation authorization.
+- [ ] Web: show expert applications in the admin dashboard.
+- [ ] Web: connect approve, reject, and suspend actions.
+- [ ] Setup: configure and verify a bootstrap admin account.
+
+After that, build the expert booking dashboard, then replace the mock public
+expert pages with real API data. Payments and video follow those operational
+workflows.

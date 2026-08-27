@@ -2,6 +2,8 @@ import { APIError, betterAuth } from "better-auth";
 import { type DB, drizzleAdapter } from "better-auth/adapters/drizzle";
 
 import type { ApiConfig } from "../config.js";
+import { experts } from "../db/consultation-schema.ts";
+import type { AppDatabase } from "../db/postgres.js";
 import * as schema from "../db/schema.js";
 
 async function sendAuthEmail(
@@ -24,7 +26,9 @@ async function sendAuthEmail(
 		});
 
 		if (!response.ok) {
-			throw new Error(`Unable to send authentication email (${response.status})`);
+			throw new Error(
+				`Unable to send authentication email (${response.status})`,
+			);
 		}
 		return;
 	}
@@ -35,6 +39,9 @@ async function sendAuthEmail(
 }
 
 export function createAuth(database: DB, config: ApiConfig) {
+	const requireEmailVerification = config.NODE_ENV !== "development";
+	const applicationDatabase = database as unknown as AppDatabase;
+
 	return betterAuth({
 		advanced: {
 			defaultCookieAttributes: {
@@ -52,6 +59,28 @@ export function createAuth(database: DB, config: ApiConfig) {
 		databaseHooks: {
 			user: {
 				create: {
+					after: async (user) => {
+						if (config.NODE_ENV !== "development" || user.role !== "expert") {
+							return;
+						}
+
+						const now = new Date();
+						await applicationDatabase
+							.insert(experts)
+							.values({
+								active: true,
+								avatarUrl: `https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(user.name)}`,
+								bio: "Development expert profile.",
+								category: "General",
+								createdAt: now,
+								displayName: user.name,
+								hourlyRateCents: 0,
+								id: user.id,
+								title: "Consultation Expert",
+								updatedAt: now,
+							})
+							.onConflictDoNothing({ target: experts.id });
+					},
 					before: async (user) => {
 						if (user.role !== "client" && user.role !== "expert") {
 							throw new APIError("BAD_REQUEST", {
@@ -89,7 +118,7 @@ export function createAuth(database: DB, config: ApiConfig) {
 		},
 		emailAndPassword: {
 			enabled: true,
-			requireEmailVerification: true,
+			requireEmailVerification,
 			sendResetPassword: async ({ token, user }) => {
 				const resetUrl = new URL("/reset-password", config.TRUSTED_ORIGINS[0]);
 				resetUrl.searchParams.set("token", token);
@@ -101,7 +130,7 @@ export function createAuth(database: DB, config: ApiConfig) {
 			},
 		},
 		emailVerification: {
-			sendOnSignUp: true,
+			sendOnSignUp: requireEmailVerification,
 			sendVerificationEmail: async ({ token, user }) => {
 				const verificationUrl = new URL(
 					"/verify-email",

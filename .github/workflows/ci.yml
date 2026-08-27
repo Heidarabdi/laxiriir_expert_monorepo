@@ -35,11 +35,15 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 22.18.0
           cache: pnpm
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Verify workspace boundaries
+        # Turbo boundaries does not yet understand Nuxt aliases or generated Vue files.
+        run: pnpm exec turbo boundaries --filter='!web'
 
       - name: Validate monorepo
         run: pnpm exec turbo run lint typecheck test build

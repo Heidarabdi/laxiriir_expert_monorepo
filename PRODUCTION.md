@@ -293,7 +293,7 @@ Already in place:
 - app-specific env examples
 - environment-aware Turbo hashing
 - Expo development-build setup
-- shared `packages/platform` package
+- shared `packages/contracts` and `packages/api-client` packages
 - Better Auth authentication baseline
 - persisted expert, availability, and booking models
 - PostgreSQL initial schema migration

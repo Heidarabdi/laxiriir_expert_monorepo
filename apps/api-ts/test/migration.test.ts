@@ -32,8 +32,8 @@ describe("legacy Go database migration", () => {
 				bio TEXT NOT NULL,
 				hourly_rate_cents INTEGER NOT NULL CHECK (hourly_rate_cents >= 0),
 				avatar_url TEXT NOT NULL,
-				created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-				updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+				created_at TIMESTAMPTZ NOT NULL,
+				updated_at TIMESTAMPTZ NOT NULL
 			);
 			CREATE TABLE availability_slots (
 				id BIGSERIAL PRIMARY KEY,
@@ -62,10 +62,10 @@ describe("legacy Go database migration", () => {
 				('legacy-client', 'Legacy@Example.com', 'Legacy Client', 'client', 'not_applicable'),
 				('suspended-expert', 'suspended@example.com', 'Suspended Expert', 'expert', 'suspended');
 			INSERT INTO experts
-				(id, display_name, title, category, bio, hourly_rate_cents, avatar_url)
+				(id, display_name, title, category, bio, hourly_rate_cents, avatar_url, created_at, updated_at)
 			VALUES
-				('legacy-expert', 'Legacy Expert', 'Advisor', 'Strategy', 'Legacy profile', 10000, 'https://example.com/avatar'),
-				('suspended-expert', 'Suspended Expert', 'Advisor', 'Strategy', 'Suspended profile', 10000, 'https://example.com/suspended-avatar');
+				('legacy-expert', 'Legacy Expert', 'Advisor', 'Strategy', 'Legacy profile', 10000, 'https://example.com/avatar', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+				('suspended-expert', 'Suspended Expert', 'Advisor', 'Strategy', 'Suspended profile', 10000, 'https://example.com/suspended-avatar', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 			INSERT INTO availability_slots
 				(expert_id, starts_at, ends_at)
 			VALUES ('legacy-expert', '2030-01-01T10:00:00Z', '2030-01-01T11:00:00Z');
@@ -92,6 +92,17 @@ describe("legacy Go database migration", () => {
 		const suspendedExperts = await client.query<{ active: boolean }>(
 			`SELECT active FROM experts WHERE id = 'suspended-expert'`,
 		);
+		const expertTimestampDefaults = await client.query<{
+			column_default: string | null;
+			column_name: string;
+		}>(`
+			SELECT column_name, column_default
+			FROM information_schema.columns
+			WHERE table_schema = 'public'
+				AND table_name = 'experts'
+				AND column_name IN ('created_at', 'updated_at')
+			ORDER BY column_name
+		`);
 
 		expect(migratedUsers.rows).toEqual([
 			{ email: "legacy@example.com", id: "legacy-client" },
@@ -100,6 +111,10 @@ describe("legacy Go database migration", () => {
 			{ client_user_id: "legacy-client" },
 		]);
 		expect(suspendedExperts.rows).toEqual([{ active: false }]);
+		expect(expertTimestampDefaults.rows).toEqual([
+			{ column_default: "now()", column_name: "created_at" },
+			{ column_default: "now()", column_name: "updated_at" },
+		]);
 
 		const config = createTestConfig();
 		const auth = createAuth(database, config);
@@ -118,7 +133,10 @@ describe("legacy Go database migration", () => {
 		const resetTokens = await client.query<{ identifier: string }>(
 			`SELECT identifier FROM verification WHERE identifier LIKE 'reset-password:%'`,
 		);
-		const token = resetTokens.rows[0]?.identifier.replace("reset-password:", "");
+		const token = resetTokens.rows[0]?.identifier.replace(
+			"reset-password:",
+			"",
+		);
 		expect(token).toBeTruthy();
 		const reset = await server.inject({
 			method: "POST",

@@ -51,16 +51,17 @@ Laxiriir Expert is designed as an end-to-end consultation platform where clients
 - `apps/api-ts`: Fastify and TypeScript API with Better Auth and Drizzle
 - `apps/web`: Nuxt 4 frontend with Tailwind CSS v4
 - `apps/mobile`: Expo / React Native client
+- `packages/contracts`: shared Zod request/response schemas and inferred types
+- `packages/api-client`: shared typed HTTP clients and URL helpers
 - `packages/env`: shared environment parsing and defaults
-- `packages/platform`: shared API contracts and URL helpers
-- `packages/config/*`: shared repository configuration packages
+- `packages/config/typescript`: shared TypeScript configuration
 
 ## Monorepo Tooling
 
 - Package manager: `pnpm`
 - Task runner: `turbo`
 - Formatter and linter: `biome`
-- Minimum Node.js: `22`
+- Minimum Node.js: `22.18`
 
 Detailed production planning lives in `PRODUCTION.md`.
 
@@ -177,8 +178,8 @@ What already exists:
 - embedded PostgreSQL integration tests and PostgreSQL for development/production
 - PostgreSQL schema migration for deployed environments
 - GitHub Actions validation for lint, type checks, tests, and builds
-- mobile status screen wired to shared env and platform helpers
-- API integration tests and web API-client tests
+- mobile status screen wired to the shared environment and API-client packages
+- API integration tests and shared API-client tests
 - a Fastify/TypeScript API with Better Auth, Drizzle, OpenAPI, and embedded PostgreSQL tests
 
 What still needs product work:
