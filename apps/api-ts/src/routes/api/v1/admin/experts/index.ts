@@ -1,6 +1,10 @@
+import {
+	expertStatusActionParamsSchema,
+	expertStatusUpdateResponseSchema,
+} from "@repo/contracts/auth";
+import { errorResponseSchema } from "@repo/contracts/consultations";
 import { and, eq } from "drizzle-orm";
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
-import { z } from "zod";
 
 import { user as userTable } from "../../../../../db/auth-schema.ts";
 import { experts } from "../../../../../db/consultation-schema.ts";
@@ -17,16 +21,6 @@ const messageByAction = {
 	suspend: "expert suspended",
 } as const;
 
-const profileSchema = z.object({
-	createdAt: z.string().datetime(),
-	displayName: z.string(),
-	email: z.string().email(),
-	expertStatus: z.enum(["approved", "rejected", "suspended"]),
-	identityUserId: z.string(),
-	primaryRole: z.literal("expert"),
-	updatedAt: z.string().datetime(),
-});
-
 const adminExpertRoutes: FastifyPluginAsyncZod = async (fastify) => {
 	if (!fastify.database || !("requireSession" in fastify)) return;
 	const database = fastify.database;
@@ -35,13 +29,10 @@ const adminExpertRoutes: FastifyPluginAsyncZod = async (fastify) => {
 		"/:id/:action",
 		{
 			schema: {
-				params: z.object({
-					action: z.enum(["approve", "reject", "suspend"]),
-					id: z.string().trim().min(1),
-				}),
+				params: expertStatusActionParamsSchema,
 				response: {
-					200: z.object({ message: z.string(), profile: profileSchema }),
-					404: z.object({ message: z.string() }),
+					200: expertStatusUpdateResponseSchema,
+					404: errorResponseSchema,
 				},
 			},
 		},
@@ -66,6 +57,7 @@ const adminExpertRoutes: FastifyPluginAsyncZod = async (fastify) => {
 				if (!identity) return null;
 
 				if (request.params.action === "approve") {
+					const now = new Date();
 					await transaction
 						.insert(experts)
 						.values({
@@ -73,17 +65,18 @@ const adminExpertRoutes: FastifyPluginAsyncZod = async (fastify) => {
 							avatarUrl: `https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(identity.name)}`,
 							bio: "Newly approved expert profile.",
 							category: "General",
+							createdAt: now,
 							displayName: identity.name,
 							hourlyRateCents: 0,
 							id: identity.id,
 							title: "Consultation Expert",
-							updatedAt: new Date(),
+							updatedAt: now,
 						})
 						.onConflictDoUpdate({
 							set: {
 								active: true,
 								displayName: identity.name,
-								updatedAt: new Date(),
+								updatedAt: now,
 							},
 							target: experts.id,
 						});

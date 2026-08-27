@@ -1,5 +1,5 @@
 {
-	"name": "@repo/env",
+	"name": "@repo/api-client",
 	"version": "1.0.0",
 	"private": true,
 	"type": "module",
@@ -11,11 +11,13 @@
 		"typecheck": "tsc --noEmit"
 	},
 	"exports": {
-		"./web": "./src/web.ts",
-		"./native": "./src/native.ts"
+		"./auth": "./src/auth.ts",
+		"./consultations": "./src/consultations.ts",
+		"./health": "./src/health.ts",
+		"./request": "./src/request.ts"
 	},
 	"dependencies": {
-		"zod": "catalog:"
+		"@repo/contracts": "workspace:*"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "catalog:",

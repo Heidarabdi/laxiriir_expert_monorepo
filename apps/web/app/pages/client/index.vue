@@ -2,7 +2,7 @@
 import type {
 	BookingDetail,
 	ExpertSummary,
-} from "@repo/platform/consultations";
+} from "@repo/contracts/consultations";
 import { Calendar, Clock, Users } from "lucide-vue-next";
 
 definePageMeta({

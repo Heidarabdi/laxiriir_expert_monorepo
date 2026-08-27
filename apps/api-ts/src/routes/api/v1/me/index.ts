@@ -1,23 +1,5 @@
+import { currentUserSchema } from "@repo/contracts/auth";
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
-import { z } from "zod";
-
-const currentUserSchema = z.object({
-	allowedAreas: z.array(
-		z.enum(["admin", "client", "expert", "expert_pending"]),
-	),
-	displayName: z.string(),
-	email: z.string().email(),
-	emailVerified: z.boolean(),
-	expertStatus: z.enum([
-		"approved",
-		"not_applicable",
-		"pending_review",
-		"rejected",
-		"suspended",
-	]),
-	primaryRole: z.enum(["admin", "client", "expert"]),
-	userId: z.string(),
-});
 
 const meRoutes: FastifyPluginAsyncZod = async (fastify) => {
 	if (!("requireSession" in fastify)) {
@@ -40,9 +22,7 @@ const meRoutes: FastifyPluginAsyncZod = async (fastify) => {
 					? (["admin"] as const)
 					: user.role === "expert"
 						? ([
-								user.expertStatus === "approved"
-									? "expert"
-									: "expert_pending",
+								user.expertStatus === "approved" ? "expert" : "expert_pending",
 							] as const)
 						: (["client"] as const);
 

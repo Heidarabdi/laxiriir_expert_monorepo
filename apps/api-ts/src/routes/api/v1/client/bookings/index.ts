@@ -1,5 +1,11 @@
+import {
+	bookingListResponseSchema,
+	bookingParamsSchema,
+	bookingResponseSchema,
+	createBookingInputSchema,
+	errorResponseSchema,
+} from "@repo/contracts/consultations";
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
-import { z } from "zod";
 
 import {
 	BookingChangeConflictError,
@@ -7,24 +13,21 @@ import {
 	ConsultationService,
 	SlotUnavailableError,
 } from "../../../../../consultations/service.ts";
-import {
-	bookingParamsSchema,
-	bookingSchema,
-	errorSchema,
-} from "./schema.ts";
 
 const bookingRoutes: FastifyPluginAsyncZod = async (fastify) => {
 	if (!fastify.database || !("requireSession" in fastify)) {
 		return;
 	}
 
-	const consultations = new ConsultationService(fastify.database);
+	const consultations = new ConsultationService(fastify.database, {
+		allowPendingExperts: fastify.config.NODE_ENV === "development",
+	});
 
 	fastify.get(
 		"",
 		{
 			schema: {
-				response: { 200: z.object({ bookings: z.array(bookingSchema) }) },
+				response: { 200: bookingListResponseSchema },
 			},
 		},
 		async (request, reply) => {
@@ -41,10 +44,10 @@ const bookingRoutes: FastifyPluginAsyncZod = async (fastify) => {
 		"",
 		{
 			schema: {
-				body: z.object({ availabilitySlotId: z.number().int().positive() }),
+				body: createBookingInputSchema,
 				response: {
-					201: z.object({ booking: bookingSchema }),
-					409: errorSchema,
+					201: bookingResponseSchema,
+					409: errorResponseSchema,
 				},
 			},
 		},
@@ -76,9 +79,9 @@ const bookingRoutes: FastifyPluginAsyncZod = async (fastify) => {
 			schema: {
 				params: bookingParamsSchema,
 				response: {
-					200: z.object({ booking: bookingSchema }),
-					404: errorSchema,
-					409: errorSchema,
+					200: bookingResponseSchema,
+					404: errorResponseSchema,
+					409: errorResponseSchema,
 				},
 			},
 		},
@@ -111,12 +114,12 @@ const bookingRoutes: FastifyPluginAsyncZod = async (fastify) => {
 		"/:id",
 		{
 			schema: {
-				body: z.object({ availabilitySlotId: z.number().int().positive() }),
+				body: createBookingInputSchema,
 				params: bookingParamsSchema,
 				response: {
-					200: z.object({ booking: bookingSchema }),
-					404: errorSchema,
-					409: errorSchema,
+					200: bookingResponseSchema,
+					404: errorResponseSchema,
+					409: errorResponseSchema,
 				},
 			},
 		},

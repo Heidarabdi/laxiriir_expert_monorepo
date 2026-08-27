@@ -9,6 +9,10 @@
 		"test": "node -e \"process.exit(0)\"",
 		"typecheck": "node -e \"process.exit(0)\""
 	},
+	"exports": {
+		"./base.json": "./base.json",
+		"./react-library.json": "./react-library.json"
+	},
 	"license": "MIT",
 	"publishConfig": {
 		"access": "public"

@@ -3,8 +3,8 @@ import { getWebHealthUrl } from "./api";
 
 describe("getWebHealthUrl", () => {
 	it("joins the configured API base URL with the health route", () => {
-		expect(getWebHealthUrl("http://localhost:8080/")).toBe(
-			"http://localhost:8080/health",
+		expect(getWebHealthUrl("http://localhost:8081/")).toBe(
+			"http://localhost:8081/health",
 		);
 	});
 });

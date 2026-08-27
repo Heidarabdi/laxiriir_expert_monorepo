@@ -10,7 +10,7 @@ catalog:
   "@types/react": ~19.2.2
 
   # Validation / Env
-  zod: ^3.24.2
+  zod: ^4.4.3
   dotenv: ^16.4.7
   vitest: ^3.2.4
 

@@ -1,5 +1,11 @@
+import {
+	availabilityInputSchema,
+	availabilityListResponseSchema,
+	availabilityParamsSchema,
+	availabilityResponseSchema,
+	emptyResponseSchema,
+} from "@repo/contracts/consultations";
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
-import { z } from "zod";
 
 import {
 	AvailabilityConflictError,
@@ -7,11 +13,6 @@ import {
 	BookedAvailabilityError,
 	ConsultationService,
 } from "../../../../../consultations/service.ts";
-import {
-	availabilityInputSchema,
-	availabilityParamsSchema,
-	availabilitySlotSchema,
-} from "./schema.ts";
 
 const expertAvailabilityRoutes: FastifyPluginAsyncZod = async (fastify) => {
 	if (!fastify.database || !("requireSession" in fastify)) return;
@@ -51,7 +52,7 @@ const expertAvailabilityRoutes: FastifyPluginAsyncZod = async (fastify) => {
 		{
 			schema: {
 				response: {
-					200: z.object({ slots: z.array(availabilitySlotSchema) }),
+					200: availabilityListResponseSchema,
 				},
 			},
 		},
@@ -67,7 +68,7 @@ const expertAvailabilityRoutes: FastifyPluginAsyncZod = async (fastify) => {
 		{
 			schema: {
 				body: availabilityInputSchema,
-				response: { 201: z.object({ slot: availabilitySlotSchema }) },
+				response: { 201: availabilityResponseSchema },
 			},
 		},
 		async (request, reply) => {
@@ -92,7 +93,7 @@ const expertAvailabilityRoutes: FastifyPluginAsyncZod = async (fastify) => {
 			schema: {
 				body: availabilityInputSchema,
 				params: availabilityParamsSchema,
-				response: { 200: z.object({ slot: availabilitySlotSchema }) },
+				response: { 200: availabilityResponseSchema },
 			},
 		},
 		async (request, reply) => {
@@ -118,7 +119,7 @@ const expertAvailabilityRoutes: FastifyPluginAsyncZod = async (fastify) => {
 		{
 			schema: {
 				params: availabilityParamsSchema,
-				response: { 204: z.null() },
+				response: { 204: emptyResponseSchema },
 			},
 		},
 		async (request, reply) => {

@@ -1,7 +1,10 @@
 import { eq } from "drizzle-orm";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
+import { ConsultationService } from "../src/consultations/service.ts";
 import { user } from "../src/db/auth-schema.js";
+import { experts } from "../src/db/consultation-schema.ts";
+import type { AppDatabase } from "../src/db/postgres.js";
 import { createTestApplication } from "./application.js";
 
 const closeTasks: Array<() => Promise<unknown>> = [];
@@ -77,12 +80,178 @@ describe("authentication", () => {
 		expect(response.json()).toMatchObject({
 			user: {
 				email: "expert@example.com",
+				expertStatus: "pending_review",
 				role: "expert",
 			},
 		});
 		expect(String(response.headers["set-cookie"])).toContain(
 			"better-auth.session_token=",
 		);
+	});
+
+	it("does not require email verification in development", async () => {
+		const application = await createTestApplication({
+			NODE_ENV: "development",
+		});
+		closeTasks.push(() => application.close());
+		const credentials = {
+			email: "development-user@example.com",
+			password: "correct-horse-battery-staple",
+		};
+		const signUp = await application.server.inject({
+			method: "POST",
+			payload: {
+				...credentials,
+				name: "Development User",
+				role: "client",
+			},
+			url: "/api/auth/sign-up/email",
+		});
+		expect(signUp.statusCode).toBe(200);
+		const signUpCookie = signUp.cookies
+			.map((cookie) => `${cookie.name}=${cookie.value}`)
+			.join("; ");
+		const signedUpUser = await application.server.inject({
+			headers: { cookie: signUpCookie },
+			method: "GET",
+			url: "/api/v1/me",
+		});
+		expect(signedUpUser.statusCode).toBe(200);
+		expect(signedUpUser.json().emailVerified).toBe(true);
+
+		const signIn = await application.server.inject({
+			method: "POST",
+			payload: credentials,
+			url: "/api/auth/sign-in/email",
+		});
+		expect(signIn.statusCode).toBe(200);
+
+		const bookings = await application.server.inject({
+			headers: {
+				cookie: signIn.cookies
+					.map((cookie) => `${cookie.name}=${cookie.value}`)
+					.join("; "),
+			},
+			method: "GET",
+			url: "/api/v1/client/bookings",
+		});
+		expect(bookings.statusCode).toBe(200);
+		const currentUser = await application.server.inject({
+			headers: {
+				cookie: signIn.cookies
+					.map((cookie) => `${cookie.name}=${cookie.value}`)
+					.join("; "),
+			},
+			method: "GET",
+			url: "/api/v1/me",
+		});
+		expect(currentUser.json().emailVerified).toBe(true);
+	});
+
+	it("auto-approves and provisions experts in development", async () => {
+		const application = await createTestApplication({
+			NODE_ENV: "development",
+		});
+		closeTasks.push(() => application.close());
+		const credentials = {
+			email: "development-expert@example.com",
+			password: "correct-horse-battery-staple",
+		};
+		await application.server.inject({
+			method: "POST",
+			payload: {
+				...credentials,
+				name: "Development Expert",
+				role: "expert",
+			},
+			url: "/api/auth/sign-up/email",
+		});
+		const signIn = await application.server.inject({
+			method: "POST",
+			payload: credentials,
+			url: "/api/auth/sign-in/email",
+		});
+		const cookie = signIn.cookies
+			.map((item) => `${item.name}=${item.value}`)
+			.join("; ");
+
+		const currentUser = await application.server.inject({
+			headers: { cookie },
+			method: "GET",
+			url: "/api/v1/me",
+		});
+		expect(currentUser.json()).toMatchObject({
+			allowedAreas: ["expert"],
+			expertStatus: "approved",
+			primaryRole: "expert",
+		});
+		const { userId } = currentUser.json<{ userId: string }>();
+		await application.database
+			.update(experts)
+			.set({ displayName: "Custom Development Profile" })
+			.where(eq(experts.id, userId));
+		await application.server.inject({
+			headers: { cookie },
+			method: "GET",
+			url: "/api/v1/me",
+		});
+		const [profile] = await application.database
+			.select({ displayName: experts.displayName })
+			.from(experts)
+			.where(eq(experts.id, userId));
+		expect(profile?.displayName).toBe("Custom Development Profile");
+
+		const startsAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+		const availability = await application.server.inject({
+			headers: { cookie },
+			method: "POST",
+			payload: {
+				endsAt: new Date(startsAt.getTime() + 60 * 60 * 1000).toISOString(),
+				startsAt: startsAt.toISOString(),
+			},
+			url: "/api/v1/expert/availability",
+		});
+		expect(availability.statusCode).toBe(201);
+
+		const developmentAvailability = await application.server.inject({
+			method: "GET",
+			url: `/api/v1/experts/${userId}/availability`,
+		});
+		expect(developmentAvailability.json().slots).toHaveLength(1);
+		const productionView = new ConsultationService(
+			application.database as unknown as AppDatabase,
+		);
+		expect(await productionView.listExperts()).not.toContainEqual(
+			expect.objectContaining({ id: userId }),
+		);
+		expect(await productionView.listAvailability(userId, new Date(0))).toEqual(
+			[],
+		);
+	});
+
+	it("requires email verification outside development", async () => {
+		const application = await createTestApplication();
+		closeTasks.push(() => application.close());
+		const credentials = {
+			email: "unverified-user@example.com",
+			password: "correct-horse-battery-staple",
+		};
+		await application.server.inject({
+			method: "POST",
+			payload: {
+				...credentials,
+				name: "Unverified User",
+				role: "client",
+			},
+			url: "/api/auth/sign-up/email",
+		});
+
+		const signIn = await application.server.inject({
+			method: "POST",
+			payload: credentials,
+			url: "/api/auth/sign-in/email",
+		});
+		expect(signIn.statusCode).toBe(403);
 	});
 
 	it("rejects roles outside client and expert", async () => {
@@ -195,7 +364,10 @@ describe("authentication", () => {
 	});
 
 	it("uses secure cross-site session cookies in production", async () => {
-		vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(null, { status: 202 })));
+		const sendEmail = vi
+			.fn()
+			.mockResolvedValue(new Response(null, { status: 202 }));
+		vi.stubGlobal("fetch", sendEmail);
 		const application = await createTestApplication({
 			BETTER_AUTH_SECRET: "production-secret-that-is-at-least-32-characters",
 			BETTER_AUTH_URL: "https://api.example.com",
@@ -220,6 +392,7 @@ describe("authentication", () => {
 			},
 			url: "/api/auth/sign-up/email",
 		});
+		expect(sendEmail).toHaveBeenCalledOnce();
 		await application.database
 			.update(user)
 			.set({ emailVerified: true })

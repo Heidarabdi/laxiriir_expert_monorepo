@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { AvailabilitySlot } from "@repo/platform/consultations";
+import type { AvailabilitySlot } from "@repo/contracts/consultations";
 import { CalendarDays, Clock3, Pencil, Plus, Trash2, X } from "lucide-vue-next";
 
 definePageMeta({

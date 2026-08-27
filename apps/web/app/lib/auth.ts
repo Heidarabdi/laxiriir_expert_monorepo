@@ -1,9 +1,9 @@
 import type {
 	CurrentUserResponse,
 	ExpertStatus,
-	PublicRegistrationRole,
 	PrimaryRole,
-} from "@repo/platform/auth";
+	PublicRegistrationRole,
+} from "@repo/contracts/auth";
 
 export type { ExpertStatus, PrimaryRole, PublicRegistrationRole };
 export type CurrentUser = CurrentUserResponse;

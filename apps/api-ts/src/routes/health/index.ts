@@ -1,10 +1,5 @@
+import { healthResponseSchema } from "@repo/contracts/health";
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
-import { z } from "zod";
-
-const healthResponseSchema = z.object({
-	env: z.enum(["development", "production", "test"]),
-	status: z.literal("ok"),
-});
 
 const healthRoutes: FastifyPluginAsyncZod = async (fastify) => {
 	fastify.get(

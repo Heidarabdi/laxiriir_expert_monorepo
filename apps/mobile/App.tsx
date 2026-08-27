@@ -1,5 +1,6 @@
+import { getHealthUrl } from "@repo/api-client/health";
+import type { HealthResponse } from "@repo/contracts/health";
 import { nativeEnv } from "@repo/env/native";
-import { getHealthUrl, type HealthResponse } from "@repo/platform/health";
 import { useQuery } from "@tanstack/react-query";
 import { StatusBar } from "expo-status-bar";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";

@@ -2,7 +2,7 @@
 import type {
 	AvailabilitySlot,
 	ExpertSummary,
-} from "@repo/platform/consultations";
+} from "@repo/contracts/consultations";
 import { CalendarDays, Star } from "lucide-vue-next";
 
 definePageMeta({

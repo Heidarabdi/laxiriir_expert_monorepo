@@ -2,7 +2,7 @@
 import type {
 	AvailabilitySlot,
 	BookingDetail,
-} from "@repo/platform/consultations";
+} from "@repo/contracts/consultations";
 import { Calendar, Clock, RefreshCw, X } from "lucide-vue-next";
 
 definePageMeta({
@@ -83,7 +83,11 @@ function replaceBooking(updated: BookingDetail) {
 }
 
 async function cancelBooking(booking: BookingDetail) {
-	if (!window.confirm("Cancel this session? The time will become available again.")) {
+	if (
+		!window.confirm(
+			"Cancel this session? The time will become available again.",
+		)
+	) {
 		return;
 	}
 	actionBookingId.value = booking.id;
@@ -119,8 +123,7 @@ async function openReschedule(booking: BookingDetail) {
 		if (reschedulingBookingId.value === requestBookingId) {
 			replacementSlots.value = response.slots.filter(
 				(slot) =>
-					new Date(slot.startsAt).getTime() - Date.now() >=
-					24 * 60 * 60 * 1000,
+					new Date(slot.startsAt).getTime() - Date.now() >= 24 * 60 * 60 * 1000,
 			);
 		}
 	} catch (error) {

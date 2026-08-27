@@ -21,6 +21,17 @@ export default defineNuxtConfig({
 		},
 	},
 	vite: {
+		optimizeDeps: {
+			include: [
+				"@vue/devtools-core",
+				"@vue/devtools-kit",
+				"@vueuse/core",
+				"class-variance-authority",
+				"clsx",
+				"reka-ui",
+				"tailwind-merge",
+			],
+		},
 		plugins: [tailwindcss()],
 	},
 });
