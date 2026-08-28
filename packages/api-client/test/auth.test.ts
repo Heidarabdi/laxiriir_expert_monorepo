@@ -12,6 +12,7 @@ describe("authentication API client", () => {
 		});
 
 		await client.getCurrentUser();
+		await client.listAdminExperts();
 		await client.approveExpert("expert/one");
 
 		expect(fetch).toHaveBeenNthCalledWith(
@@ -24,6 +25,14 @@ describe("authentication API client", () => {
 		);
 		expect(fetch).toHaveBeenNthCalledWith(
 			2,
+			"https://api.example.com/api/v1/admin/experts",
+			{
+				credentials: "include",
+				headers: { "x-client": "web" },
+			},
+		);
+		expect(fetch).toHaveBeenNthCalledWith(
+			3,
 			"https://api.example.com/api/v1/admin/experts/expert%2Fone/approve",
 			{
 				credentials: "include",

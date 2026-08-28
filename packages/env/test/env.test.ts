@@ -6,12 +6,12 @@ describe("client environment", () => {
 		vi.resetModules();
 	});
 
-	it("reads the web API URL from the Nuxt public environment", async () => {
-		vi.stubEnv("NUXT_PUBLIC_API_BASE_URL", "https://api.example.com");
+	it("reads the web API URL from the Vite public environment", async () => {
+		vi.stubEnv("VITE_API_BASE_URL", "https://api.example.com");
 
 		const { webEnv } = await import("../src/web");
 
-		expect(webEnv.NUXT_PUBLIC_API_BASE_URL).toBe("https://api.example.com");
+		expect(webEnv.VITE_API_BASE_URL).toBe("https://api.example.com");
 	});
 
 	it("rejects an invalid Expo public API URL", async () => {

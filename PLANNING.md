@@ -40,7 +40,7 @@ The product must work as one coherent system across:
 ## Authentication Direction
 
 - Better Auth is the identity and session system for the project.
-- The project keeps custom Nuxt auth pages and uses Better Auth for sessions, email-password, email verification, and recovery.
+- The project keeps custom TanStack Start auth pages and uses Better Auth for sessions, email-password, email verification, and recovery.
 - The Fastify API owns application authorization, app profiles, role enforcement, and expert approval status.
 - Google sign-in can be added through Better Auth when provider secrets are available.
 - The app database remains the source of truth for `primary_role` and `expert_status`.
@@ -419,7 +419,7 @@ What does not exist yet:
 
 - real payment integration
 - real live session infrastructure
-- operational expert and admin dashboards
+- expert-owned booking lists and dashboard summary endpoints
 - reminder and notification workers
 - staging infrastructure
 

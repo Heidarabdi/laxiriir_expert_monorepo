@@ -49,7 +49,7 @@ Laxiriir Expert is designed as an end-to-end consultation platform where clients
 ## Repository Structure
 
 - `apps/api-ts`: Fastify and TypeScript API with Better Auth and Drizzle
-- `apps/web`: Nuxt 4 frontend with Tailwind CSS v4
+- `apps/web`: TanStack Start React frontend with Router, Query, Form, shadcn/ui, and Tailwind CSS v4
 - `apps/mobile`: Expo / React Native client
 - `packages/contracts`: shared Zod request/response schemas and inferred types
 - `packages/api-client`: shared typed HTTP clients and URL helpers
@@ -118,7 +118,7 @@ Current variables:
 
 - `PORT`
 - `DATABASE_URL`
-- `NUXT_PUBLIC_API_BASE_URL`
+- `VITE_API_BASE_URL`
 - `EXPO_PUBLIC_API_BASE_URL`
 
 ## Production Plan
@@ -126,7 +126,7 @@ Current variables:
 Recommended production topology for the current stack:
 
 - `apps/api-ts`: deploy as a Node.js service on a container or VM platform behind HTTPS
-- `apps/web`: deploy Nuxt as a separate frontend application and point it at the API through `NUXT_PUBLIC_API_BASE_URL`
+- `apps/web`: deploy the TanStack Start server output separately and point it at the API through `VITE_API_BASE_URL`
 - `apps/mobile`: use Expo EAS for development builds, preview builds, and store-ready production builds
 - Video: start with a managed provider such as LiveKit Cloud instead of self-hosting WebRTC on day one
 - Database: PostgreSQL
@@ -137,7 +137,7 @@ Recommended production topology for the current stack:
 Suggested production services by responsibility:
 
 - API hosting: Fly.io, Railway, Render, or another container-capable host
-- Web hosting: Nuxt-capable Node host
+- Web hosting: Node host compatible with the TanStack Start server output
 - Database: managed PostgreSQL
 - Object storage: S3-compatible storage
 - Video: LiveKit Cloud
@@ -157,7 +157,7 @@ The mobile app is now configured to prefer development builds over Expo Go.
 
 Turborepo task hashing is environment-aware per app:
 
-- web tasks hash `NUXT_PUBLIC_API_BASE_URL`
+- web tasks hash `VITE_API_BASE_URL`
 - mobile tasks hash `EXPO_PUBLIC_API_BASE_URL`
 - API tasks hash its environment files and source inputs
 
@@ -187,7 +187,7 @@ What still needs product work:
 - payments
 - embedded video sessions
 - reminders and notifications
-- operational admin and expert dashboards
+- expert-owned booking views and profile editing
 - ratings, reviews, and consultation history
 - AI-assisted workflows
 

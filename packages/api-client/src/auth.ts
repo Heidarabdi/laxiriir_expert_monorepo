@@ -1,4 +1,5 @@
 import type {
+	AdminExpertListResponse,
 	CurrentUserResponse,
 	ExpertStatusAction,
 	ExpertStatusUpdateResponse,
@@ -27,6 +28,9 @@ export function createAuthClient(options: ApiClientOptions) {
 		);
 
 	return {
+		listAdminExperts() {
+			return request<AdminExpertListResponse>("/api/v1/admin/experts");
+		},
 		approveExpert(identityUserId: string) {
 			return updateExpertStatus(identityUserId, "approve");
 		},

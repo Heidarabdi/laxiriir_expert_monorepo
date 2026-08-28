@@ -54,6 +54,23 @@ describe("admin expert moderation", () => {
 			.map((item) => `${item.name}=${item.value}`)
 			.join("; ");
 
+		const listResponse = await application.server.inject({
+			headers: { cookie },
+			method: "GET",
+			url: "/api/v1/admin/experts",
+		});
+
+		expect(listResponse.statusCode).toBe(200);
+		expect(listResponse.json()).toMatchObject({
+			experts: [
+				{
+					displayName: "Pending Expert",
+					expertStatus: "pending_review",
+					identityUserId: expertId,
+				},
+			],
+		});
+
 		const response = await application.server.inject({
 			headers: { cookie },
 			method: "PATCH",

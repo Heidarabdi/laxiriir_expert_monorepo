@@ -48,6 +48,23 @@ export const accountProfileSummarySchema = z.object({
 });
 export type AccountProfileSummary = z.infer<typeof accountProfileSummarySchema>;
 
+export const adminExpertSummarySchema = z.object({
+	createdAt: z.string().datetime(),
+	displayName: z.string(),
+	email: z.string().email(),
+	expertStatus: z.enum(["pending_review", "approved", "rejected", "suspended"]),
+	identityUserId: z.string(),
+	updatedAt: z.string().datetime(),
+});
+export type AdminExpertSummary = z.infer<typeof adminExpertSummarySchema>;
+
+export const adminExpertListResponseSchema = z.object({
+	experts: z.array(adminExpertSummarySchema),
+});
+export type AdminExpertListResponse = z.infer<
+	typeof adminExpertListResponseSchema
+>;
+
 export const currentUserSchema = z.object({
 	allowedAreas: z.array(allowedAreaSchema),
 	displayName: z.string(),

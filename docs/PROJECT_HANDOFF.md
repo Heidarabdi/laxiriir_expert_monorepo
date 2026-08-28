@@ -1,6 +1,6 @@
 # Project Handoff
 
-Last reviewed: 2026-08-27
+Last reviewed: 2026-08-28
 
 ## Current status
 
@@ -12,7 +12,9 @@ reset their credentials in Better Auth.
 
 Current stack:
 
-- Nuxt 4 web application
+- TanStack Start React web application
+- TanStack Router, Query, and Form
+- shadcn/ui generated components on Tailwind CSS v4
 - Expo mobile application
 - Fastify 5 TypeScript API
 - Better Auth for email/password, verification, recovery, and cookie sessions
@@ -84,7 +86,8 @@ This is the working checklist for moving the product forward. Change `[ ]` to
 - [x] Make shared packages consume `@repo/typescript-config` through package exports.
 - [x] Add real contract, API-client, and environment package tests.
 - [x] Remove the unused Tailwind config package and its placeholder tasks.
-- [x] Add package-boundary validation to CI for supported non-Nuxt workspaces.
+- [x] Add package-boundary validation to CI for all workspaces.
+- [x] Replace Nuxt with TanStack Start and remove the legacy web source.
 
 ### Server/API
 
@@ -96,7 +99,7 @@ This is the working checklist for moving the product forward. Change `[ ]` to
 - [x] Client booking creation and booking history.
 - [x] Client booking cancellation and same-expert rescheduling.
 - [x] Admin actions to approve, reject, and suspend an expert.
-- [ ] Add an admin endpoint to list pending, approved, rejected, and suspended experts.
+- [x] Add an admin endpoint to list pending, approved, rejected, and suspended experts.
 - [ ] Configure and verify the first bootstrap admin account.
 - [ ] Add expert-owned upcoming and past booking endpoints.
 - [ ] Add expert dashboard summary endpoints.
@@ -114,11 +117,11 @@ This is the working checklist for moving the product forward. Change `[ ]` to
 - [x] Availability selection and booking creation.
 - [x] Client session history, cancellation, and rescheduling.
 - [x] Expert availability calendar with create, edit, and delete controls.
-- [ ] Build the admin expert-review table with approve, reject, and suspend actions.
-- [ ] Build the expert workspace navigation and dashboard.
+- [x] Build the admin expert-review table with approve, reject, and suspend actions.
+- [x] Build the expert workspace navigation and dashboard.
 - [ ] Show an expert's upcoming and past bookings.
 - [ ] Build expert profile editing.
-- [ ] Replace the public `/experts` and `/experts/:id` demo data with API data.
+- [x] Replace the public `/experts` and `/experts/:id` demo data with API data.
 - [ ] Add payment checkout and payment-result states.
 - [ ] Add the in-app video consultation room.
 - [ ] Add notification and reminder surfaces.
@@ -134,14 +137,11 @@ This is the working checklist for moving the product forward. Change `[ ]` to
 
 ## Immediate next milestone
 
-Complete the admin expert-review flow end to end:
+The API and web migrations are complete. The next milestone is the remaining
+consultation product infrastructure:
 
-- [ ] Server: list expert applications with status filters.
-- [ ] Server: test listing and moderation authorization.
-- [ ] Web: show expert applications in the admin dashboard.
-- [ ] Web: connect approve, reject, and suspend actions.
 - [ ] Setup: configure and verify a bootstrap admin account.
-
-After that, build the expert booking dashboard, then replace the mock public
-expert pages with real API data. Payments and video follow those operational
-workflows.
+- [ ] Server and web: add payment intents and verified webhook reconciliation.
+- [ ] Server and web: add authorized video rooms and access tokens.
+- [ ] Server: add expert-owned booking and dashboard-summary endpoints.
+- [ ] Operations: add reminders, monitoring, and deployment smoke checks.

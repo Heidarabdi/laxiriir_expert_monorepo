@@ -1,6 +1,6 @@
 # TypeScript API Migration
 
-Last reviewed: 2026-08-27
+Last reviewed: 2026-08-28
 
 ## Status: complete
 
@@ -15,8 +15,8 @@ The backend has moved from Go and SuperTokens to a single TypeScript service:
 - OpenAPI and Swagger UI
 - Vitest with embedded PostgreSQL integration tests
 
-The Go API and local SuperTokens infrastructure have been removed. Nuxt now
-uses Better Auth endpoints for registration, sign-in, sign-out, verification,
+The Go API and local SuperTokens infrastructure have been removed. The TanStack
+Start web app now uses Better Auth endpoints for registration, sign-in, sign-out, verification,
 password recovery, and sessions. Web and mobile API defaults point to port
 `8081`.
 
@@ -40,6 +40,7 @@ their email before signing in.
 - `PATCH|DELETE /api/v1/client/bookings/:id`
 - `GET|POST /api/v1/expert/availability`
 - `PATCH|DELETE /api/v1/expert/availability/:id`
+- `GET /api/v1/admin/experts`
 - `PATCH /api/v1/admin/experts/:id/approve`
 - `PATCH /api/v1/admin/experts/:id/reject`
 - `PATCH /api/v1/admin/experts/:id/suspend`
@@ -59,5 +60,5 @@ API. Tests use embedded PostgreSQL and do not require Docker.
 ## Remaining product API work
 
 The migration itself is complete. New API work is product development rather
-than migration work. The next backend milestone is listing expert applications
-for admins, followed by expert-owned booking and dashboard endpoints.
+than migration work. The next backend milestone is expert-owned booking and
+dashboard endpoints, followed by payments and authorized video sessions.
