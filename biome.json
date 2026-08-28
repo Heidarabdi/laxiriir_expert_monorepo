@@ -12,6 +12,7 @@
 			"!**/.next",
 			"!**/dist",
 			"!**/.turbo",
+			"!**/.pnpm-store",
 			"!**/dev-dist",
 			"!**/.zed",
 			"!**/.vscode",
@@ -37,7 +38,7 @@
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"recommended": true,
+			"preset": "recommended",
 			"correctness": {
 				"useExhaustiveDependencies": "info"
 			},

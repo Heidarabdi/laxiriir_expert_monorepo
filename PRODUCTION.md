@@ -27,7 +27,7 @@ Default recommendation for the first production deployment:
 
 Why this is the default:
 
-- one platform can host the Fastify API, Nuxt web app, and PostgreSQL with simple private networking
+- one platform can host the Fastify API, TanStack Start web app, and PostgreSQL with simple private networking
 - lower operations overhead than splitting hosting across multiple vendors on day one
 - easier staging and production rollout for a small team
 - easy to revisit later if scale, compliance, or cost changes
@@ -35,7 +35,7 @@ Why this is the default:
 ### Applications
 
 - `apps/api-ts`: Fastify API, deployed as the primary backend service
-- `apps/web`: Nuxt frontend, deployed separately and configured to call the API
+- `apps/web`: TanStack Start frontend, deployed separately and configured to call the API
 - `apps/mobile`: Expo app, distributed through EAS and app stores
 
 ### Core Services
@@ -57,7 +57,7 @@ Why this is the default:
 
 Best current fit for the default stack.
 
-- good fit for hosting the Fastify API, Nuxt web app, background jobs, and PostgreSQL together
+- good fit for hosting the Fastify API, TanStack Start web app, background jobs, and PostgreSQL together
 - simpler initial operations model for staging and production
 - better default choice when speed and operational simplicity matter more than low-level infra control
 
@@ -94,7 +94,7 @@ The Fastify API should own:
 
 ### Frontend
 
-The Nuxt app should own:
+The TanStack Start app should own:
 
 - marketing and landing pages
 - client dashboard
@@ -141,11 +141,9 @@ Expected environment variables:
 
 Expected environment variables:
 
-- `NUXT_PUBLIC_API_BASE_URL`
-- `NUXT_PUBLIC_APP_ORIGIN`
-- `NUXT_PUBLIC_API_BASE_PATH`
-- `NUXT_PUBLIC_AUTH_BASE_PATH`
-- `NUXT_PUBLIC_LIVEKIT_URL` if the client connects directly to video infrastructure
+- `VITE_API_BASE_URL`
+- `VITE_APP_ORIGIN`
+- `VITE_LIVEKIT_URL` if the client connects directly to video infrastructure
 
 ### Mobile
 

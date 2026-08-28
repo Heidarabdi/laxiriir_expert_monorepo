@@ -1,75 +1,31 @@
-# Nuxt Minimal Starter
+# Laxiriir Expert Web
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+The web application uses TanStack Start, React, TanStack Router, Query and Form,
+Tailwind CSS v4, and shadcn/ui. It talks to the Fastify API through
+`VITE_API_BASE_URL` and shares contracts and HTTP clients from the monorepo.
 
-## Setup
-
-Make sure to install dependencies:
-
-```bash
-# npm
-npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
+## Local development
 
 ```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
+pnpm --filter web dev
+pnpm --filter web test
+pnpm --filter web build
 ```
 
-## Production
+## Adding components
 
-Build the application for production:
+To add components to your app, run the following command:
 
 ```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
+pnpm --filter web exec shadcn add <component>
 ```
 
-Locally preview production build:
+This generates components under `src/components/ui` using `components.json`.
 
-```bash
-# npm
-npm run preview
+## Using components
 
-# pnpm
-pnpm preview
+To use the components in your app, import them as follows:
 
-# yarn
-yarn preview
-
-# bun
-bun run preview
+```tsx
+import { Button } from "@/components/ui/button";
 ```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.

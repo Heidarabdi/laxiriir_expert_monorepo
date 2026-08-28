@@ -1,9 +1,10 @@
 import {
+	adminExpertListResponseSchema,
 	expertStatusActionParamsSchema,
 	expertStatusUpdateResponseSchema,
 } from "@repo/contracts/auth";
 import { errorResponseSchema } from "@repo/contracts/consultations";
-import { and, eq } from "drizzle-orm";
+import { and, asc, eq } from "drizzle-orm";
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 
 import { user as userTable } from "../../../../../db/auth-schema.ts";
@@ -24,6 +25,39 @@ const messageByAction = {
 const adminExpertRoutes: FastifyPluginAsyncZod = async (fastify) => {
 	if (!fastify.database || !("requireSession" in fastify)) return;
 	const database = fastify.database;
+
+	fastify.get(
+		"/",
+		{ schema: { response: { 200: adminExpertListResponseSchema } } },
+		async (request, reply) => {
+			const admin = await fastify.requireSession(request, reply, {
+				requireVerified: true,
+				roles: ["admin"],
+			});
+			if (!admin) return;
+
+			const identities = await database
+				.select()
+				.from(userTable)
+				.where(eq(userTable.role, "expert"))
+				.orderBy(asc(userTable.createdAt));
+
+			return {
+				experts: identities.map((identity) => ({
+					createdAt: identity.createdAt.toISOString(),
+					displayName: identity.name,
+					email: identity.email,
+					expertStatus: identity.expertStatus as
+						| "pending_review"
+						| "approved"
+						| "rejected"
+						| "suspended",
+					identityUserId: identity.id,
+					updatedAt: identity.updatedAt.toISOString(),
+				})),
+			};
+		},
+	);
 
 	fastify.patch(
 		"/:id/:action",

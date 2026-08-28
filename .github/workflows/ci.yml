@@ -20,7 +20,7 @@ jobs:
 
     env:
       DATABASE_URL: "postgres://postgres:postgres@localhost:5432/laxiriir_expert"
-      NUXT_PUBLIC_API_BASE_URL: "http://localhost:8081"
+      VITE_API_BASE_URL: "http://localhost:8081"
       EXPO_PUBLIC_API_BASE_URL: "http://localhost:8081"
 
     steps:
@@ -30,7 +30,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 9.15.5
+          version: 11.19.0
 
       - name: Install Node.js
         uses: actions/setup-node@v4
@@ -42,8 +42,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Verify workspace boundaries
-        # Turbo boundaries does not yet understand Nuxt aliases or generated Vue files.
-        run: pnpm exec turbo boundaries --filter='!web'
+        run: pnpm exec turbo boundaries
 
       - name: Validate monorepo
         run: pnpm exec turbo run lint typecheck test build

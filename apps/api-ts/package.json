@@ -23,7 +23,7 @@
 		"@fastify/swagger": "^9.8.1",
 		"@fastify/swagger-ui": "^6.1.1",
 		"@repo/contracts": "workspace:*",
-		"better-auth": "^1.6.25",
+		"better-auth": "1.7.2",
 		"close-with-grace": "^2.5.0",
 		"dotenv": "catalog:",
 		"drizzle-orm": "^0.45.2",

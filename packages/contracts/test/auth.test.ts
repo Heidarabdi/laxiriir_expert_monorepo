@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { currentUserSchema, signUpInputSchema } from "../src/auth";
+import {
+	adminExpertListResponseSchema,
+	currentUserSchema,
+	signUpInputSchema,
+} from "../src/auth";
 
 describe("authentication contracts", () => {
 	it("accepts the current-user response shared by the API and clients", () => {
@@ -26,5 +30,22 @@ describe("authentication contracts", () => {
 		});
 
 		expect(result.success).toBe(false);
+	});
+
+	it("accepts pending expert records in the admin moderation list", () => {
+		const result = adminExpertListResponseSchema.safeParse({
+			experts: [
+				{
+					createdAt: "2026-01-01T00:00:00.000Z",
+					displayName: "Pending Expert",
+					email: "expert@example.com",
+					expertStatus: "pending_review",
+					identityUserId: "expert-1",
+					updatedAt: "2026-01-01T00:00:00.000Z",
+				},
+			],
+		});
+
+		expect(result.success).toBe(true);
 	});
 });
