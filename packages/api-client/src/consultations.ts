@@ -5,6 +5,9 @@ import type {
 	BookingListResponse,
 	BookingResponse,
 	CreateBookingInput,
+	ExpertBookingListResponse,
+	ExpertBookingScope,
+	ExpertDashboardSummary,
 	ExpertListResponse,
 } from "@repo/contracts/consultations";
 
@@ -13,6 +16,7 @@ import { type ApiClientOptions, createApiRequest } from "./request";
 export const EXPERTS_PATH = "/api/v1/experts";
 export const CLIENT_BOOKINGS_PATH = "/api/v1/client/bookings";
 export const EXPERT_AVAILABILITY_PATH = "/api/v1/expert/availability";
+export const EXPERT_BOOKINGS_PATH = "/api/v1/expert/bookings";
 
 function expertAvailabilityPath(expertId: string) {
 	return `${EXPERTS_PATH}/${encodeURIComponent(expertId)}/availability`;
@@ -62,6 +66,14 @@ export function createConsultationClient(options: ApiClientOptions) {
 		},
 		listExperts() {
 			return request<ExpertListResponse>(EXPERTS_PATH);
+		},
+		listExpertBookings(scope: ExpertBookingScope) {
+			return request<ExpertBookingListResponse>(
+				`${EXPERT_BOOKINGS_PATH}?scope=${encodeURIComponent(scope)}`,
+			);
+		},
+		getExpertDashboardSummary() {
+			return request<ExpertDashboardSummary>(`${EXPERT_BOOKINGS_PATH}/summary`);
 		},
 		listOwnAvailability() {
 			return request<AvailabilityListResponse>(ownAvailabilityPath());

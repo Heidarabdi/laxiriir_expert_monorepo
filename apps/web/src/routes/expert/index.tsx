@@ -1,10 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { CalendarCheckIcon, CalendarDaysIcon, ClockIcon } from "lucide-react";
+import { CalendarCheckIcon, ClockIcon, HistoryIcon } from "lucide-react";
 
 import { PageShell } from "@/components/page-shell";
 import { ProtectedPage } from "@/components/protected-page";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -16,8 +15,8 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { WorkspaceHeading } from "@/components/workspace-heading";
 import { useCurrentUser } from "@/hooks/use-auth";
-import { useOwnAvailability } from "@/hooks/use-consultations";
-import { formatDate, formatTime } from "@/lib/format";
+import { useExpertDashboardSummary } from "@/hooks/use-consultations";
+import { formatDate, formatTimeRange } from "@/lib/format";
 
 export const Route = createFileRoute("/expert/")({
 	component: ExpertDashboardRoute,
@@ -36,28 +35,37 @@ function ExpertDashboardRoute() {
 
 function ExpertDashboard() {
 	const { data: user } = useCurrentUser();
-	const availabilityQuery = useOwnAvailability();
-	const slots = availabilityQuery.data?.slots ?? [];
-	const upcoming = slots.filter((slot) => new Date(slot.endsAt) > new Date());
-	const open = upcoming.filter((slot) => !slot.booked);
-	const booked = upcoming.filter((slot) => slot.booked);
+	const summaryQuery = useExpertDashboardSummary();
+	const summary = summaryQuery.data;
 	const stats = [
-		{ icon: CalendarDaysIcon, label: "Upcoming slots", value: upcoming.length },
-		{ icon: ClockIcon, label: "Open slots", value: open.length },
-		{ icon: CalendarCheckIcon, label: "Booked slots", value: booked.length },
+		{
+			icon: CalendarCheckIcon,
+			label: "Upcoming sessions",
+			value: summary?.upcomingBookings ?? 0,
+		},
+		{
+			icon: HistoryIcon,
+			label: "Past sessions",
+			value: summary?.pastBookings ?? 0,
+		},
+		{
+			icon: ClockIcon,
+			label: "Open slots",
+			value: summary?.openAvailability ?? 0,
+		},
 	];
 
 	return (
 		<div className="flex flex-col gap-6">
 			<WorkspaceHeading
-				description="Manage the real availability clients can book."
+				description="Track your consultations and manage the availability clients can book."
 				eyebrow="Expert workspace"
 				title={`Welcome, ${user?.displayName ?? "Expert"}`}
 			/>
-			{availabilityQuery.isError ? (
+			{summaryQuery.isError ? (
 				<Alert variant="destructive">
-					<AlertTitle>Unable to load availability</AlertTitle>
-					<AlertDescription>{availabilityQuery.error.message}</AlertDescription>
+					<AlertTitle>Unable to load dashboard</AlertTitle>
+					<AlertDescription>{summaryQuery.error.message}</AlertDescription>
 				</Alert>
 			) : null}
 			<div className="grid gap-4 sm:grid-cols-3">
@@ -65,7 +73,13 @@ function ExpertDashboard() {
 					<Card key={label}>
 						<CardHeader>
 							<CardDescription>{label}</CardDescription>
-							<CardTitle className="text-3xl">{value}</CardTitle>
+							<CardTitle className="text-3xl">
+								{summaryQuery.isPending ? (
+									<Skeleton className="h-9 w-10" />
+								) : (
+									value
+								)}
+							</CardTitle>
 						</CardHeader>
 						<CardContent>
 							<Icon className="text-primary" />
@@ -76,41 +90,40 @@ function ExpertDashboard() {
 			<Card>
 				<CardHeader className="flex-row items-start justify-between">
 					<div>
-						<CardTitle>Next availability</CardTitle>
-						<CardDescription>Your nearest upcoming slots.</CardDescription>
+						<CardTitle>Next consultation</CardTitle>
+						<CardDescription>
+							Your nearest confirmed client session.
+						</CardDescription>
 					</div>
 					<Button asChild size="sm">
-						<Link to="/expert/calendar">Manage slots</Link>
+						<Link to="/expert/sessions">View sessions</Link>
 					</Button>
 				</CardHeader>
 				<CardContent className="flex flex-col gap-3">
-					{availabilityQuery.isPending ? (
-						<>
-							<Skeleton className="h-16" />
-							<Skeleton className="h-16" />
-						</>
-					) : null}
-					{!availabilityQuery.isPending && upcoming.length === 0 ? (
+					{summaryQuery.isPending ? <Skeleton className="h-20" /> : null}
+					{!summaryQuery.isPending && !summary?.nextBooking ? (
 						<p className="rounded-xl border border-dashed p-8 text-center text-muted-foreground text-sm">
-							No future availability yet. Add a slot so clients can book you.
+							No upcoming consultations. Your next client booking will appear
+							here.
 						</p>
 					) : null}
-					{upcoming.slice(0, 5).map((slot) => (
-						<article
-							className="flex items-center justify-between gap-4 rounded-xl bg-muted p-4"
-							key={slot.id}
-						>
+					{summary?.nextBooking ? (
+						<article className="flex items-center justify-between gap-4 rounded-xl bg-muted p-4">
 							<div>
-								<p className="font-medium">{formatDate(slot.startsAt)}</p>
+								<p className="font-medium">
+									{summary.nextBooking.client.displayName ?? "Client"}
+								</p>
 								<p className="text-muted-foreground text-sm">
-									{formatTime(slot.startsAt)} – {formatTime(slot.endsAt)}
+									{formatDate(summary.nextBooking.startsAt)} ·{" "}
+									{formatTimeRange(
+										summary.nextBooking.startsAt,
+										summary.nextBooking.endsAt,
+									)}
 								</p>
 							</div>
-							<Badge variant={slot.booked ? "default" : "secondary"}>
-								{slot.booked ? "Booked" : "Open"}
-							</Badge>
+							<CalendarCheckIcon className="text-primary" />
 						</article>
-					))}
+					) : null}
 				</CardContent>
 			</Card>
 		</div>

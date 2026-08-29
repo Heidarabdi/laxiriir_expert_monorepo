@@ -1,6 +1,7 @@
 import type {
 	AvailabilityInput,
 	CreateBookingInput,
+	ExpertBookingScope,
 } from "@repo/contracts/consultations";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -12,6 +13,14 @@ export const ownAvailabilityQueryKey = [
 	"consultations",
 	"expert-availability",
 ] as const;
+export const expertDashboardSummaryQueryKey = [
+	"consultations",
+	"expert-dashboard-summary",
+] as const;
+
+export function expertBookingsQueryKey(scope: ExpertBookingScope) {
+	return ["consultations", "expert-bookings", scope] as const;
+}
 
 export function useExperts() {
 	return useQuery({
@@ -86,6 +95,20 @@ export function useOwnAvailability() {
 	return useQuery({
 		queryFn: () => consultationApi.listOwnAvailability(),
 		queryKey: ownAvailabilityQueryKey,
+	});
+}
+
+export function useExpertBookings(scope: ExpertBookingScope) {
+	return useQuery({
+		queryFn: () => consultationApi.listExpertBookings(scope),
+		queryKey: expertBookingsQueryKey(scope),
+	});
+}
+
+export function useExpertDashboardSummary() {
+	return useQuery({
+		queryFn: () => consultationApi.getExpertDashboardSummary(),
+		queryKey: expertDashboardSummaryQueryKey,
 	});
 }
 

@@ -1,6 +1,20 @@
 import { randomUUID } from "node:crypto";
 import type { ExpertStatus } from "@repo/contracts/auth";
-import { and, asc, count, eq, gt, gte, isNull, lt, ne, or } from "drizzle-orm";
+import type { ExpertBookingScope } from "@repo/contracts/consultations";
+import {
+	and,
+	asc,
+	count,
+	desc,
+	eq,
+	gt,
+	gte,
+	isNull,
+	lt,
+	lte,
+	ne,
+	or,
+} from "drizzle-orm";
 
 import { user } from "../db/auth-schema.ts";
 import {
@@ -81,6 +95,24 @@ function serializeBooking(
 		createdAt: booking.createdAt.toISOString(),
 		endsAt: booking.endsAt.toISOString(),
 		expert: serializeExpert(expert),
+		id: booking.id,
+		startsAt: booking.startsAt.toISOString(),
+		status: booking.status as "cancelled" | "confirmed",
+	};
+}
+
+function serializeExpertBooking(
+	booking: typeof bookings.$inferSelect,
+	client: { id: string; name: string } | null,
+) {
+	return {
+		availabilitySlotId: booking.availabilitySlotId,
+		client: {
+			displayName: client?.name ?? null,
+			id: booking.clientUserId,
+		},
+		createdAt: booking.createdAt.toISOString(),
+		endsAt: booking.endsAt.toISOString(),
 		id: booking.id,
 		startsAt: booking.startsAt.toISOString(),
 		status: booking.status as "cancelled" | "confirmed",
@@ -480,6 +512,55 @@ export class ConsultationService {
 			.where(eq(bookings.clientUserId, clientUserId))
 			.orderBy(asc(bookings.startsAt));
 		return rows.map(({ booking, expert }) => serializeBooking(booking, expert));
+	}
+
+	async listExpertBookings(
+		expertId: string,
+		scope: ExpertBookingScope,
+		now = new Date(),
+	) {
+		const scopeFilter =
+			scope === "upcoming"
+				? and(eq(bookings.status, "confirmed"), gt(bookings.endsAt, now))
+				: or(lte(bookings.endsAt, now), eq(bookings.status, "cancelled"));
+		const rows = await this.database
+			.select({
+				booking: bookings,
+				client: { id: user.id, name: user.name },
+			})
+			.from(bookings)
+			.leftJoin(user, eq(bookings.clientUserId, user.id))
+			.where(and(eq(bookings.expertId, expertId), scopeFilter))
+			.orderBy(
+				scope === "upcoming" ? asc(bookings.startsAt) : desc(bookings.startsAt),
+			);
+		return rows.map(({ booking, client }) =>
+			serializeExpertBooking(booking, client),
+		);
+	}
+
+	async getExpertDashboardSummary(expertId: string, now = new Date()) {
+		const [upcoming, past, [openAvailability]] = await Promise.all([
+			this.listExpertBookings(expertId, "upcoming", now),
+			this.listExpertBookings(expertId, "past", now),
+			this.database
+				.select({ total: count() })
+				.from(availabilitySlots)
+				.where(
+					and(
+						eq(availabilitySlots.expertId, expertId),
+						eq(availabilitySlots.booked, false),
+						gt(availabilitySlots.endsAt, now),
+					),
+				),
+		]);
+
+		return {
+			nextBooking: upcoming[0] ?? null,
+			openAvailability: openAvailability?.total ?? 0,
+			pastBookings: past.length,
+			upcomingBookings: upcoming.length,
+		};
 	}
 
 	async cancelBooking(

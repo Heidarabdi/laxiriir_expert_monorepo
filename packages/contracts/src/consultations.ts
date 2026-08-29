@@ -63,6 +63,44 @@ export const bookingListResponseSchema = z.object({
 });
 export type BookingListResponse = z.infer<typeof bookingListResponseSchema>;
 
+export const expertBookingScopeSchema = z.enum(["upcoming", "past"]);
+export type ExpertBookingScope = z.infer<typeof expertBookingScopeSchema>;
+
+export const expertBookingQuerySchema = z.object({
+	scope: expertBookingScopeSchema.default("upcoming"),
+});
+
+export const expertBookingSchema = z.object({
+	availabilitySlotId: z.number().int().positive(),
+	client: z.object({
+		displayName: z.string().nullable(),
+		id: z.string(),
+	}),
+	createdAt: z.string().datetime(),
+	endsAt: z.string().datetime(),
+	id: z.string(),
+	startsAt: z.string().datetime(),
+	status: bookingStatusSchema,
+});
+export type ExpertBookingDetail = z.infer<typeof expertBookingSchema>;
+
+export const expertBookingListResponseSchema = z.object({
+	bookings: z.array(expertBookingSchema),
+});
+export type ExpertBookingListResponse = z.infer<
+	typeof expertBookingListResponseSchema
+>;
+
+export const expertDashboardSummarySchema = z.object({
+	nextBooking: expertBookingSchema.nullable(),
+	openAvailability: z.number().int().nonnegative(),
+	pastBookings: z.number().int().nonnegative(),
+	upcomingBookings: z.number().int().nonnegative(),
+});
+export type ExpertDashboardSummary = z.infer<
+	typeof expertDashboardSummarySchema
+>;
+
 export const createBookingInputSchema = z.object({
 	availabilitySlotId: z.number().int().positive(),
 });

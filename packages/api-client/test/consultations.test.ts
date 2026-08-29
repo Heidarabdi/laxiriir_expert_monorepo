@@ -81,4 +81,26 @@ describe("consultation API client", () => {
 			},
 		);
 	});
+
+	it("requests expert sessions and the dashboard summary", async () => {
+		const fetch = vi.fn().mockResolvedValue({});
+		const client = createConsultationClient({
+			apiBaseUrl: "http://localhost:8081",
+			fetch,
+		});
+
+		await client.listExpertBookings("past");
+		await client.getExpertDashboardSummary();
+
+		expect(fetch).toHaveBeenNthCalledWith(
+			1,
+			"http://localhost:8081/api/v1/expert/bookings?scope=past",
+			{ credentials: "include" },
+		);
+		expect(fetch).toHaveBeenNthCalledWith(
+			2,
+			"http://localhost:8081/api/v1/expert/bookings/summary",
+			{ credentials: "include" },
+		);
+	});
 });
