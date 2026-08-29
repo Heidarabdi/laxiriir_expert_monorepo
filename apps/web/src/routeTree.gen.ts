@@ -31,6 +31,7 @@ import { Route as ClientSessionsRouteImport } from './routes/client/sessions'
 import { Route as ExpertIndexRouteImport } from './routes/expert/index'
 import { Route as ExpertCalendarRouteImport } from './routes/expert/calendar'
 import { Route as ExpertPendingRouteImport } from './routes/expert/pending'
+import { Route as ExpertSessionsRouteImport } from './routes/expert/sessions'
 import { Route as ExpertsIndexRouteImport } from './routes/experts/index'
 import { Route as ExpertsIdRouteImport } from './routes/experts/$id'
 
@@ -144,6 +145,11 @@ const ExpertPendingRoute = ExpertPendingRouteImport.update({
   path: '/expert/pending',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ExpertSessionsRoute = ExpertSessionsRouteImport.update({
+  id: '/expert/sessions',
+  path: '/expert/sessions',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExpertsIndexRoute = ExpertsIndexRouteImport.update({
   id: '/experts/',
   path: '/experts/',
@@ -175,6 +181,7 @@ export interface FileRoutesByFullPath {
   '/client/sessions': typeof ClientSessionsRoute
   '/expert/calendar': typeof ExpertCalendarRoute
   '/expert/pending': typeof ExpertPendingRoute
+  '/expert/sessions': typeof ExpertSessionsRoute
   '/experts/$id': typeof ExpertsIdRoute
   '/admin/': typeof AdminIndexRoute
   '/client/': typeof ClientIndexRoute
@@ -201,6 +208,7 @@ export interface FileRoutesByTo {
   '/client/sessions': typeof ClientSessionsRoute
   '/expert/calendar': typeof ExpertCalendarRoute
   '/expert/pending': typeof ExpertPendingRoute
+  '/expert/sessions': typeof ExpertSessionsRoute
   '/experts/$id': typeof ExpertsIdRoute
   '/admin': typeof AdminIndexRoute
   '/client': typeof ClientIndexRoute
@@ -228,6 +236,7 @@ export interface FileRoutesById {
   '/client/sessions': typeof ClientSessionsRoute
   '/expert/calendar': typeof ExpertCalendarRoute
   '/expert/pending': typeof ExpertPendingRoute
+  '/expert/sessions': typeof ExpertSessionsRoute
   '/experts/$id': typeof ExpertsIdRoute
   '/admin/': typeof AdminIndexRoute
   '/client/': typeof ClientIndexRoute
@@ -256,6 +265,7 @@ export interface FileRouteTypes {
     | '/client/sessions'
     | '/expert/calendar'
     | '/expert/pending'
+    | '/expert/sessions'
     | '/experts/$id'
     | '/admin/'
     | '/client/'
@@ -282,6 +292,7 @@ export interface FileRouteTypes {
     | '/client/sessions'
     | '/expert/calendar'
     | '/expert/pending'
+    | '/expert/sessions'
     | '/experts/$id'
     | '/admin'
     | '/client'
@@ -308,6 +319,7 @@ export interface FileRouteTypes {
     | '/client/sessions'
     | '/expert/calendar'
     | '/expert/pending'
+    | '/expert/sessions'
     | '/experts/$id'
     | '/admin/'
     | '/client/'
@@ -335,6 +347,7 @@ export interface RootRouteChildren {
   ClientSessionsRoute: typeof ClientSessionsRoute
   ExpertCalendarRoute: typeof ExpertCalendarRoute
   ExpertPendingRoute: typeof ExpertPendingRoute
+  ExpertSessionsRoute: typeof ExpertSessionsRoute
   ExpertsIdRoute: typeof ExpertsIdRoute
   AdminIndexRoute: typeof AdminIndexRoute
   ClientIndexRoute: typeof ClientIndexRoute
@@ -498,6 +511,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExpertPendingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/expert/sessions': {
+      id: '/expert/sessions'
+      path: '/expert/sessions'
+      fullPath: '/expert/sessions'
+      preLoaderRoute: typeof ExpertSessionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/experts/': {
       id: '/experts/'
       path: '/experts'
@@ -535,6 +555,7 @@ const rootRouteChildren: RootRouteChildren = {
   ClientSessionsRoute: ClientSessionsRoute,
   ExpertCalendarRoute: ExpertCalendarRoute,
   ExpertPendingRoute: ExpertPendingRoute,
+  ExpertSessionsRoute: ExpertSessionsRoute,
   ExpertsIdRoute: ExpertsIdRoute,
   AdminIndexRoute: AdminIndexRoute,
   ClientIndexRoute: ClientIndexRoute,

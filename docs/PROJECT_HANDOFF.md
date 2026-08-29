@@ -1,6 +1,6 @@
 # Project Handoff
 
-Last reviewed: 2026-08-28
+Last reviewed: 2026-08-29
 
 ## Current status
 
@@ -22,7 +22,8 @@ Current stack:
 - pnpm and Turborepo
 
 Implemented backend contracts include health/ping, current user, expert listing,
-availability, client booking creation/history, and admin expert moderation.
+availability, client booking creation/history, expert-owned booking history and
+dashboard summaries, and admin expert moderation.
 
 ## Moving the repository
 
@@ -101,8 +102,8 @@ This is the working checklist for moving the product forward. Change `[ ]` to
 - [x] Admin actions to approve, reject, and suspend an expert.
 - [x] Add an admin endpoint to list pending, approved, rejected, and suspended experts.
 - [ ] Configure and verify the first bootstrap admin account.
-- [ ] Add expert-owned upcoming and past booking endpoints.
-- [ ] Add expert dashboard summary endpoints.
+- [x] Add expert-owned upcoming and past booking endpoints.
+- [x] Add expert dashboard summary endpoints.
 - [ ] Add expert profile editing.
 - [ ] Add payment intents and verified webhook reconciliation.
 - [ ] Add authorized video-room creation and access tokens.
@@ -119,7 +120,7 @@ This is the working checklist for moving the product forward. Change `[ ]` to
 - [x] Expert availability calendar with create, edit, and delete controls.
 - [x] Build the admin expert-review table with approve, reject, and suspend actions.
 - [x] Build the expert workspace navigation and dashboard.
-- [ ] Show an expert's upcoming and past bookings.
+- [x] Show an expert's upcoming and past bookings.
 - [ ] Build expert profile editing.
 - [x] Replace the public `/experts` and `/experts/:id` demo data with API data.
 - [ ] Add payment checkout and payment-result states.
@@ -141,7 +142,7 @@ The API and web migrations are complete. The next milestone is the remaining
 consultation product infrastructure:
 
 - [ ] Setup: configure and verify a bootstrap admin account.
+- [ ] Server and web: add expert profile editing.
 - [ ] Server and web: add payment intents and verified webhook reconciliation.
 - [ ] Server and web: add authorized video rooms and access tokens.
-- [ ] Server: add expert-owned booking and dashboard-summary endpoints.
 - [ ] Operations: add reminders, monitoring, and deployment smoke checks.

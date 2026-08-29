@@ -1,6 +1,7 @@
 import type { PrimaryRole } from "@repo/contracts/auth";
 import { Link, useNavigate } from "@tanstack/react-router";
 import {
+	CalendarCheckIcon,
 	CalendarDaysIcon,
 	ChartNoAxesCombinedIcon,
 	LayoutDashboardIcon,
@@ -35,6 +36,7 @@ const navigation: Record<
 	expert: [
 		{ icon: LayoutDashboardIcon, label: "Dashboard", to: "/expert" },
 		{ icon: CalendarDaysIcon, label: "Availability", to: "/expert/calendar" },
+		{ icon: CalendarCheckIcon, label: "Sessions", to: "/expert/sessions" },
 	],
 };
 
