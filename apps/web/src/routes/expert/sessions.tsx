@@ -1,13 +1,28 @@
 import type { ExpertBookingScope } from "@repo/contracts/consultations";
 import { createFileRoute } from "@tanstack/react-router";
-import { CalendarCheckIcon } from "lucide-react";
+import { CalendarCheckIcon, ClockIcon } from "lucide-react";
 import { useState } from "react";
 
 import { PageShell } from "@/components/page-shell";
 import { ProtectedPage } from "@/components/protected-page";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
+import {
+	Card,
+	CardAction,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
+import {
+	Empty,
+	EmptyDescription,
+	EmptyHeader,
+	EmptyMedia,
+	EmptyTitle,
+} from "@/components/ui/empty";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { WorkspaceHeading } from "@/components/workspace-heading";
@@ -66,7 +81,7 @@ function ExpertSessions() {
 					<AlertDescription>{bookingsQuery.error.message}</AlertDescription>
 				</Alert>
 			) : null}
-			<div className="grid gap-3">
+			<div className="flex flex-col gap-3">
 				{bookingsQuery.isPending ? (
 					<>
 						<Skeleton className="h-28" />
@@ -74,41 +89,70 @@ function ExpertSessions() {
 					</>
 				) : null}
 				{!bookingsQuery.isPending && bookings.length === 0 ? (
-					<Card>
-						<CardContent className="flex flex-col items-center gap-3 py-12 text-center">
-							<CalendarCheckIcon className="size-8 text-muted-foreground" />
-							<p className="font-medium">No {scope} sessions</p>
-							<p className="text-muted-foreground text-sm">
+					<Empty className="min-h-72 border bg-card shadow-sm">
+						<EmptyHeader>
+							<EmptyMedia variant="icon">
+								<CalendarCheckIcon />
+							</EmptyMedia>
+							<EmptyTitle>No {scope} sessions</EmptyTitle>
+							<EmptyDescription>
 								{scope === "upcoming"
 									? "Confirmed client bookings will appear here."
 									: "Completed and cancelled sessions will appear here."}
-							</p>
-						</CardContent>
-					</Card>
+							</EmptyDescription>
+						</EmptyHeader>
+					</Empty>
 				) : null}
 				{bookings.map((booking) => (
 					<Card key={booking.id}>
-						<CardContent className="flex flex-col justify-between gap-4 py-5 sm:flex-row sm:items-center">
-							<div>
-								<p className="font-semibold">
-									{booking.client.displayName ?? "Client"}
-								</p>
-								<p className="text-muted-foreground text-sm">
-									{formatDate(booking.startsAt, "full")} ·{" "}
+						<CardHeader>
+							<CardTitle className="flex items-center gap-3">
+								<Avatar>
+									<AvatarFallback>
+										{(booking.client.displayName ?? "Client")
+											.slice(0, 2)
+											.toUpperCase()}
+									</AvatarFallback>
+								</Avatar>
+								<span>{booking.client.displayName ?? "Client"}</span>
+							</CardTitle>
+							<CardDescription>
+								Consultation with a confirmed client
+							</CardDescription>
+							<CardAction>
+								<Badge
+									variant={
+										booking.status === "cancelled" ? "secondary" : "default"
+									}
+								>
+									{booking.status === "cancelled"
+										? "Cancelled"
+										: scope === "past"
+											? "Completed"
+											: "Confirmed"}
+								</Badge>
+							</CardAction>
+						</CardHeader>
+						<CardContent>
+							<div className="grid gap-3 rounded-xl border bg-muted/40 p-4 sm:grid-cols-[1fr_auto] sm:items-center">
+								<div className="flex items-center gap-3">
+									<div className="rounded-lg bg-accent p-2.5 text-accent-foreground">
+										<CalendarCheckIcon />
+									</div>
+									<div className="flex flex-col gap-0.5">
+										<p className="font-medium">
+											{formatDate(booking.startsAt, "full")}
+										</p>
+										<p className="text-muted-foreground text-xs">
+											Your local timezone
+										</p>
+									</div>
+								</div>
+								<p className="flex items-center gap-2 font-medium text-sm">
+									<ClockIcon className="text-primary" />
 									{formatTimeRange(booking.startsAt, booking.endsAt)}
 								</p>
 							</div>
-							<Badge
-								variant={
-									booking.status === "cancelled" ? "secondary" : "default"
-								}
-							>
-								{booking.status === "cancelled"
-									? "Cancelled"
-									: scope === "past"
-										? "Completed"
-										: "Confirmed"}
-							</Badge>
 						</CardContent>
 					</Card>
 				))}

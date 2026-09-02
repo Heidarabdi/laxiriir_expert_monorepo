@@ -1,4 +1,5 @@
 import type {
+	AccountProfileInput,
 	ExpertStatusAction,
 	SignInInput,
 	SignUpInput,
@@ -15,11 +16,19 @@ import {
 
 export const currentUserQueryKey = ["auth", "current-user"] as const;
 export const adminExpertsQueryKey = ["auth", "admin-experts"] as const;
+export const adminUsersQueryKey = ["auth", "admin-users"] as const;
 
 export function useAdminExperts() {
 	return useQuery({
 		queryFn: () => accountApi.listAdminExperts(),
 		queryKey: adminExpertsQueryKey,
+	});
+}
+
+export function useAdminUsers() {
+	return useQuery({
+		queryFn: () => accountApi.listAdminUsers(),
+		queryKey: adminUsersQueryKey,
 	});
 }
 
@@ -52,6 +61,15 @@ export function useCurrentUser() {
 		queryFn: getCurrentUserOrNull,
 		queryKey: currentUserQueryKey,
 		retry: false,
+	});
+}
+
+export function useUpdateCurrentUser() {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: (input: AccountProfileInput) =>
+			accountApi.updateCurrentUser(input),
+		onSuccess: (user) => queryClient.setQueryData(currentUserQueryKey, user),
 	});
 }
 

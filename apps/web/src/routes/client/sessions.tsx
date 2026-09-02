@@ -2,6 +2,7 @@ import type { BookingDetail } from "@repo/contracts/consultations";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { CalendarDaysIcon, RefreshCwIcon, XIcon } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 import { PageShell } from "@/components/page-shell";
 import { ProtectedPage } from "@/components/protected-page";
@@ -68,7 +69,7 @@ function ClientSessionsRoute() {
 	);
 }
 
-function ClientSessions() {
+export function ClientSessions() {
 	const bookingsQuery = useClientBookings();
 	const cancelMutation = useCancelBooking();
 	const rescheduleMutation = useRescheduleBooking();
@@ -97,6 +98,10 @@ function ClientSessions() {
 		cancelMutation.error ??
 		rescheduleMutation.error ??
 		availabilityQuery.error;
+	const replacementSlots =
+		availabilityQuery.data?.slots.filter(
+			(slot) => new Date(slot.startsAt).getTime() - now >= 24 * 60 * 60 * 1000,
+		) ?? [];
 
 	async function chooseReplacement(availabilitySlotId: number) {
 		if (!rescheduling) return;
@@ -105,6 +110,12 @@ function ClientSessions() {
 			input: { availabilitySlotId },
 		});
 		setRescheduling(null);
+		toast.success("Your session was rescheduled.");
+	}
+
+	async function cancelBooking(bookingId: string) {
+		await cancelMutation.mutateAsync(bookingId);
+		toast.success("Your session was cancelled.");
 	}
 
 	return (
@@ -234,11 +245,10 @@ function ClientSessions() {
 												<AlertDialogCancel>Keep session</AlertDialogCancel>
 												<AlertDialogAction
 													disabled={cancelMutation.isPending}
-													onClick={() =>
-														void cancelMutation.mutateAsync(booking.id)
-													}
+													onClick={() => void cancelBooking(booking.id)}
 													variant="destructive"
 												>
+													{cancelMutation.isPending ? <Spinner /> : null}
 													Cancel session
 												</AlertDialogAction>
 											</AlertDialogFooter>
@@ -253,23 +263,23 @@ function ClientSessions() {
 									</p>
 									<div className="grid gap-2 sm:grid-cols-2">
 										{availabilityQuery.isPending ? <Spinner /> : null}
-										{availabilityQuery.data?.slots
-											.filter(
-												(slot) =>
-													new Date(slot.startsAt).getTime() - now >=
-													24 * 60 * 60 * 1000,
-											)
-											.map((slot) => (
-												<Button
-													disabled={rescheduleMutation.isPending}
-													key={slot.id}
-													onClick={() => void chooseReplacement(slot.id)}
-													variant="outline"
-												>
-													{formatDate(slot.startsAt)} ·{" "}
-													{formatTimeRange(slot.startsAt, slot.endsAt)}
-												</Button>
-											))}
+										{replacementSlots.map((slot) => (
+											<Button
+												disabled={rescheduleMutation.isPending}
+												key={slot.id}
+												onClick={() => void chooseReplacement(slot.id)}
+												variant="outline"
+											>
+												{formatDate(slot.startsAt)} ·{" "}
+												{formatTimeRange(slot.startsAt, slot.endsAt)}
+											</Button>
+										))}
+										{!availabilityQuery.isPending &&
+										replacementSlots.length === 0 ? (
+											<p className="text-muted-foreground text-sm sm:col-span-2">
+												No replacement times are currently available.
+											</p>
+										) : null}
 									</div>
 								</CardContent>
 							) : null}

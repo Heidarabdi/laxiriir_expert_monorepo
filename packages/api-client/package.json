@@ -13,8 +13,10 @@
 	"exports": {
 		"./auth": "./src/auth.ts",
 		"./consultations": "./src/consultations.ts",
+		"./engagements": "./src/engagements.ts",
 		"./health": "./src/health.ts",
-		"./request": "./src/request.ts"
+		"./request": "./src/request.ts",
+		"./workspace": "./src/workspace.ts"
 	},
 	"dependencies": {
 		"@repo/contracts": "workspace:*"

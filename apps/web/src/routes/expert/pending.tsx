@@ -4,7 +4,13 @@ import { BadgeCheckIcon, Clock3Icon, MailIcon } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { ProtectedPage } from "@/components/protected-page";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
 import { WorkspaceHeading } from "@/components/workspace-heading";
 import { useCurrentUser } from "@/hooks/use-auth";
 
@@ -32,6 +38,7 @@ function ExpertPending() {
 			: status === "suspended"
 				? "Your expert access is suspended. Contact support to resolve the account review."
 				: "Your expert application is waiting for an administrator to review it.";
+	const isBlocked = status === "rejected" || status === "suspended";
 	return (
 		<div className="mx-auto flex max-w-2xl flex-col gap-6">
 			<WorkspaceHeading
@@ -41,7 +48,7 @@ function ExpertPending() {
 			/>
 			<Card>
 				<CardHeader className="items-center text-center">
-					<div className="rounded-full bg-muted p-4">
+					<div className="rounded-xl bg-accent p-4 text-accent-foreground">
 						{status === "approved" ? (
 							<BadgeCheckIcon className="size-8" />
 						) : (
@@ -51,14 +58,19 @@ function ExpertPending() {
 					<CardTitle className="capitalize">
 						{status.replace("_", " ")}
 					</CardTitle>
-					<Badge variant="secondary">{user?.email}</Badge>
+					<CardDescription>{copy}</CardDescription>
 				</CardHeader>
-				<CardContent className="space-y-4 text-center text-muted-foreground text-sm">
-					<p>{copy}</p>
-					<p className="flex items-center justify-center gap-2">
-						<MailIcon className="size-4" />
-						You can sign out and return later; your status is saved.
-					</p>
+				<CardContent className="flex flex-col items-center gap-4 text-center">
+					<Badge variant={isBlocked ? "destructive" : "secondary"}>
+						{user?.email}
+					</Badge>
+					<div className="flex max-w-md items-start gap-3 rounded-xl border bg-muted/40 p-4 text-left text-muted-foreground text-sm">
+						<MailIcon className="mt-0.5 shrink-0 text-primary" />
+						<p>
+							You can sign out and return later. We save the review status to
+							your account and show the updated result when you come back.
+						</p>
+					</div>
 				</CardContent>
 			</Card>
 		</div>

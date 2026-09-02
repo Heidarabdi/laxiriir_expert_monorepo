@@ -13,7 +13,9 @@
 	"exports": {
 		"./auth": "./src/auth.ts",
 		"./consultations": "./src/consultations.ts",
-		"./health": "./src/health.ts"
+		"./engagements": "./src/engagements.ts",
+		"./health": "./src/health.ts",
+		"./workspace": "./src/workspace.ts"
 	},
 	"dependencies": {
 		"zod": "catalog:"

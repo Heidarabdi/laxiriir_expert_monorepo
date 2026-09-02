@@ -1,7 +1,39 @@
+import { randomBytes } from "node:crypto";
 import { describe, expect, it } from "vitest";
-import { readApiConfig } from "../src/config.js";
+import { getDevelopmentSeedPassword, readApiConfig } from "../src/config.js";
 
 describe("API configuration", () => {
+	it("does not enable demo identities without an explicit local password", () => {
+		expect(
+			getDevelopmentSeedPassword(readApiConfig({ NODE_ENV: "development" })),
+		).toBeUndefined();
+	});
+
+	it("only supplies configured demo credentials for enabled development seeding", () => {
+		const password = randomBytes(24).toString("base64url");
+		const config = readApiConfig({
+			NODE_ENV: "development",
+			DEVELOPMENT_DEMO_PASSWORD: password,
+		});
+		expect(getDevelopmentSeedPassword(config)).toBe(password);
+		expect(
+			getDevelopmentSeedPassword({ ...config, SEED_DEVELOPMENT_DATA: false }),
+		).toBeUndefined();
+		expect(
+			getDevelopmentSeedPassword({ ...config, NODE_ENV: "production" }),
+		).toBeUndefined();
+		expect(
+			getDevelopmentSeedPassword({ ...config, NODE_ENV: "test" }),
+		).toBeUndefined();
+	});
+
+	it("rejects too-short demo credentials without a fallback", () => {
+		expect(() =>
+			readApiConfig({
+				DEVELOPMENT_DEMO_PASSWORD: randomBytes(4).toString("hex"),
+			}),
+		).toThrow();
+	});
 	it("validates and normalizes trusted browser origins", () => {
 		const config = readApiConfig({
 			NODE_ENV: "test",

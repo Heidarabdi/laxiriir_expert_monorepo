@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+	accountProfileInputSchema,
 	adminExpertListResponseSchema,
 	currentUserSchema,
 	signUpInputSchema,
@@ -47,5 +48,15 @@ describe("authentication contracts", () => {
 		});
 
 		expect(result.success).toBe(true);
+	});
+
+	it("validates account display-name updates", () => {
+		expect(
+			accountProfileInputSchema.safeParse({ displayName: "Amina Hassan" })
+				.success,
+		).toBe(true);
+		expect(
+			accountProfileInputSchema.safeParse({ displayName: " " }).success,
+		).toBe(false);
 	});
 });

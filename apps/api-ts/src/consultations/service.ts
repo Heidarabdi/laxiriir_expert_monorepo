@@ -1,6 +1,9 @@
 import { randomUUID } from "node:crypto";
 import type { ExpertStatus } from "@repo/contracts/auth";
-import type { ExpertBookingScope } from "@repo/contracts/consultations";
+import type {
+	ExpertBookingScope,
+	ExpertProfileInput,
+} from "@repo/contracts/consultations";
 import {
 	and,
 	asc,
@@ -22,6 +25,7 @@ import {
 	bookings,
 	experts,
 } from "../db/consultation-schema.ts";
+import { notifications } from "../db/engagement-schema.ts";
 import type { AppDatabase } from "../db/postgres.js";
 
 export class SlotUnavailableError extends Error {
@@ -65,6 +69,13 @@ export class BookingChangeConflictError extends Error {
 	) {
 		super(message);
 		this.name = "BookingChangeConflictError";
+	}
+}
+
+export class ExpertProfileNotFoundError extends Error {
+	constructor() {
+		super("expert profile not found");
+		this.name = "ExpertProfileNotFoundError";
 	}
 }
 
@@ -245,6 +256,36 @@ export class ConsultationService {
 			.where(and(eq(experts.active, true), this.expertIdentityIsEligible()))
 			.orderBy(asc(experts.displayName));
 		return rows.map(({ expert }) => serializeExpert(expert));
+	}
+
+	async getExpertProfile(expertId: string) {
+		const [expert] = await this.database
+			.select()
+			.from(experts)
+			.where(eq(experts.id, expertId))
+			.limit(1);
+		if (!expert) throw new ExpertProfileNotFoundError();
+		return serializeExpert(expert);
+	}
+
+	async updateExpertProfile(
+		expertId: string,
+		input: ExpertProfileInput,
+		now = new Date(),
+	) {
+		return this.database.transaction(async (transaction) => {
+			const [expert] = await transaction
+				.update(experts)
+				.set({ ...input, updatedAt: now })
+				.where(and(eq(experts.id, expertId), eq(experts.active, true)))
+				.returning();
+			if (!expert) throw new ExpertProfileNotFoundError();
+			await transaction
+				.update(user)
+				.set({ name: input.displayName, updatedAt: now })
+				.where(eq(user.id, expertId));
+			return serializeExpert(expert);
+		});
 	}
 
 	async listAvailability(expertId: string, after = new Date()) {
@@ -500,6 +541,37 @@ export class ConsultationService {
 				})
 				.returning();
 
+			const [recipient] = await transaction
+				.select({ id: user.id })
+				.from(user)
+				.where(eq(user.id, clientUserId))
+				.limit(1);
+			if (recipient) {
+				await transaction.insert(notifications).values({
+					href: `/client/bookings/${booking.id}`,
+					id: randomUUID(),
+					message: `Your session with ${expert.displayName} is scheduled for ${slot.startsAt.toISOString()}.`,
+					title: "Booking confirmed",
+					type: "booking_confirmed",
+					userId: clientUserId,
+				});
+			}
+			const [expertRecipient] = await transaction
+				.select({ id: user.id })
+				.from(user)
+				.where(eq(user.id, expert.id))
+				.limit(1);
+			if (expertRecipient) {
+				await transaction.insert(notifications).values({
+					href: "/expert/sessions",
+					id: randomUUID(),
+					message: `A client booked your ${slot.startsAt.toISOString()} session.`,
+					title: "New booking",
+					type: "booking_confirmed",
+					userId: expert.id,
+				});
+			}
+
 			return serializeBooking(booking, expert);
 		});
 	}
@@ -512,6 +584,28 @@ export class ConsultationService {
 			.where(eq(bookings.clientUserId, clientUserId))
 			.orderBy(asc(bookings.startsAt));
 		return rows.map(({ booking, expert }) => serializeBooking(booking, expert));
+	}
+
+	async listAdminBookings() {
+		const rows = await this.database
+			.select({ booking: bookings, client: user, expert: experts })
+			.from(bookings)
+			.innerJoin(experts, eq(bookings.expertId, experts.id))
+			.innerJoin(user, eq(bookings.clientUserId, user.id))
+			.orderBy(desc(bookings.startsAt));
+		return rows.map(({ booking, client, expert }) => ({
+			client: {
+				displayName: client.name,
+				email: client.email,
+				id: client.id,
+			},
+			createdAt: booking.createdAt.toISOString(),
+			endsAt: booking.endsAt.toISOString(),
+			expert: serializeExpert(expert),
+			id: booking.id,
+			startsAt: booking.startsAt.toISOString(),
+			status: booking.status as "cancelled" | "confirmed",
+		}));
 	}
 
 	async listExpertBookings(
@@ -620,6 +714,37 @@ export class ConsultationService {
 				.set({ booked: false })
 				.where(eq(availabilitySlots.id, booking.availabilitySlotId));
 
+			const [recipient] = await transaction
+				.select({ id: user.id })
+				.from(user)
+				.where(eq(user.id, clientUserId))
+				.limit(1);
+			if (recipient) {
+				await transaction.insert(notifications).values({
+					href: `/client/bookings/${cancelled.id}`,
+					id: randomUUID(),
+					message: `Your session with ${expert.displayName} was cancelled.`,
+					title: "Booking cancelled",
+					type: "booking_cancelled",
+					userId: clientUserId,
+				});
+			}
+			const [expertRecipient] = await transaction
+				.select({ id: user.id })
+				.from(user)
+				.where(eq(user.id, expert.id))
+				.limit(1);
+			if (expertRecipient) {
+				await transaction.insert(notifications).values({
+					href: "/expert/sessions",
+					id: randomUUID(),
+					message: `A client cancelled the ${booking.startsAt.toISOString()} session.`,
+					title: "Booking cancelled",
+					type: "booking_cancelled",
+					userId: expert.id,
+				});
+			}
+
 			return serializeBooking(cancelled, expert);
 		});
 	}
@@ -717,6 +842,37 @@ export class ConsultationService {
 				.update(availabilitySlots)
 				.set({ booked: false })
 				.where(eq(availabilitySlots.id, booking.availabilitySlotId));
+
+			const [recipient] = await transaction
+				.select({ id: user.id })
+				.from(user)
+				.where(eq(user.id, clientUserId))
+				.limit(1);
+			if (recipient) {
+				await transaction.insert(notifications).values({
+					href: `/client/bookings/${rescheduled.id}`,
+					id: randomUUID(),
+					message: `Your session with ${expert.displayName} was moved to ${replacement.startsAt.toISOString()}.`,
+					title: "Booking rescheduled",
+					type: "booking_rescheduled",
+					userId: clientUserId,
+				});
+			}
+			const [expertRecipient] = await transaction
+				.select({ id: user.id })
+				.from(user)
+				.where(eq(user.id, expert.id))
+				.limit(1);
+			if (expertRecipient) {
+				await transaction.insert(notifications).values({
+					href: "/expert/sessions",
+					id: randomUUID(),
+					message: `A client moved their session to ${replacement.startsAt.toISOString()}.`,
+					title: "Booking rescheduled",
+					type: "booking_rescheduled",
+					userId: expert.id,
+				});
+			}
 
 			return serializeBooking(rescheduled, expert);
 		});

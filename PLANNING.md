@@ -412,6 +412,15 @@ What exists already:
 - persisted client booking history
 - client-owned cancellation and same-expert rescheduling at least 24 hours before start
 - working client dashboard booking flow
+- expert-owned booking lists and dashboard summary endpoints
+- expert availability creation, editing, and deletion UI
+- admin expert listing and moderation workflow
+- authenticated expert profile viewing and editing
+- admin-wide user and booking inspection endpoints
+- real client, expert, and admin analytics derived from persisted records
+- role-specific dashboards with live metrics, charts, queues, and schedule/value panels
+- operational booking-value ledgers for client billing, expert earnings, and admin finance
+- loginable development workspace seed for client, expert, review-state, and admin accounts
 - PostgreSQL initial schema migration
 - CI validation workflow
 
@@ -419,7 +428,6 @@ What does not exist yet:
 
 - real payment integration
 - real live session infrastructure
-- expert-owned booking lists and dashboard summary endpoints
 - reminder and notification workers
 - staging infrastructure
 
@@ -427,6 +435,8 @@ What does not exist yet:
 
 The next correct implementation step is:
 
-1. integrate payment intents and verified webhooks
-2. issue authorized video-session tokens for confirmed bookings
-3. add reminder and notification workers
+1. complete the final visual and responsive review of the client, expert, and admin workspaces
+2. finish the remaining public-page design pass
+3. integrate payment intents and verified webhooks
+4. issue authorized video-session tokens for confirmed bookings
+5. add messaging, saved experts, support, and notification persistence before exposing those destinations in navigation
