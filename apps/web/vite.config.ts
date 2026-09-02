@@ -6,8 +6,14 @@ import { defineConfig } from "vite";
 
 const config = defineConfig({
 	envPrefix: "VITE_",
-	plugins: [devtools(), tailwindcss(), tanstackStart(), viteReact()],
+	plugins: [
+		devtools({ consolePiping: { enabled: false } }),
+		tailwindcss(),
+		tanstackStart(),
+		viteReact(),
+	],
 	resolve: { tsconfigPaths: true },
+	server: { forwardConsole: false },
 });
 
 export default config;

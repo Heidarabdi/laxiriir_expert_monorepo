@@ -1,14 +1,31 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { CalendarDaysIcon } from "lucide-react";
+import {
+	BookmarkCheckIcon,
+	BookmarkIcon,
+	CalendarDaysIcon,
+} from "lucide-react";
+import { toast } from "sonner";
 
 import { PublicShell } from "@/components/public-shell";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+	Card,
+	CardAction,
+	CardContent,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useCurrentUser } from "@/hooks/use-auth";
 import { useExpertAvailability, useExperts } from "@/hooks/use-consultations";
-import { formatPrice, formatTimeRange } from "@/lib/format";
+import {
+	useRemoveSavedExpert,
+	useSavedExperts,
+	useSaveExpert,
+} from "@/hooks/use-engagements";
+import { formatPrice, formatTimeRange, messageFrom } from "@/lib/format";
 
 export const Route = createFileRoute("/experts/$id")({
 	component: ExpertProfilePage,
@@ -17,7 +34,29 @@ function ExpertProfilePage() {
 	const { id } = Route.useParams();
 	const expertsQuery = useExperts();
 	const availabilityQuery = useExpertAvailability(id);
+	const { data: user } = useCurrentUser();
+	const isClient = user?.primaryRole === "client";
+	const savedExpertsQuery = useSavedExperts(isClient);
+	const saveExpertMutation = useSaveExpert();
+	const removeSavedExpertMutation = useRemoveSavedExpert();
 	const expert = expertsQuery.data?.experts.find((item) => item.id === id);
+	const isSaved = savedExpertsQuery.data?.savedExperts.some(
+		(saved) => saved.expert.id === id,
+	);
+
+	async function toggleSavedExpert() {
+		try {
+			if (isSaved) {
+				await removeSavedExpertMutation.mutateAsync(id);
+				toast.success("Expert removed from saved experts.");
+			} else {
+				await saveExpertMutation.mutateAsync(id);
+				toast.success("Expert saved.");
+			}
+		} catch (error) {
+			toast.error(messageFrom(error, "Unable to update saved experts."));
+		}
+	}
 	return (
 		<PublicShell>
 			<main className="mx-auto min-h-[70svh] max-w-5xl px-4 py-16 sm:px-6">
@@ -38,6 +77,25 @@ function ExpertProfilePage() {
 					<div className="grid gap-6 lg:grid-cols-[1fr_360px]">
 						<Card>
 							<CardHeader>
+								{isClient ? (
+									<CardAction>
+										<Button
+											disabled={
+												saveExpertMutation.isPending ||
+												removeSavedExpertMutation.isPending
+											}
+											onClick={toggleSavedExpert}
+											variant={isSaved ? "secondary" : "outline"}
+										>
+											{isSaved ? (
+												<BookmarkCheckIcon data-icon="inline-start" />
+											) : (
+												<BookmarkIcon data-icon="inline-start" />
+											)}
+											{isSaved ? "Saved" : "Save expert"}
+										</Button>
+									</CardAction>
+								) : null}
 								<div className="flex items-center gap-4">
 									<Avatar size="lg">
 										<AvatarImage src={expert.avatarUrl} />
@@ -76,17 +134,34 @@ function ExpertProfilePage() {
 											key={slot.id}
 											variant="outline"
 										>
-											<Link to="/login">
-												<CalendarDaysIcon data-icon="inline-start" />
-												<span className="text-left">
-													<span className="block">
-														{new Date(slot.startsAt).toLocaleDateString()}
+											{isClient ? (
+												<Link
+													params={{ expertId: expert.id }}
+													to="/client/bookings/new/$expertId"
+												>
+													<CalendarDaysIcon data-icon="inline-start" />
+													<span className="text-left">
+														<span className="block">
+															{new Date(slot.startsAt).toLocaleDateString()}
+														</span>
+														<span className="text-muted-foreground text-xs">
+															{formatTimeRange(slot.startsAt, slot.endsAt)}
+														</span>
 													</span>
-													<span className="text-muted-foreground text-xs">
-														{formatTimeRange(slot.startsAt, slot.endsAt)}
+												</Link>
+											) : (
+												<Link to="/login">
+													<CalendarDaysIcon data-icon="inline-start" />
+													<span className="text-left">
+														<span className="block">
+															{new Date(slot.startsAt).toLocaleDateString()}
+														</span>
+														<span className="text-muted-foreground text-xs">
+															{formatTimeRange(slot.startsAt, slot.endsAt)}
+														</span>
 													</span>
-												</span>
-											</Link>
+												</Link>
+											)}
 										</Button>
 									))
 								)}

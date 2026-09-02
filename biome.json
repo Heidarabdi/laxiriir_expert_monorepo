@@ -77,6 +77,17 @@
 	},
 	"overrides": [
 		{
+			"includes": ["**/components/ui/input-group.tsx"],
+			"linter": {
+				"rules": {
+					"a11y": {
+						"useKeyWithClickEvents": "off",
+						"useSemanticElements": "off"
+					}
+				}
+			}
+		},
+		{
 			"includes": ["**/*.svelte", "**/*.vue"],
 			"linter": {
 				"rules": {

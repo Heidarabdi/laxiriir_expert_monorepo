@@ -1,4 +1,5 @@
 import type {
+	AdminBookingListResponse,
 	AvailabilityInput,
 	AvailabilityListResponse,
 	AvailabilityResponse,
@@ -9,6 +10,8 @@ import type {
 	ExpertBookingScope,
 	ExpertDashboardSummary,
 	ExpertListResponse,
+	ExpertProfileInput,
+	ExpertResponse,
 } from "@repo/contracts/consultations";
 
 import { type ApiClientOptions, createApiRequest } from "./request";
@@ -17,6 +20,7 @@ export const EXPERTS_PATH = "/api/v1/experts";
 export const CLIENT_BOOKINGS_PATH = "/api/v1/client/bookings";
 export const EXPERT_AVAILABILITY_PATH = "/api/v1/expert/availability";
 export const EXPERT_BOOKINGS_PATH = "/api/v1/expert/bookings";
+export const EXPERT_PROFILE_PATH = "/api/v1/expert/profile";
 
 function expertAvailabilityPath(expertId: string) {
 	return `${EXPERTS_PATH}/${encodeURIComponent(expertId)}/availability`;
@@ -75,6 +79,12 @@ export function createConsultationClient(options: ApiClientOptions) {
 		getExpertDashboardSummary() {
 			return request<ExpertDashboardSummary>(`${EXPERT_BOOKINGS_PATH}/summary`);
 		},
+		listAdminBookings() {
+			return request<AdminBookingListResponse>("/api/v1/admin/bookings");
+		},
+		getExpertProfile() {
+			return request<ExpertResponse>(EXPERT_PROFILE_PATH);
+		},
 		listOwnAvailability() {
 			return request<AvailabilityListResponse>(ownAvailabilityPath());
 		},
@@ -86,6 +96,12 @@ export function createConsultationClient(options: ApiClientOptions) {
 		},
 		updateAvailability(slotId: number, input: AvailabilityInput) {
 			return request<AvailabilityResponse>(ownAvailabilityPath(slotId), {
+				body: input,
+				method: "PATCH",
+			});
+		},
+		updateExpertProfile(input: ExpertProfileInput) {
+			return request<ExpertResponse>(EXPERT_PROFILE_PATH, {
 				body: input,
 				method: "PATCH",
 			});

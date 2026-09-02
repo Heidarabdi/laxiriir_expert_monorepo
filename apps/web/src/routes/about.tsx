@@ -1,6 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { StaticPage } from "@/components/static-page";
 export const Route = createFileRoute("/about")({
+	head: () => ({
+		meta: [
+			{ title: "About | Laxiriir Expert" },
+			{ content: "Learn how Laxiriir Expert connects clients with approved specialists and real consultation availability.", name: "description" },
+		],
+	}),
 	component: () => (
 		<StaticPage eyebrow="About" title="Expert guidance, without the friction">
 			<p>

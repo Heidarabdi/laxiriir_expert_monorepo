@@ -4,6 +4,8 @@ const developmentAuthSecret = "development-only-secret-change-me";
 const developmentDatabaseUrl =
 	"postgres://postgres:postgres@localhost:5432/laxiriir_expert";
 
+export const developmentDemoPasswordSchema = z.string().min(16).max(128);
+
 export const apiConfigSchema = z
 	.object({
 		AUTH_BOOTSTRAP_ADMIN_EMAILS: z
@@ -18,6 +20,9 @@ export const apiConfigSchema = z
 		BETTER_AUTH_SECRET: z.string().min(32).default(developmentAuthSecret),
 		BETTER_AUTH_URL: z.string().url().default("http://localhost:8081"),
 		DATABASE_URL: z.string().url().default(developmentDatabaseUrl),
+		DEVELOPMENT_DEMO_PASSWORD: z
+			.union([z.literal(""), developmentDemoPasswordSchema])
+			.default(""),
 		EMAIL_FROM: z.string().default(""),
 		HOST: z.string().default("0.0.0.0"),
 		LOG_LEVEL: z
@@ -28,6 +33,10 @@ export const apiConfigSchema = z
 			.default("development"),
 		PORT: z.coerce.number().int().min(1).max(65_535).default(8081),
 		RESEND_API_KEY: z.string().default(""),
+		SEED_DEVELOPMENT_DATA: z
+			.enum(["true", "false"])
+			.default("true")
+			.transform((value) => value === "true"),
 		TRUSTED_ORIGINS: z
 			.string()
 			.default("http://localhost:3000")
@@ -103,6 +112,12 @@ export const apiConfigSchema = z
 	});
 
 export type ApiConfig = z.infer<typeof apiConfigSchema>;
+
+export function getDevelopmentSeedPassword(config: ApiConfig) {
+	return config.NODE_ENV === "development" && config.SEED_DEVELOPMENT_DATA
+		? config.DEVELOPMENT_DEMO_PASSWORD || undefined
+		: undefined;
+}
 
 export function readApiConfig(
 	environment: NodeJS.ProcessEnv = process.env,

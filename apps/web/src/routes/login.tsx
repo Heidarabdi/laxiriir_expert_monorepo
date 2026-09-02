@@ -7,15 +7,15 @@ export const Route = createFileRoute("/login")({ component: LoginPage });
 function LoginPage() {
 	return (
 		<AuthCard
-			description="Sign in to manage consultations and availability."
+			description="Enter your credentials to access your account"
 			footer={
 				<p className="w-full text-center text-muted-foreground text-sm">
-					No account?{" "}
+					Don&apos;t have an account?{" "}
 					<Link
 						className="font-medium text-primary hover:underline"
 						to="/register"
 					>
-						Create one
+						Create an account
 					</Link>
 				</p>
 			}

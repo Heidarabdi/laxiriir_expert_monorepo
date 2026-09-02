@@ -1,111 +1,99 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import {
-	ArrowRightIcon,
-	CalendarCheckIcon,
-	ShieldCheckIcon,
-	UsersIcon,
-} from "lucide-react";
+import { lazy, Suspense } from "react";
 
-import { PublicShell } from "@/components/public-shell";
+import { RevisedLanding } from "@/components/landing/revised-landing";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+// Keep the previous design for local comparison, out of the production bundle.
+const PenLanding = import.meta.env.DEV
+	? lazy(() =>
+			import("@/components/landing/pen-landing").then((module) => ({
+				default: module.PenLanding,
+			})),
+		)
+	: null;
 
 export const Route = createFileRoute("/")({
+	validateSearch: (
+		search: Record<string, unknown>,
+	): { design?: "pen" | "revised" } => ({
+		design:
+			search.design === "pen" || search.design === "revised"
+				? search.design
+				: undefined,
+	}),
 	component: Home,
 	head: () => ({
-		meta: [{ title: "Laxiriir Expert | Book trusted expertise" }],
+		meta: [
+			{
+				title: "Laxiriir Expert | Find the right expert for your next decision",
+			},
+			{
+				name: "description",
+				content:
+					"Compare expert profiles, explore available times, and manage your consultations in one place.",
+			},
+			{
+				property: "og:title",
+				content: "Laxiriir Expert | Good advice. Clearer decisions.",
+			},
+		],
 	}),
 });
 
 function Home() {
-	const benefits = [
-		{
-			icon: UsersIcon,
-			title: "Approved experts",
-			copy: "Browse specialists reviewed by the platform team.",
-		},
-		{
-			icon: CalendarCheckIcon,
-			title: "Real availability",
-			copy: "Reserve open time directly—no fake schedules or back-and-forth.",
-		},
-		{
-			icon: ShieldCheckIcon,
-			title: "One secure account",
-			copy: "Better Auth keeps client, expert, and admin access together.",
-		},
-	];
+	const { design } = Route.useSearch();
 	return (
-		<PublicShell>
-			<main>
-				<section className="mx-auto grid max-w-7xl items-center gap-12 px-4 py-24 sm:px-6 lg:grid-cols-[1.2fr_0.8fr] lg:py-32">
-					<div>
-						<p className="mb-4 font-medium text-muted-foreground text-sm uppercase tracking-[0.2em]">
-							Advice that moves work forward
+		<>
+			{import.meta.env.DEV && design && (
+				<nav
+					aria-label="Landing design comparison"
+					className="flex flex-wrap items-center justify-center gap-2 border-b bg-background px-4 py-2 text-sm"
+				>
+					<span className="mr-2 text-muted-foreground">
+						Local design preview
+					</span>
+					<Button
+						asChild
+						size="sm"
+						variant={design === "revised" ? "default" : "outline"}
+					>
+						<Link
+							to="/"
+							search={{ design: "revised" }}
+							aria-current={design === "revised" ? "page" : undefined}
+						>
+							Revised
+						</Link>
+					</Button>
+					<Button
+						asChild
+						size="sm"
+						variant={design === "pen" ? "default" : "outline"}
+					>
+						<Link
+							to="/"
+							search={{ design: "pen" }}
+							aria-current={design === "pen" ? "page" : undefined}
+						>
+							Original Pen design
+						</Link>
+					</Button>
+				</nav>
+			)}
+			{design === "pen" && PenLanding ? (
+				<Suspense
+					fallback={
+						<p role="status" className="p-8 text-center">
+							Loading the original design…
 						</p>
-						<h1 className="text-balance font-semibold text-5xl tracking-[-0.04em] sm:text-7xl">
-							Meet the right expert. Book the right moment.
-						</h1>
-						<p className="mt-6 max-w-2xl text-pretty text-lg text-muted-foreground leading-8">
-							Laxiriir connects clients with approved experts through real
-							profiles, live availability, and a focused consultation workspace.
-						</p>
-						<div className="mt-8 flex flex-wrap gap-3">
-							<Button asChild size="lg">
-								<Link to="/experts">
-									Browse experts
-									<ArrowRightIcon data-icon="inline-end" />
-								</Link>
-							</Button>
-							<Button asChild size="lg" variant="outline">
-								<Link to="/register">Create an account</Link>
-							</Button>
-						</div>
-					</div>
-					<Card className="bg-primary text-primary-foreground">
-						<CardHeader>
-							<CardTitle className="text-3xl">
-								Built for real consultations
-							</CardTitle>
-						</CardHeader>
-						<CardContent className="space-y-6 text-primary-foreground/75">
-							<p>
-								No demo bookings. No static expert data. Every available time
-								and account status comes from the API.
-							</p>
-							<div className="grid grid-cols-2 gap-3">
-								<div className="rounded-xl bg-primary-foreground/10 p-4">
-									<p className="font-semibold text-3xl text-primary-foreground">
-										3
-									</p>
-									<p className="text-sm">role workspaces</p>
-								</div>
-								<div className="rounded-xl bg-primary-foreground/10 p-4">
-									<p className="font-semibold text-3xl text-primary-foreground">
-										1
-									</p>
-									<p className="text-sm">shared platform</p>
-								</div>
-							</div>
-						</CardContent>
-					</Card>
-				</section>
-				<section className="border-y bg-muted/40">
-					<div className="mx-auto grid max-w-7xl gap-4 px-4 py-16 sm:px-6 md:grid-cols-3">
-						{benefits.map(({ icon: Icon, title, copy }) => (
-							<Card key={title}>
-								<CardHeader>
-									<Icon className="mb-4 size-6" />
-									<CardTitle>{title}</CardTitle>
-								</CardHeader>
-								<CardContent className="text-muted-foreground text-sm">
-									{copy}
-								</CardContent>
-							</Card>
-						))}
-					</div>
-				</section>
-			</main>
-		</PublicShell>
+					}
+				>
+					<PenLanding />
+				</Suspense>
+			) : (
+				<RevisedLanding />
+			)}
+		</>
 	);
 }

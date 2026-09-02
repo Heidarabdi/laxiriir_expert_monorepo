@@ -8,6 +8,7 @@ import {
 	Scripts,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import { ThemeProvider } from "next-themes";
 
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
@@ -27,9 +28,12 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 			},
 			{
 				content:
-					"Book and manage secure video consultations with trusted experts.",
+					"Discover approved experts, reserve real availability, and manage consultations in one focused workspace.",
 				name: "description",
 			},
+			{ content: "Laxiriir Expert", property: "og:site_name" },
+			{ content: "website", property: "og:type" },
+			{ content: "summary", name: "twitter:card" },
 			{ title: "Laxiriir Expert" },
 		],
 	}),
@@ -41,12 +45,19 @@ function RootApplication() {
 	const { queryClient } = Route.useRouteContext();
 
 	return (
-		<QueryClientProvider client={queryClient}>
-			<TooltipProvider>
-				<Outlet />
-				<Toaster richColors />
-			</TooltipProvider>
-		</QueryClientProvider>
+		<ThemeProvider
+			attribute="class"
+			defaultTheme="system"
+			disableTransitionOnChange
+			enableSystem
+		>
+			<QueryClientProvider client={queryClient}>
+				<TooltipProvider>
+					<Outlet />
+					<Toaster richColors />
+				</TooltipProvider>
+			</QueryClientProvider>
+		</ThemeProvider>
 	);
 }
 
@@ -71,11 +82,11 @@ function NotFound() {
 
 function RootDocument({ children }: { children: React.ReactNode }) {
 	return (
-		<html lang="en">
+		<html lang="en" suppressHydrationWarning>
 			<head>
 				<HeadContent />
 			</head>
-			<body>
+			<body className="antialiased" suppressHydrationWarning>
 				{children}
 				{import.meta.env.DEV ? (
 					<TanStackDevtools

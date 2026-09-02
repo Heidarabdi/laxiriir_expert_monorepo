@@ -1,7 +1,9 @@
 import { createAuthClient } from "@repo/api-client/auth";
 import { createConsultationClient } from "@repo/api-client/consultations";
+import { createEngagementClient } from "@repo/api-client/engagements";
 import { joinApiUrl } from "@repo/api-client/health";
 import type { ApiRequestOptions } from "@repo/api-client/request";
+import { createWorkspaceClient } from "@repo/api-client/workspace";
 import type {
 	CurrentUserResponse,
 	SignInInput,
@@ -63,6 +65,8 @@ const clientOptions = {
 
 export const accountApi = createAuthClient(clientOptions);
 export const consultationApi = createConsultationClient(clientOptions);
+export const engagementApi = createEngagementClient(clientOptions);
+export const workspaceApi = createWorkspaceClient(clientOptions);
 
 async function authRequest<TResponse>(
 	path: string,

@@ -1,9 +1,11 @@
 import closeWithGrace from "close-with-grace";
 
 import { createAuth } from "./auth/factory.js";
-import { readApiConfig } from "./config.js";
+import { getDevelopmentSeedPassword, readApiConfig } from "./config.js";
 import { ConsultationService } from "./consultations/service.js";
+import { seedDevelopmentWorkspace } from "./db/development-seed.js";
 import { createPostgresDatabase } from "./db/postgres.js";
+import { createLoggerOptions } from "./logger.js";
 import { buildServer } from "./server.js";
 
 const config = readApiConfig();
@@ -11,27 +13,16 @@ const database = createPostgresDatabase(config.DATABASE_URL);
 const auth = createAuth(database.db, config);
 if (config.NODE_ENV === "development") {
 	await new ConsultationService(database.db).seedDemoData();
+	const password = getDevelopmentSeedPassword(config);
+	if (password) {
+		await seedDevelopmentWorkspace(database.db, auth, { password });
+	}
 }
 const server = buildServer({
 	auth,
 	config,
 	database: database.db,
-	logger:
-		config.LOG_LEVEL === "silent"
-			? false
-			: {
-					level: config.LOG_LEVEL,
-					redact: {
-						censor: "[Redacted]",
-						paths: [
-							"req.body.password",
-							"req.body.token",
-							"req.headers.authorization",
-							"req.headers.cookie",
-							"res.headers.set-cookie",
-						],
-					},
-				},
+	logger: createLoggerOptions(config),
 });
 
 server.addHook("onClose", async () => {

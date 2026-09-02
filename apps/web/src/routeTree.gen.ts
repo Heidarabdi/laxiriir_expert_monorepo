@@ -23,17 +23,43 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as VerifyEmailRouteImport } from './routes/verify-email'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as AdminAnalyticsRouteImport } from './routes/admin/analytics'
+import { Route as AdminBookingsRouteImport } from './routes/admin/bookings'
+import { Route as AdminExpertsRouteImport } from './routes/admin/experts'
+import { Route as AdminFinanceRouteImport } from './routes/admin/finance'
+import { Route as AdminNotificationsRouteImport } from './routes/admin/notifications'
+import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
+import { Route as AdminSupportRouteImport } from './routes/admin/support'
+import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as ClientIndexRouteImport } from './routes/client/index'
+import { Route as ClientBillingRouteImport } from './routes/client/billing'
 import { Route as ClientExpertsRouteImport } from './routes/client/experts'
 import { Route as ClientInsightsRouteImport } from './routes/client/insights'
 import { Route as ClientMessagesRouteImport } from './routes/client/messages'
+import { Route as ClientNotificationsRouteImport } from './routes/client/notifications'
+import { Route as ClientProfileRouteImport } from './routes/client/profile'
+import { Route as ClientSavedExpertsRouteImport } from './routes/client/saved-experts'
 import { Route as ClientSessionsRouteImport } from './routes/client/sessions'
+import { Route as ClientSettingsRouteImport } from './routes/client/settings'
+import { Route as ClientSupportRouteImport } from './routes/client/support'
 import { Route as ExpertIndexRouteImport } from './routes/expert/index'
+import { Route as ExpertBookingsRouteImport } from './routes/expert/bookings'
 import { Route as ExpertCalendarRouteImport } from './routes/expert/calendar'
+import { Route as ExpertEarningsRouteImport } from './routes/expert/earnings'
+import { Route as ExpertMessagesRouteImport } from './routes/expert/messages'
+import { Route as ExpertNotificationsRouteImport } from './routes/expert/notifications'
 import { Route as ExpertPendingRouteImport } from './routes/expert/pending'
+import { Route as ExpertProfileRouteImport } from './routes/expert/profile'
 import { Route as ExpertSessionsRouteImport } from './routes/expert/sessions'
+import { Route as ExpertSettingsRouteImport } from './routes/expert/settings'
+import { Route as ExpertSupportRouteImport } from './routes/expert/support'
 import { Route as ExpertsIndexRouteImport } from './routes/experts/index'
 import { Route as ExpertsIdRouteImport } from './routes/experts/$id'
+import { Route as ClientBookingsIndexRouteImport } from './routes/client/bookings/index'
+import { Route as ClientBookingsBookingIdRouteImport } from './routes/client/bookings/$bookingId'
+import { Route as ClientSummariesBookingIdRouteImport } from './routes/client/summaries/$bookingId'
+import { Route as ExpertSessionsSessionIdRouteImport } from './routes/expert/sessions/$sessionId'
+import { Route as ClientBookingsNewExpertIdRouteImport } from './routes/client/bookings/new/$expertId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -105,9 +131,54 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/admin/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminAnalyticsRoute = AdminAnalyticsRouteImport.update({
+  id: '/admin/analytics',
+  path: '/admin/analytics',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminBookingsRoute = AdminBookingsRouteImport.update({
+  id: '/admin/bookings',
+  path: '/admin/bookings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminExpertsRoute = AdminExpertsRouteImport.update({
+  id: '/admin/experts',
+  path: '/admin/experts',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminFinanceRoute = AdminFinanceRouteImport.update({
+  id: '/admin/finance',
+  path: '/admin/finance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminNotificationsRoute = AdminNotificationsRouteImport.update({
+  id: '/admin/notifications',
+  path: '/admin/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/admin/settings',
+  path: '/admin/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminSupportRoute = AdminSupportRouteImport.update({
+  id: '/admin/support',
+  path: '/admin/support',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/admin/users',
+  path: '/admin/users',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ClientIndexRoute = ClientIndexRouteImport.update({
   id: '/client/',
   path: '/client/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClientBillingRoute = ClientBillingRouteImport.update({
+  id: '/client/billing',
+  path: '/client/billing',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ClientExpertsRoute = ClientExpertsRouteImport.update({
@@ -125,9 +196,34 @@ const ClientMessagesRoute = ClientMessagesRouteImport.update({
   path: '/client/messages',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ClientNotificationsRoute = ClientNotificationsRouteImport.update({
+  id: '/client/notifications',
+  path: '/client/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClientProfileRoute = ClientProfileRouteImport.update({
+  id: '/client/profile',
+  path: '/client/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClientSavedExpertsRoute = ClientSavedExpertsRouteImport.update({
+  id: '/client/saved-experts',
+  path: '/client/saved-experts',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ClientSessionsRoute = ClientSessionsRouteImport.update({
   id: '/client/sessions',
   path: '/client/sessions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClientSettingsRoute = ClientSettingsRouteImport.update({
+  id: '/client/settings',
+  path: '/client/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClientSupportRoute = ClientSupportRouteImport.update({
+  id: '/client/support',
+  path: '/client/support',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExpertIndexRoute = ExpertIndexRouteImport.update({
@@ -135,9 +231,29 @@ const ExpertIndexRoute = ExpertIndexRouteImport.update({
   path: '/expert/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ExpertBookingsRoute = ExpertBookingsRouteImport.update({
+  id: '/expert/bookings',
+  path: '/expert/bookings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExpertCalendarRoute = ExpertCalendarRouteImport.update({
   id: '/expert/calendar',
   path: '/expert/calendar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExpertEarningsRoute = ExpertEarningsRouteImport.update({
+  id: '/expert/earnings',
+  path: '/expert/earnings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExpertMessagesRoute = ExpertMessagesRouteImport.update({
+  id: '/expert/messages',
+  path: '/expert/messages',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExpertNotificationsRoute = ExpertNotificationsRouteImport.update({
+  id: '/expert/notifications',
+  path: '/expert/notifications',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExpertPendingRoute = ExpertPendingRouteImport.update({
@@ -145,9 +261,24 @@ const ExpertPendingRoute = ExpertPendingRouteImport.update({
   path: '/expert/pending',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ExpertProfileRoute = ExpertProfileRouteImport.update({
+  id: '/expert/profile',
+  path: '/expert/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExpertSessionsRoute = ExpertSessionsRouteImport.update({
   id: '/expert/sessions',
   path: '/expert/sessions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExpertSettingsRoute = ExpertSettingsRouteImport.update({
+  id: '/expert/settings',
+  path: '/expert/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExpertSupportRoute = ExpertSupportRouteImport.update({
+  id: '/expert/support',
+  path: '/expert/support',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExpertsIndexRoute = ExpertsIndexRouteImport.update({
@@ -160,6 +291,33 @@ const ExpertsIdRoute = ExpertsIdRouteImport.update({
   path: '/experts/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ClientBookingsIndexRoute = ClientBookingsIndexRouteImport.update({
+  id: '/client/bookings/',
+  path: '/client/bookings/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClientBookingsBookingIdRoute = ClientBookingsBookingIdRouteImport.update({
+  id: '/client/bookings/$bookingId',
+  path: '/client/bookings/$bookingId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClientSummariesBookingIdRoute =
+  ClientSummariesBookingIdRouteImport.update({
+    id: '/client/summaries/$bookingId',
+    path: '/client/summaries/$bookingId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ExpertSessionsSessionIdRoute = ExpertSessionsSessionIdRouteImport.update({
+  id: '/$sessionId',
+  path: '/$sessionId',
+  getParentRoute: () => ExpertSessionsRoute,
+} as any)
+const ClientBookingsNewExpertIdRoute =
+  ClientBookingsNewExpertIdRouteImport.update({
+    id: '/client/bookings/new/$expertId',
+    path: '/client/bookings/new/$expertId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -175,18 +333,44 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/verify-email': typeof VerifyEmailRoute
+  '/admin/analytics': typeof AdminAnalyticsRoute
+  '/admin/bookings': typeof AdminBookingsRoute
+  '/admin/experts': typeof AdminExpertsRoute
+  '/admin/finance': typeof AdminFinanceRoute
+  '/admin/notifications': typeof AdminNotificationsRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/support': typeof AdminSupportRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/client/billing': typeof ClientBillingRoute
   '/client/experts': typeof ClientExpertsRoute
   '/client/insights': typeof ClientInsightsRoute
   '/client/messages': typeof ClientMessagesRoute
+  '/client/notifications': typeof ClientNotificationsRoute
+  '/client/profile': typeof ClientProfileRoute
+  '/client/saved-experts': typeof ClientSavedExpertsRoute
   '/client/sessions': typeof ClientSessionsRoute
+  '/client/settings': typeof ClientSettingsRoute
+  '/client/support': typeof ClientSupportRoute
+  '/expert/bookings': typeof ExpertBookingsRoute
   '/expert/calendar': typeof ExpertCalendarRoute
+  '/expert/earnings': typeof ExpertEarningsRoute
+  '/expert/messages': typeof ExpertMessagesRoute
+  '/expert/notifications': typeof ExpertNotificationsRoute
   '/expert/pending': typeof ExpertPendingRoute
-  '/expert/sessions': typeof ExpertSessionsRoute
+  '/expert/profile': typeof ExpertProfileRoute
+  '/expert/sessions': typeof ExpertSessionsRouteWithChildren
+  '/expert/settings': typeof ExpertSettingsRoute
+  '/expert/support': typeof ExpertSupportRoute
   '/experts/$id': typeof ExpertsIdRoute
   '/admin/': typeof AdminIndexRoute
   '/client/': typeof ClientIndexRoute
   '/expert/': typeof ExpertIndexRoute
   '/experts/': typeof ExpertsIndexRoute
+  '/client/bookings/$bookingId': typeof ClientBookingsBookingIdRoute
+  '/client/summaries/$bookingId': typeof ClientSummariesBookingIdRoute
+  '/expert/sessions/$sessionId': typeof ExpertSessionsSessionIdRoute
+  '/client/bookings/': typeof ClientBookingsIndexRoute
+  '/client/bookings/new/$expertId': typeof ClientBookingsNewExpertIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -202,18 +386,44 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/verify-email': typeof VerifyEmailRoute
+  '/admin/analytics': typeof AdminAnalyticsRoute
+  '/admin/bookings': typeof AdminBookingsRoute
+  '/admin/experts': typeof AdminExpertsRoute
+  '/admin/finance': typeof AdminFinanceRoute
+  '/admin/notifications': typeof AdminNotificationsRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/support': typeof AdminSupportRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/client/billing': typeof ClientBillingRoute
   '/client/experts': typeof ClientExpertsRoute
   '/client/insights': typeof ClientInsightsRoute
   '/client/messages': typeof ClientMessagesRoute
+  '/client/notifications': typeof ClientNotificationsRoute
+  '/client/profile': typeof ClientProfileRoute
+  '/client/saved-experts': typeof ClientSavedExpertsRoute
   '/client/sessions': typeof ClientSessionsRoute
+  '/client/settings': typeof ClientSettingsRoute
+  '/client/support': typeof ClientSupportRoute
+  '/expert/bookings': typeof ExpertBookingsRoute
   '/expert/calendar': typeof ExpertCalendarRoute
+  '/expert/earnings': typeof ExpertEarningsRoute
+  '/expert/messages': typeof ExpertMessagesRoute
+  '/expert/notifications': typeof ExpertNotificationsRoute
   '/expert/pending': typeof ExpertPendingRoute
-  '/expert/sessions': typeof ExpertSessionsRoute
+  '/expert/profile': typeof ExpertProfileRoute
+  '/expert/sessions': typeof ExpertSessionsRouteWithChildren
+  '/expert/settings': typeof ExpertSettingsRoute
+  '/expert/support': typeof ExpertSupportRoute
   '/experts/$id': typeof ExpertsIdRoute
   '/admin': typeof AdminIndexRoute
   '/client': typeof ClientIndexRoute
   '/expert': typeof ExpertIndexRoute
   '/experts': typeof ExpertsIndexRoute
+  '/client/bookings/$bookingId': typeof ClientBookingsBookingIdRoute
+  '/client/summaries/$bookingId': typeof ClientSummariesBookingIdRoute
+  '/expert/sessions/$sessionId': typeof ExpertSessionsSessionIdRoute
+  '/client/bookings': typeof ClientBookingsIndexRoute
+  '/client/bookings/new/$expertId': typeof ClientBookingsNewExpertIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -230,18 +440,44 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/verify-email': typeof VerifyEmailRoute
+  '/admin/analytics': typeof AdminAnalyticsRoute
+  '/admin/bookings': typeof AdminBookingsRoute
+  '/admin/experts': typeof AdminExpertsRoute
+  '/admin/finance': typeof AdminFinanceRoute
+  '/admin/notifications': typeof AdminNotificationsRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/support': typeof AdminSupportRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/client/billing': typeof ClientBillingRoute
   '/client/experts': typeof ClientExpertsRoute
   '/client/insights': typeof ClientInsightsRoute
   '/client/messages': typeof ClientMessagesRoute
+  '/client/notifications': typeof ClientNotificationsRoute
+  '/client/profile': typeof ClientProfileRoute
+  '/client/saved-experts': typeof ClientSavedExpertsRoute
   '/client/sessions': typeof ClientSessionsRoute
+  '/client/settings': typeof ClientSettingsRoute
+  '/client/support': typeof ClientSupportRoute
+  '/expert/bookings': typeof ExpertBookingsRoute
   '/expert/calendar': typeof ExpertCalendarRoute
+  '/expert/earnings': typeof ExpertEarningsRoute
+  '/expert/messages': typeof ExpertMessagesRoute
+  '/expert/notifications': typeof ExpertNotificationsRoute
   '/expert/pending': typeof ExpertPendingRoute
-  '/expert/sessions': typeof ExpertSessionsRoute
+  '/expert/profile': typeof ExpertProfileRoute
+  '/expert/sessions': typeof ExpertSessionsRouteWithChildren
+  '/expert/settings': typeof ExpertSettingsRoute
+  '/expert/support': typeof ExpertSupportRoute
   '/experts/$id': typeof ExpertsIdRoute
   '/admin/': typeof AdminIndexRoute
   '/client/': typeof ClientIndexRoute
   '/expert/': typeof ExpertIndexRoute
   '/experts/': typeof ExpertsIndexRoute
+  '/client/bookings/$bookingId': typeof ClientBookingsBookingIdRoute
+  '/client/summaries/$bookingId': typeof ClientSummariesBookingIdRoute
+  '/expert/sessions/$sessionId': typeof ExpertSessionsSessionIdRoute
+  '/client/bookings/': typeof ClientBookingsIndexRoute
+  '/client/bookings/new/$expertId': typeof ClientBookingsNewExpertIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -259,18 +495,44 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/terms'
     | '/verify-email'
+    | '/admin/analytics'
+    | '/admin/bookings'
+    | '/admin/experts'
+    | '/admin/finance'
+    | '/admin/notifications'
+    | '/admin/settings'
+    | '/admin/support'
+    | '/admin/users'
+    | '/client/billing'
     | '/client/experts'
     | '/client/insights'
     | '/client/messages'
+    | '/client/notifications'
+    | '/client/profile'
+    | '/client/saved-experts'
     | '/client/sessions'
+    | '/client/settings'
+    | '/client/support'
+    | '/expert/bookings'
     | '/expert/calendar'
+    | '/expert/earnings'
+    | '/expert/messages'
+    | '/expert/notifications'
     | '/expert/pending'
+    | '/expert/profile'
     | '/expert/sessions'
+    | '/expert/settings'
+    | '/expert/support'
     | '/experts/$id'
     | '/admin/'
     | '/client/'
     | '/expert/'
     | '/experts/'
+    | '/client/bookings/$bookingId'
+    | '/client/summaries/$bookingId'
+    | '/expert/sessions/$sessionId'
+    | '/client/bookings/'
+    | '/client/bookings/new/$expertId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -286,18 +548,44 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/terms'
     | '/verify-email'
+    | '/admin/analytics'
+    | '/admin/bookings'
+    | '/admin/experts'
+    | '/admin/finance'
+    | '/admin/notifications'
+    | '/admin/settings'
+    | '/admin/support'
+    | '/admin/users'
+    | '/client/billing'
     | '/client/experts'
     | '/client/insights'
     | '/client/messages'
+    | '/client/notifications'
+    | '/client/profile'
+    | '/client/saved-experts'
     | '/client/sessions'
+    | '/client/settings'
+    | '/client/support'
+    | '/expert/bookings'
     | '/expert/calendar'
+    | '/expert/earnings'
+    | '/expert/messages'
+    | '/expert/notifications'
     | '/expert/pending'
+    | '/expert/profile'
     | '/expert/sessions'
+    | '/expert/settings'
+    | '/expert/support'
     | '/experts/$id'
     | '/admin'
     | '/client'
     | '/expert'
     | '/experts'
+    | '/client/bookings/$bookingId'
+    | '/client/summaries/$bookingId'
+    | '/expert/sessions/$sessionId'
+    | '/client/bookings'
+    | '/client/bookings/new/$expertId'
   id:
     | '__root__'
     | '/'
@@ -313,18 +601,44 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/terms'
     | '/verify-email'
+    | '/admin/analytics'
+    | '/admin/bookings'
+    | '/admin/experts'
+    | '/admin/finance'
+    | '/admin/notifications'
+    | '/admin/settings'
+    | '/admin/support'
+    | '/admin/users'
+    | '/client/billing'
     | '/client/experts'
     | '/client/insights'
     | '/client/messages'
+    | '/client/notifications'
+    | '/client/profile'
+    | '/client/saved-experts'
     | '/client/sessions'
+    | '/client/settings'
+    | '/client/support'
+    | '/expert/bookings'
     | '/expert/calendar'
+    | '/expert/earnings'
+    | '/expert/messages'
+    | '/expert/notifications'
     | '/expert/pending'
+    | '/expert/profile'
     | '/expert/sessions'
+    | '/expert/settings'
+    | '/expert/support'
     | '/experts/$id'
     | '/admin/'
     | '/client/'
     | '/expert/'
     | '/experts/'
+    | '/client/bookings/$bookingId'
+    | '/client/summaries/$bookingId'
+    | '/expert/sessions/$sessionId'
+    | '/client/bookings/'
+    | '/client/bookings/new/$expertId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -341,18 +655,43 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   TermsRoute: typeof TermsRoute
   VerifyEmailRoute: typeof VerifyEmailRoute
+  AdminAnalyticsRoute: typeof AdminAnalyticsRoute
+  AdminBookingsRoute: typeof AdminBookingsRoute
+  AdminExpertsRoute: typeof AdminExpertsRoute
+  AdminFinanceRoute: typeof AdminFinanceRoute
+  AdminNotificationsRoute: typeof AdminNotificationsRoute
+  AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminSupportRoute: typeof AdminSupportRoute
+  AdminUsersRoute: typeof AdminUsersRoute
+  ClientBillingRoute: typeof ClientBillingRoute
   ClientExpertsRoute: typeof ClientExpertsRoute
   ClientInsightsRoute: typeof ClientInsightsRoute
   ClientMessagesRoute: typeof ClientMessagesRoute
+  ClientNotificationsRoute: typeof ClientNotificationsRoute
+  ClientProfileRoute: typeof ClientProfileRoute
+  ClientSavedExpertsRoute: typeof ClientSavedExpertsRoute
   ClientSessionsRoute: typeof ClientSessionsRoute
+  ClientSettingsRoute: typeof ClientSettingsRoute
+  ClientSupportRoute: typeof ClientSupportRoute
+  ExpertBookingsRoute: typeof ExpertBookingsRoute
   ExpertCalendarRoute: typeof ExpertCalendarRoute
+  ExpertEarningsRoute: typeof ExpertEarningsRoute
+  ExpertMessagesRoute: typeof ExpertMessagesRoute
+  ExpertNotificationsRoute: typeof ExpertNotificationsRoute
   ExpertPendingRoute: typeof ExpertPendingRoute
-  ExpertSessionsRoute: typeof ExpertSessionsRoute
+  ExpertProfileRoute: typeof ExpertProfileRoute
+  ExpertSessionsRoute: typeof ExpertSessionsRouteWithChildren
+  ExpertSettingsRoute: typeof ExpertSettingsRoute
+  ExpertSupportRoute: typeof ExpertSupportRoute
   ExpertsIdRoute: typeof ExpertsIdRoute
   AdminIndexRoute: typeof AdminIndexRoute
   ClientIndexRoute: typeof ClientIndexRoute
   ExpertIndexRoute: typeof ExpertIndexRoute
   ExpertsIndexRoute: typeof ExpertsIndexRoute
+  ClientBookingsBookingIdRoute: typeof ClientBookingsBookingIdRoute
+  ClientSummariesBookingIdRoute: typeof ClientSummariesBookingIdRoute
+  ClientBookingsIndexRoute: typeof ClientBookingsIndexRoute
+  ClientBookingsNewExpertIdRoute: typeof ClientBookingsNewExpertIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -455,11 +794,74 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/analytics': {
+      id: '/admin/analytics'
+      path: '/admin/analytics'
+      fullPath: '/admin/analytics'
+      preLoaderRoute: typeof AdminAnalyticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/bookings': {
+      id: '/admin/bookings'
+      path: '/admin/bookings'
+      fullPath: '/admin/bookings'
+      preLoaderRoute: typeof AdminBookingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/experts': {
+      id: '/admin/experts'
+      path: '/admin/experts'
+      fullPath: '/admin/experts'
+      preLoaderRoute: typeof AdminExpertsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/finance': {
+      id: '/admin/finance'
+      path: '/admin/finance'
+      fullPath: '/admin/finance'
+      preLoaderRoute: typeof AdminFinanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/notifications': {
+      id: '/admin/notifications'
+      path: '/admin/notifications'
+      fullPath: '/admin/notifications'
+      preLoaderRoute: typeof AdminNotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/admin/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/support': {
+      id: '/admin/support'
+      path: '/admin/support'
+      fullPath: '/admin/support'
+      preLoaderRoute: typeof AdminSupportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/admin/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/client/': {
       id: '/client/'
       path: '/client'
       fullPath: '/client/'
       preLoaderRoute: typeof ClientIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/client/billing': {
+      id: '/client/billing'
+      path: '/client/billing'
+      fullPath: '/client/billing'
+      preLoaderRoute: typeof ClientBillingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/client/experts': {
@@ -483,11 +885,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ClientMessagesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/client/notifications': {
+      id: '/client/notifications'
+      path: '/client/notifications'
+      fullPath: '/client/notifications'
+      preLoaderRoute: typeof ClientNotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/client/profile': {
+      id: '/client/profile'
+      path: '/client/profile'
+      fullPath: '/client/profile'
+      preLoaderRoute: typeof ClientProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/client/saved-experts': {
+      id: '/client/saved-experts'
+      path: '/client/saved-experts'
+      fullPath: '/client/saved-experts'
+      preLoaderRoute: typeof ClientSavedExpertsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/client/sessions': {
       id: '/client/sessions'
       path: '/client/sessions'
       fullPath: '/client/sessions'
       preLoaderRoute: typeof ClientSessionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/client/settings': {
+      id: '/client/settings'
+      path: '/client/settings'
+      fullPath: '/client/settings'
+      preLoaderRoute: typeof ClientSettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/client/support': {
+      id: '/client/support'
+      path: '/client/support'
+      fullPath: '/client/support'
+      preLoaderRoute: typeof ClientSupportRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/expert/': {
@@ -497,11 +934,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExpertIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/expert/bookings': {
+      id: '/expert/bookings'
+      path: '/expert/bookings'
+      fullPath: '/expert/bookings'
+      preLoaderRoute: typeof ExpertBookingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/expert/calendar': {
       id: '/expert/calendar'
       path: '/expert/calendar'
       fullPath: '/expert/calendar'
       preLoaderRoute: typeof ExpertCalendarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/expert/earnings': {
+      id: '/expert/earnings'
+      path: '/expert/earnings'
+      fullPath: '/expert/earnings'
+      preLoaderRoute: typeof ExpertEarningsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/expert/messages': {
+      id: '/expert/messages'
+      path: '/expert/messages'
+      fullPath: '/expert/messages'
+      preLoaderRoute: typeof ExpertMessagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/expert/notifications': {
+      id: '/expert/notifications'
+      path: '/expert/notifications'
+      fullPath: '/expert/notifications'
+      preLoaderRoute: typeof ExpertNotificationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/expert/pending': {
@@ -511,11 +976,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExpertPendingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/expert/profile': {
+      id: '/expert/profile'
+      path: '/expert/profile'
+      fullPath: '/expert/profile'
+      preLoaderRoute: typeof ExpertProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/expert/sessions': {
       id: '/expert/sessions'
       path: '/expert/sessions'
       fullPath: '/expert/sessions'
       preLoaderRoute: typeof ExpertSessionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/expert/settings': {
+      id: '/expert/settings'
+      path: '/expert/settings'
+      fullPath: '/expert/settings'
+      preLoaderRoute: typeof ExpertSettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/expert/support': {
+      id: '/expert/support'
+      path: '/expert/support'
+      fullPath: '/expert/support'
+      preLoaderRoute: typeof ExpertSupportRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/experts/': {
@@ -532,8 +1018,55 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExpertsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/client/bookings/': {
+      id: '/client/bookings/'
+      path: '/client/bookings'
+      fullPath: '/client/bookings/'
+      preLoaderRoute: typeof ClientBookingsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/client/bookings/$bookingId': {
+      id: '/client/bookings/$bookingId'
+      path: '/client/bookings/$bookingId'
+      fullPath: '/client/bookings/$bookingId'
+      preLoaderRoute: typeof ClientBookingsBookingIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/client/summaries/$bookingId': {
+      id: '/client/summaries/$bookingId'
+      path: '/client/summaries/$bookingId'
+      fullPath: '/client/summaries/$bookingId'
+      preLoaderRoute: typeof ClientSummariesBookingIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/expert/sessions/$sessionId': {
+      id: '/expert/sessions/$sessionId'
+      path: '/$sessionId'
+      fullPath: '/expert/sessions/$sessionId'
+      preLoaderRoute: typeof ExpertSessionsSessionIdRouteImport
+      parentRoute: typeof ExpertSessionsRoute
+    }
+    '/client/bookings/new/$expertId': {
+      id: '/client/bookings/new/$expertId'
+      path: '/client/bookings/new/$expertId'
+      fullPath: '/client/bookings/new/$expertId'
+      preLoaderRoute: typeof ClientBookingsNewExpertIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
+
+interface ExpertSessionsRouteChildren {
+  ExpertSessionsSessionIdRoute: typeof ExpertSessionsSessionIdRoute
+}
+
+const ExpertSessionsRouteChildren: ExpertSessionsRouteChildren = {
+  ExpertSessionsSessionIdRoute: ExpertSessionsSessionIdRoute,
+}
+
+const ExpertSessionsRouteWithChildren = ExpertSessionsRoute._addFileChildren(
+  ExpertSessionsRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -549,18 +1082,43 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   TermsRoute: TermsRoute,
   VerifyEmailRoute: VerifyEmailRoute,
+  AdminAnalyticsRoute: AdminAnalyticsRoute,
+  AdminBookingsRoute: AdminBookingsRoute,
+  AdminExpertsRoute: AdminExpertsRoute,
+  AdminFinanceRoute: AdminFinanceRoute,
+  AdminNotificationsRoute: AdminNotificationsRoute,
+  AdminSettingsRoute: AdminSettingsRoute,
+  AdminSupportRoute: AdminSupportRoute,
+  AdminUsersRoute: AdminUsersRoute,
+  ClientBillingRoute: ClientBillingRoute,
   ClientExpertsRoute: ClientExpertsRoute,
   ClientInsightsRoute: ClientInsightsRoute,
   ClientMessagesRoute: ClientMessagesRoute,
+  ClientNotificationsRoute: ClientNotificationsRoute,
+  ClientProfileRoute: ClientProfileRoute,
+  ClientSavedExpertsRoute: ClientSavedExpertsRoute,
   ClientSessionsRoute: ClientSessionsRoute,
+  ClientSettingsRoute: ClientSettingsRoute,
+  ClientSupportRoute: ClientSupportRoute,
+  ExpertBookingsRoute: ExpertBookingsRoute,
   ExpertCalendarRoute: ExpertCalendarRoute,
+  ExpertEarningsRoute: ExpertEarningsRoute,
+  ExpertMessagesRoute: ExpertMessagesRoute,
+  ExpertNotificationsRoute: ExpertNotificationsRoute,
   ExpertPendingRoute: ExpertPendingRoute,
-  ExpertSessionsRoute: ExpertSessionsRoute,
+  ExpertProfileRoute: ExpertProfileRoute,
+  ExpertSessionsRoute: ExpertSessionsRouteWithChildren,
+  ExpertSettingsRoute: ExpertSettingsRoute,
+  ExpertSupportRoute: ExpertSupportRoute,
   ExpertsIdRoute: ExpertsIdRoute,
   AdminIndexRoute: AdminIndexRoute,
   ClientIndexRoute: ClientIndexRoute,
   ExpertIndexRoute: ExpertIndexRoute,
   ExpertsIndexRoute: ExpertsIndexRoute,
+  ClientBookingsBookingIdRoute: ClientBookingsBookingIdRoute,
+  ClientSummariesBookingIdRoute: ClientSummariesBookingIdRoute,
+  ClientBookingsIndexRoute: ClientBookingsIndexRoute,
+  ClientBookingsNewExpertIdRoute: ClientBookingsNewExpertIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

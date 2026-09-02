@@ -65,6 +65,23 @@ export type AdminExpertListResponse = z.infer<
 	typeof adminExpertListResponseSchema
 >;
 
+export const adminUserSummarySchema = z.object({
+	createdAt: z.string().datetime(),
+	displayName: z.string(),
+	email: z.string().email(),
+	emailVerified: z.boolean(),
+	expertStatus: expertStatusSchema,
+	id: z.string(),
+	primaryRole: primaryRoleSchema,
+	updatedAt: z.string().datetime(),
+});
+export type AdminUserSummary = z.infer<typeof adminUserSummarySchema>;
+
+export const adminUserListResponseSchema = z.object({
+	users: z.array(adminUserSummarySchema),
+});
+export type AdminUserListResponse = z.infer<typeof adminUserListResponseSchema>;
+
 export const currentUserSchema = z.object({
 	allowedAreas: z.array(allowedAreaSchema),
 	displayName: z.string(),
@@ -75,6 +92,11 @@ export const currentUserSchema = z.object({
 	userId: z.string(),
 });
 export type CurrentUserResponse = z.infer<typeof currentUserSchema>;
+
+export const accountProfileInputSchema = z.object({
+	displayName: z.string().trim().min(2).max(100),
+});
+export type AccountProfileInput = z.infer<typeof accountProfileInputSchema>;
 
 export const expertStatusUpdateResponseSchema = z.object({
 	message: z.string(),

@@ -2,6 +2,7 @@ import type {
 	AvailabilityInput,
 	CreateBookingInput,
 	ExpertBookingScope,
+	ExpertProfileInput,
 } from "@repo/contracts/consultations";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -9,6 +10,10 @@ import { consultationApi } from "@/lib/api";
 
 export const expertsQueryKey = ["consultations", "experts"] as const;
 export const bookingsQueryKey = ["consultations", "client-bookings"] as const;
+export const adminBookingsQueryKey = [
+	"consultations",
+	"admin-bookings",
+] as const;
 export const ownAvailabilityQueryKey = [
 	"consultations",
 	"expert-availability",
@@ -16,6 +21,10 @@ export const ownAvailabilityQueryKey = [
 export const expertDashboardSummaryQueryKey = [
 	"consultations",
 	"expert-dashboard-summary",
+] as const;
+export const expertProfileQueryKey = [
+	"consultations",
+	"expert-profile",
 ] as const;
 
 export function expertBookingsQueryKey(scope: ExpertBookingScope) {
@@ -53,6 +62,9 @@ export function useCreateBooking() {
 			await Promise.all([
 				queryClient.invalidateQueries({ queryKey: bookingsQueryKey }),
 				queryClient.invalidateQueries({
+					queryKey: ["engagements", "notifications"],
+				}),
+				queryClient.invalidateQueries({
 					queryKey: ["consultations", "availability"],
 				}),
 			]);
@@ -65,7 +77,12 @@ export function useCancelBooking() {
 	return useMutation({
 		mutationFn: (bookingId: string) => consultationApi.cancelBooking(bookingId),
 		onSuccess: async () => {
-			await queryClient.invalidateQueries({ queryKey: bookingsQueryKey });
+			await Promise.all([
+				queryClient.invalidateQueries({ queryKey: bookingsQueryKey }),
+				queryClient.invalidateQueries({
+					queryKey: ["engagements", "notifications"],
+				}),
+			]);
 		},
 	});
 }
@@ -83,6 +100,9 @@ export function useRescheduleBooking() {
 		onSuccess: async () => {
 			await Promise.all([
 				queryClient.invalidateQueries({ queryKey: bookingsQueryKey }),
+				queryClient.invalidateQueries({
+					queryKey: ["engagements", "notifications"],
+				}),
 				queryClient.invalidateQueries({
 					queryKey: ["consultations", "availability"],
 				}),
@@ -109,6 +129,35 @@ export function useExpertDashboardSummary() {
 	return useQuery({
 		queryFn: () => consultationApi.getExpertDashboardSummary(),
 		queryKey: expertDashboardSummaryQueryKey,
+	});
+}
+
+export function useAdminBookings() {
+	return useQuery({
+		queryFn: () => consultationApi.listAdminBookings(),
+		queryKey: adminBookingsQueryKey,
+	});
+}
+
+export function useExpertProfile() {
+	return useQuery({
+		queryFn: () => consultationApi.getExpertProfile(),
+		queryKey: expertProfileQueryKey,
+	});
+}
+
+export function useUpdateExpertProfile() {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: (input: ExpertProfileInput) =>
+			consultationApi.updateExpertProfile(input),
+		onSuccess: async () => {
+			await Promise.all([
+				queryClient.invalidateQueries({ queryKey: expertProfileQueryKey }),
+				queryClient.invalidateQueries({ queryKey: expertsQueryKey }),
+				queryClient.invalidateQueries({ queryKey: ["auth", "current-user"] }),
+			]);
+		},
 	});
 }
 

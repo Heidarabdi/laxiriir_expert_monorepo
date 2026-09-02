@@ -16,6 +16,19 @@ export const expertSchema = z.object({
 });
 export type ExpertSummary = z.infer<typeof expertSchema>;
 
+export const expertProfileInputSchema = z.object({
+	avatarUrl: z.string().url(),
+	bio: z.string().trim().min(40).max(1200),
+	category: z.string().trim().min(2).max(80),
+	displayName: z.string().trim().min(2).max(100),
+	hourlyRateCents: z.number().int().min(0).max(1_000_000),
+	title: z.string().trim().min(2).max(120),
+});
+export type ExpertProfileInput = z.infer<typeof expertProfileInputSchema>;
+
+export const expertResponseSchema = z.object({ expert: expertSchema });
+export type ExpertResponse = z.infer<typeof expertResponseSchema>;
+
 export const availabilitySlotSchema = z.object({
 	booked: z.boolean(),
 	createdAt: z.string().datetime(),
@@ -62,6 +75,28 @@ export const bookingListResponseSchema = z.object({
 	bookings: z.array(bookingSchema),
 });
 export type BookingListResponse = z.infer<typeof bookingListResponseSchema>;
+
+export const adminBookingSchema = z.object({
+	client: z.object({
+		displayName: z.string(),
+		email: z.string().email(),
+		id: z.string(),
+	}),
+	createdAt: z.string().datetime(),
+	endsAt: z.string().datetime(),
+	expert: expertSchema,
+	id: z.string(),
+	startsAt: z.string().datetime(),
+	status: bookingStatusSchema,
+});
+export type AdminBookingDetail = z.infer<typeof adminBookingSchema>;
+
+export const adminBookingListResponseSchema = z.object({
+	bookings: z.array(adminBookingSchema),
+});
+export type AdminBookingListResponse = z.infer<
+	typeof adminBookingListResponseSchema
+>;
 
 export const expertBookingScopeSchema = z.enum(["upcoming", "past"]);
 export type ExpertBookingScope = z.infer<typeof expertBookingScopeSchema>;

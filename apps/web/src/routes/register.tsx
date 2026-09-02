@@ -7,19 +7,20 @@ export const Route = createFileRoute("/register")({ component: RegisterPage });
 function RegisterPage() {
 	return (
 		<AuthCard
-			description="Create a client or expert account."
+			className="max-w-[480px]"
+			description="Join Laxiriir to consult experts or grow your practice"
 			footer={
 				<p className="w-full text-center text-muted-foreground text-sm">
-					Already registered?{" "}
+					Already have an account?{" "}
 					<Link
 						className="font-medium text-primary hover:underline"
 						to="/login"
 					>
-						Sign in
+						Log In
 					</Link>
 				</p>
 			}
-			title="Get started"
+			title="Create your account"
 		>
 			<RegisterForm />
 		</AuthCard>
